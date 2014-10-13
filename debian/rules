@@ -1,0 +1,54 @@
+#!/usr/bin/make -f
+
+#export DH_VERBOSE = 1
+export PACKAGE = 'gustat'
+export VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
+
+# Required for 'help2man'
+export PYTHONPATH:=.:${PYTHONPATH}
+export PATH:=.:${PATH}
+
+%:
+	dh $@ --with python2
+
+override_dh_install:
+	# Fix version
+	sed -i "s|^\s*GUSTAT_VERSION\s*=.*|GUSTAT_VERSION = '$(VERSION)'|" debian/gustat/usr/lib/*/dist-packages/GUStat/__init__.py
+	# Create man pages
+	mkdir -p debian/gustat/usr/share/man/man1
+	help2man \
+		--name 'Global Unified Statitics (GUStat)' \
+		--help-option --help --version-string $(VERSION) --no-discard-stderr --no-info \
+		gustat | fgrep -v 'invalid option' > debian/gustat/usr/share/man/man1/gustat.1
+
+	# Install
+	dh_install
+
+override_dh_installdocs:
+	dh_installdocs README
+
+build-source-tarball:
+	dh_testdir
+	dh_clean build-stamp
+	# Create the source tarball
+	mkdir -p /tmp/$(PACKAGE)-source-$(VERSION)
+	cp -r * /tmp/$(PACKAGE)-source-$(VERSION)/.
+	tar -C /tmp -cjf ../$(PACKAGE)-source-$(VERSION).tar.bz2 $(PACKAGE)-source-$(VERSION)
+	rm -rf /tmp/$(PACKAGE)-source-$(VERSION)
+
+build-install-tarball:
+	# Create the installation tarball
+	# WARNING: make install before-hand!
+	mkdir -p /tmp/$(PACKAGE)-$(VERSION)/
+	cp -rp debian/gustat/usr /tmp/$(PACKAGE)-$(VERSION)/.
+	tar -C /tmp -cjf ../$(PACKAGE)-$(VERSION).tar.bz2 $(PACKAGE)-$(VERSION)
+	rm -rf /tmp/$(PACKAGE)-$(VERSION)
+
+debian-packages:
+	debuild -us -uc -b
+
+debian-source:
+	debuild -I'.git*' -I'*.pyc' -us -uc -S
+
+release: debian-packages build-install-tarball debian-source build-source-tarball
+

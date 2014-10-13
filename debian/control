@@ -1,0 +1,32 @@
+Source: gustat
+Section: admin
+Priority: optional
+Maintainer: Cedric Dufour <cedric.dufour@ced-network.net>
+Build-Depends: debhelper (>= 5), help2man
+
+Package: gustat
+Architecture: all
+Depends: python (>= 2.7), python-argparse
+Suggests: ${python:Depends}
+Description: Global Unified Statistics (GUStat)
+ The Global Unified Statistics (GUStat) library/utility is an attempt to
+ gather and output Linux most-commonly-used system statistics in a unified
+ and pipe-friendly way.
+ .
+ The currently supported statistics sources are:
+ (system-level)
+  - /proc/cpuinfo
+  - /proc/loadavg
+  - /proc/stat
+  - /proc/meminfo
+  - /proc/vmstat
+  - /proc/diskstats
+  - /proc/self/mountstats
+  - /proc/net/dev
+ (process-level)
+  - /proc/[pid]/status
+  - /proc/[pid]/stat
+  - /proc/[pid]/io
+ (libvirt-level)
+  - virsh qemu-monitor-command info blockstats
+
