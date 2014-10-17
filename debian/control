@@ -2,7 +2,9 @@ Source: gustat
 Section: admin
 Priority: optional
 Maintainer: Cedric Dufour <cedric.dufour@ced-network.net>
-Build-Depends: debhelper (>= 5), help2man
+Build-Depends: debhelper (>= 8), help2man
+Homepage: https://github.com/cedric-dufour/gustat
+Standards-Version: 3.9.4
 
 Package: gustat
 Architecture: all

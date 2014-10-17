@@ -21,5 +21,5 @@
 GUSTAT_VERSION='devel'
 
 # Dependencies
-from gustatdata import GUStatData
+from gustat_data import GUStatData
 

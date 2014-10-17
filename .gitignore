@@ -2,5 +2,7 @@
 *#
 *~
 semantic.cache
+
+# Ignore Python byte-compiled files
 *.pyc
 

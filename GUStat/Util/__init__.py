@@ -19,5 +19,5 @@
 #
 
 # Dependencies
-from gustat import GUStatMain
+from gustat_exec import GUStatMain
 

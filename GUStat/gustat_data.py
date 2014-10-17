@@ -863,7 +863,7 @@ class GUStatData:
                 ( __sMetric, __sValue ) = __lWords[__i].split( '=', 1 )
                 __dField = self.__makeField( GUSTAT_FIELDS_VIRT_BLKS, __sMetric, __sValue )
                 self.__storeField( GUSTAT_PREFIX_VIRT_BLKS, _sGuest+':'+__sDevice, __dField, _iLevel )
- 
+
 
     #
     # Output
