@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- mode:python; tab-width:4; c-basic-offset:4; intent-tabs-mode:nil; -*-
 # ex: filetype=python tabstop=4 softtabstop=4 shiftwidth=4 expandtab autoindent smartindent
 
@@ -7,13 +7,13 @@ from distutils.core import setup
 import os
 
 # Helpers
-def filesInDir( sDirectory ):
-    __lsfilesInDir = list()
-    for __sFile in os.listdir( sDirectory ):
-        __sFile = sDirectory.rstrip( os.sep )+os.sep+__sFile
-        if os.path.isfile( __sFile ):
-            __lsfilesInDir.append( __sFile )
-    return __lsfilesInDir
+def filesInDir(sDirectory):
+    lsfilesInDir = list()
+    for sFile in os.listdir(sDirectory):
+        sFile = sDirectory.rstrip(os.sep)+os.sep+sFile
+        if os.path.isfile(sFile):
+            lsfilesInDir.append(sFile)
+    return lsfilesInDir
 
 # Setup
 setup(
@@ -43,14 +43,14 @@ setup(
          - virsh qemu-monitor-command info blockstats
        """,
     version = os.environ.get('VERSION'),
-    platforms = [ 'Linux' ],
+    platforms = ['Linux'],
     author = 'Cedric Dufour',
     author_email = 'http://cedric.dufour.name',
     license = 'GPL-3',
     download_url = 'https://github.com/cedric-dufour/gustat',
-    packages = [ 'GUStat', 'GUStat.Util' ],
-    package_dir = { '': '.' },
-    requires = [ 'argparse' ],
-    scripts = [ 'gustat' ],
+    packages = ['GUStat', 'GUStat.Util'],
+    package_dir = {'': '.'},
+    requires = ['argparse'],
+    scripts = ['gustat'],
     )
 

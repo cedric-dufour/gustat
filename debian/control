@@ -2,14 +2,14 @@ Source: gustat
 Section: admin
 Priority: optional
 Maintainer: Cedric Dufour <cedric.dufour@ced-network.net>
-Build-Depends: debhelper (>= 8), help2man
+Build-Depends: python3 (>= 3.4), debhelper (>= 9), help2man
+X-Python3-Version: >= 3.4
 Homepage: https://github.com/cedric-dufour/gustat
-Standards-Version: 3.9.4
+Standards-Version: 3.9.8
 
 Package: gustat
 Architecture: all
-Depends: python (>= 2.7), python-argparse
-Suggests: ${python:Depends}
+Depends: python3 (>= 3.4)
 Description: Global Unified Statistics (GUStat)
  The Global Unified Statistics (GUStat) library/utility is an attempt to
  gather and output Linux most-commonly-used system statistics in a unified

@@ -9,11 +9,12 @@ export PYTHONPATH:=.:${PYTHONPATH}
 export PATH:=.:${PATH}
 
 %:
-	dh $@ --with python2
+	dh $@ --with python3 --buildsystem=pybuild
 
 override_dh_install:
 	# Fix version
 	sed -i "s|^\s*GUSTAT_VERSION\s*=.*|GUSTAT_VERSION = '$(VERSION)'|" debian/gustat/usr/lib/*/dist-packages/GUStat/__init__.py
+
 	# Create man pages
 	mkdir -p debian/gustat/usr/share/man/man1
 	help2man \
@@ -26,6 +27,11 @@ override_dh_install:
 
 override_dh_installdocs:
 	dh_installdocs README
+
+override_dh_clean:
+	dh_clean
+	rm -rf MANIFEST build dist
+	find GUStat -name '*.pyc' -delete
 
 build-source-tarball:
 	dh_testdir
