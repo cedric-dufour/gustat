@@ -23,5 +23,5 @@ from GUStat.Util import GUStatMain
 import sys
 
 # Excutes
-sys.exit( GUStatMain().execute() )
+sys.exit(GUStatMain().execute())
 

@@ -426,11 +426,11 @@ class GUStatData:
     # CONSTRUCTORS / DESTRUCTOR
     #------------------------------------------------------------------------------
 
-    def __init__( self, _bInterval, _bRate ):
+    def __init__(self, _bInterval, _bRate):
         # Fields
-        self.__bInterval = bool( _bInterval )
-        self.__bRate = bool( _bRate )
-        self.__reMultiSpaces = re.compile( '\s\s+' )
+        self.__bInterval = bool(_bInterval)
+        self.__bRate = bool(_bRate)
+        self.__reMultiSpaces = re.compile('\s\s+')
         self.__iCpuCount = None
         self.dStats = dict()
 
@@ -443,7 +443,7 @@ class GUStatData:
     # Data
     #
 
-    def __makeField( self, _dStatFields, _sKey, _sValue, _fCoefficient = None, _sMetricPrefix = None ):
+    def __makeField(self, _dStatFields, _sKey, _sValue, _fCoefficient = None, _sMetricPrefix = None):
         """
         Build a global statistics field (dictonary), mapping:
          'category': field category
@@ -457,33 +457,33 @@ class GUStatData:
         if _sKey not in _dStatFields:
             return None
         try:
-            __mValue = float( _sValue )
+            mValue = float(_sValue)
         except:
-            __mValue = 0.0
-        __fCoefficient = _dStatFields[_sKey][3]
+            mValue = 0.0
+        fCoefficient = _dStatFields[_sKey][3]
         if _fCoefficient is not None:
-            __mValue *= _fCoefficient
-        elif __fCoefficient is not None:
-            __mValue *= __fCoefficient
-        __sType = _dStatFields[_sKey][4]
-        if __sType == 'int':
-            __mValue = int( __mValue )
-        #elif __sType == 'float': already a float
-        __sMetric = _dStatFields[_sKey][1];
+            mValue *= _fCoefficient
+        elif fCoefficient is not None:
+            mValue *= fCoefficient
+        sType = _dStatFields[_sKey][4]
+        if sType == 'int':
+            mValue = int(mValue)
+        #elif sType == 'float': already a float
+        sMetric = _dStatFields[_sKey][1];
         if _sMetricPrefix is not None:
-            __sMetric = _sMetricPrefix+'_'+__sMetric
+            sMetric = _sMetricPrefix+'_'+sMetric
         return {
             'category': _dStatFields[_sKey][0],
-            'metric': __sMetric,
+            'metric': sMetric,
             'unit': _dStatFields[_sKey][2],
-            'value': __mValue,
+            'value': mValue,
             'interval': _dStatFields[_sKey][5],
             'rate': _dStatFields[_sKey][6],
             'level': _dStatFields[_sKey][7],
-        }
+       }
 
 
-    def __storeField( self, _sKeyPrefix, _sKeyObject, _dField, _iLevel ):
+    def __storeField(self, _sKeyPrefix, _sKeyObject, _dField, _iLevel):
         if _dField is None:
             return
         if self.__bInterval:
@@ -495,421 +495,421 @@ class GUStatData:
             return
         if _sKeyObject is None:
             _sKeyObject = '-'
-        self.dStats[ _sKeyPrefix+','+_sKeyObject+','+_dField['category']+':'+_dField['metric'] ] = _dField
+        self.dStats[_sKeyPrefix+','+_sKeyObject+','+_dField['category']+':'+_dField['metric']] = _dField
 
     #
     # Parsers
     #
 
-    def parseStat_sys_cpu( self, _iLevel ):
+    def parseStat_sys_cpu(self, _iLevel):
         global GUSTAT_PREFIX_SYS_CPU
         global GUSTAT_FIELDS_SYS_CPU
 
-        __sFile = '/proc/cpuinfo'
+        sFile = '/proc/cpuinfo'
         try:
-            __oFile = open( __sFile, 'r' )
+            oFile = open(sFile, 'r')
         except:
-            sys.stderr.write( 'ERROR: Missing/unreadable file; %s\n' % __sFile )
+            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
-        __iQuantity = int( 0 )
-        __sId = None
-        for __sLine in __oFile:
-            __lWords = map( lambda _s:_s.strip(), __sLine.lower().split( ':' ) )
-            if len( __lWords ) < 2:
+        iQuantity = int(0)
+        sId = None
+        for sLine in oFile:
+            lWords = map(lambda _s:_s.strip(), sLine.lower().split(':'))
+            if len(lWords) < 2:
                 continue
-            if __lWords[0] == 'processor':
-                __iQuantity += 1
-                __sId = 'cpu'+__lWords[1]
+            if lWords[0] == 'processor':
+                iQuantity += 1
+                sId = 'cpu'+lWords[1]
             else:
-                if __sId is None:
+                if sId is None:
                     continue
-                __dField = self.__makeField( GUSTAT_FIELDS_SYS_CPU, __lWords[0], __lWords[1] )
-                self.__storeField( GUSTAT_PREFIX_SYS_CPU, __sId, __dField, _iLevel )
-        self.__iCpuCount = __iQuantity
-        __dField = self.__makeField( GUSTAT_FIELDS_SYS_CPU, 'count', self.__iCpuCount )
-        self.__storeField( GUSTAT_PREFIX_SYS_CPU, 'cpu', __dField, _iLevel )
-        __oFile.close()
+                dField = self.__makeField(GUSTAT_FIELDS_SYS_CPU, lWords[0], lWords[1])
+                self.__storeField(GUSTAT_PREFIX_SYS_CPU, sId, dField, _iLevel)
+        self.__iCpuCount = iQuantity
+        dField = self.__makeField(GUSTAT_FIELDS_SYS_CPU, 'count', self.__iCpuCount)
+        self.__storeField(GUSTAT_PREFIX_SYS_CPU, 'cpu', dField, _iLevel)
+        oFile.close()
 
 
-    def parseStat_sys_load( self, _iLevel ):
+    def parseStat_sys_load(self, _iLevel):
         global GUSTAT_PREFIX_SYS_LOAD
         global GUSTAT_FIELDS_SYS_LOAD
 
-        __sFile = '/proc/loadavg'
+        sFile = '/proc/loadavg'
         try:
-            __oFile = open( __sFile, 'r' )
+            oFile = open(sFile, 'r')
         except:
-            sys.stderr.write( 'ERROR: Missing/unreadable file; %s\n' % __sFile )
+            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
-        __lWords = __oFile.readline().split()
-        if len( __lWords ) >= 3:
-            for __i in range( 0, 3 ):
+        lWords = oFile.readline().split()
+        if len(lWords) >= 3:
+            for i in range(0, 3):
                 if self.__iCpuCount is not None:
-                    __dField = self.__makeField( GUSTAT_FIELDS_SYS_LOAD, 'field'+str(__i), float( __lWords[__i] ) / self.__iCpuCount )
-                    self.__storeField( GUSTAT_PREFIX_SYS_LOAD, 'normalized', __dField, _iLevel )
+                    dField = self.__makeField(GUSTAT_FIELDS_SYS_LOAD, 'field'+str(i), float(lWords[i]) / self.__iCpuCount)
+                    self.__storeField(GUSTAT_PREFIX_SYS_LOAD, 'normalized', dField, _iLevel)
                 else:
-                    __dField = self.__makeField( GUSTAT_FIELDS_SYS_LOAD, 'field'+str(__i), __lWords[__i] )
-                    self.__storeField( GUSTAT_PREFIX_SYS_LOAD, None, __dField, _iLevel )
+                    dField = self.__makeField(GUSTAT_FIELDS_SYS_LOAD, 'field'+str(i), lWords[i])
+                    self.__storeField(GUSTAT_PREFIX_SYS_LOAD, None, dField, _iLevel)
         else:
-            sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file; %s\n' % __sFile )
-        __oFile.close()
+            sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
+        oFile.close()
 
 
-    def parseStat_sys_stat( self, _iLevel, _bCpuDetail ):
+    def parseStat_sys_stat(self, _iLevel, _bCpuDetail):
         global GUSTAT_PREFIX_SYS_STAT
         global GUSTAT_FIELDS_SYS_STAT
 
-        __sFile = '/proc/stat'
+        sFile = '/proc/stat'
         try:
-            __oFile = open( __sFile, 'r' )
+            oFile = open(sFile, 'r')
         except:
-            sys.stderr.write( 'ERROR: Missing/unreadable file; %s\n' % __sFile )
+            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
-        for __sLine in __oFile:
-            __lWords = self.__reMultiSpaces.sub( ' ', __sLine.lower() ).split()
-            if len( __lWords ) < 2:
-                sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file; %s\n' % __sFile )
+        for sLine in oFile:
+            lWords = self.__reMultiSpaces.sub(' ', sLine.lower()).split()
+            if len(lWords) < 2:
+                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                 break
-            if __lWords[0].startswith( 'cpu' ):
-                if len( __lWords ) < 11:
-                    sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file; %s\n' % __sFile )
+            if lWords[0].startswith('cpu'):
+                if len(lWords) < 11:
+                    sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                     break
-                __sCpu = __lWords[0]
-                if __sCpu == 'cpu':
+                sCpu = lWords[0]
+                if sCpu == 'cpu':
                     if _bCpuDetail:
                         continue
                 else:
                     if not _bCpuDetail:
                         continue
-                for __i in range( 1, 11 ):
-                    if __sCpu == 'cpu' and self.__iCpuCount is not None:
-                        __dField = self.__makeField( GUSTAT_FIELDS_SYS_STAT, 'cpu_field'+str(__i), float( __lWords[__i] ) / self.__iCpuCount )
-                        self.__storeField( GUSTAT_PREFIX_SYS_STAT, __sCpu+'_n', __dField, _iLevel )
+                for i in range(1, 11):
+                    if sCpu == 'cpu' and self.__iCpuCount is not None:
+                        dField = self.__makeField(GUSTAT_FIELDS_SYS_STAT, 'cpu_field'+str(i), float(lWords[i]) / self.__iCpuCount)
+                        self.__storeField(GUSTAT_PREFIX_SYS_STAT, sCpu+'_n', dField, _iLevel)
                     else:
-                        __dField = self.__makeField( GUSTAT_FIELDS_SYS_STAT, 'cpu_field'+str(__i), __lWords[__i] )
-                        self.__storeField( GUSTAT_PREFIX_SYS_STAT, __sCpu, __dField, _iLevel )
+                        dField = self.__makeField(GUSTAT_FIELDS_SYS_STAT, 'cpu_field'+str(i), lWords[i])
+                        self.__storeField(GUSTAT_PREFIX_SYS_STAT, sCpu, dField, _iLevel)
             else:
-                __dField = self.__makeField( GUSTAT_FIELDS_SYS_STAT, __lWords[0], __lWords[1] )
-                self.__storeField( GUSTAT_PREFIX_SYS_STAT, None, __dField, _iLevel )
-        __oFile.close()
+                dField = self.__makeField(GUSTAT_FIELDS_SYS_STAT, lWords[0], lWords[1])
+                self.__storeField(GUSTAT_PREFIX_SYS_STAT, None, dField, _iLevel)
+        oFile.close()
 
 
-    def parseStat_sys_mem( self, _iLevel ):
+    def parseStat_sys_mem(self, _iLevel):
         global GUSTAT_PREFIX_SYS_MEM
         global GUSTAT_FIELDS_SYS_MEM
 
-        __sFile = '/proc/meminfo'
+        sFile = '/proc/meminfo'
         try:
-            __oFile = open( __sFile, 'r' )
+            oFile = open(sFile, 'r')
         except:
-            sys.stderr.write( 'ERROR: Missing/unreadable file; %s\n' % __sFile )
+            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
-        for __sLine in __oFile:
-            __lWords = map( lambda _s:_s.strip(), __sLine.lower().split( ':' ) )
-            if len( __lWords ) < 2:
-                sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file; %s\n' % __sFile )
+        for sLine in oFile:
+            lWords = map(lambda _s:_s.strip(), sLine.lower().split(':'))
+            if len(lWords) < 2:
+                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                 break
-            if __lWords[1].endswith( 'gb' ):
-                __dField = self.__makeField( GUSTAT_FIELDS_SYS_MEM, __lWords[0], __lWords[1][0:-2], _fCoefficient=1073741824.0 )
-            elif __lWords[1].endswith( ' mb' ):
-                __dField = self.__makeField( GUSTAT_FIELDS_SYS_MEM, __lWords[0], __lWords[1][0:-2], _fCoefficient=1048576.0 )
-            elif __lWords[1].endswith( ' kb' ):
-                __dField = self.__makeField( GUSTAT_FIELDS_SYS_MEM, __lWords[0], __lWords[1][0:-2], _fCoefficient=1024.0 )
+            if lWords[1].endswith('gb'):
+                dField = self.__makeField(GUSTAT_FIELDS_SYS_MEM, lWords[0], lWords[1][0:-2], _fCoefficient=1073741824.0)
+            elif lWords[1].endswith(' mb'):
+                dField = self.__makeField(GUSTAT_FIELDS_SYS_MEM, lWords[0], lWords[1][0:-2], _fCoefficient=1048576.0)
+            elif lWords[1].endswith(' kb'):
+                dField = self.__makeField(GUSTAT_FIELDS_SYS_MEM, lWords[0], lWords[1][0:-2], _fCoefficient=1024.0)
             else:
-                __dField = self.__makeField( GUSTAT_FIELDS_SYS_MEM, __lWords[0], __lWords[1] )
-            self.__storeField( GUSTAT_PREFIX_SYS_MEM, None, __dField, _iLevel )
-        __oFile.close()
+                dField = self.__makeField(GUSTAT_FIELDS_SYS_MEM, lWords[0], lWords[1])
+            self.__storeField(GUSTAT_PREFIX_SYS_MEM, None, dField, _iLevel)
+        oFile.close()
 
 
-    def parseStat_sys_vm( self, _iLevel ):
+    def parseStat_sys_vm(self, _iLevel):
         global GUSTAT_PREFIX_SYS_VM
         global GUSTAT_FIELDS_SYS_VM
 
-        __sFile = '/proc/vmstat'
+        sFile = '/proc/vmstat'
         try:
-            __oFile = open( __sFile, 'r' )
+            oFile = open(sFile, 'r')
         except:
-            sys.stderr.write( 'ERROR: Missing/unreadable file; %s\n' % __sFile )
+            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
-        for __sLine in __oFile:
-            __lWords = __sLine.lower().split( ' ' )
-            if len( __lWords ) < 2:
-                sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file; %s\n' % __sFile )
+        for sLine in oFile:
+            lWords = sLine.lower().split(' ')
+            if len(lWords) < 2:
+                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                 break
-            __dField = self.__makeField( GUSTAT_FIELDS_SYS_VM, __lWords[0], __lWords[1] )
-            self.__storeField( GUSTAT_PREFIX_SYS_VM, None, __dField, _iLevel )
-        __oFile.close()
+            dField = self.__makeField(GUSTAT_FIELDS_SYS_VM, lWords[0], lWords[1])
+            self.__storeField(GUSTAT_PREFIX_SYS_VM, None, dField, _iLevel)
+        oFile.close()
 
 
-    def parseStat_sys_dsks( self, _iLevel, _sDevice, _bDevicePrefix ):
+    def parseStat_sys_dsks(self, _iLevel, _sDevice, _bDevicePrefix):
         global GUSTAT_PREFIX_SYS_DSKS
         global GUSTAT_FIELDS_SYS_DSKS
 
-        __sFile = '/proc/diskstats'
+        sFile = '/proc/diskstats'
         try:
-            __oFile = open( __sFile, 'r' )
+            oFile = open(sFile, 'r')
         except:
-            sys.stderr.write( 'ERROR: Missing/unreadable file; %s\n' % __sFile )
+            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
-        __sDevice = None
-        for __sLine in __oFile:
-            __lWords = self.__reMultiSpaces.sub( ' ', __sLine.lower().strip() ).split()
-            if len( __lWords ) < 14:
-                sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file; %s\n' % __sFile )
+        sDevice = None
+        for sLine in oFile:
+            lWords = self.__reMultiSpaces.sub(' ', sLine.lower().strip()).split()
+            if len(lWords) < 14:
+                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                 break
             if _sDevice is None \
-                or ( _bDevicePrefix and __lWords[2].startswith( _sDevice ) ) \
-                or __lWords[2] == _sDevice:
-                __sDevice = __lWords[2]
+                or (_bDevicePrefix and lWords[2].startswith(_sDevice)) \
+                or lWords[2] == _sDevice:
+                sDevice = lWords[2]
             else:
-                __sDevice = None
-            if __sDevice is None:
+                sDevice = None
+            if sDevice is None:
                 continue
-            for __i in range( 3, 14 ):
-                __dField = self.__makeField( GUSTAT_FIELDS_SYS_DSKS, 'field'+str(__i), __lWords[__i] )
-                self.__storeField( GUSTAT_PREFIX_SYS_DSKS, __sDevice, __dField, _iLevel )
-        __oFile.close()
+            for i in range(3, 14):
+                dField = self.__makeField(GUSTAT_FIELDS_SYS_DSKS, 'field'+str(i), lWords[i])
+                self.__storeField(GUSTAT_PREFIX_SYS_DSKS, sDevice, dField, _iLevel)
+        oFile.close()
 
 
-    def parseStat_sys_mnts( self, _iLevel, _sDevice, _bDevicePrefix ):
+    def parseStat_sys_mnts(self, _iLevel, _sDevice, _bDevicePrefix):
         global GUSTAT_PREFIX_SYS_MNTS
         global GUSTAT_FIELDS_SYS_MNTS
 
-        __sFile = '/proc/self/mountstats'
+        sFile = '/proc/self/mountstats'
         try:
-            __oFile = open( __sFile, 'r' )
+            oFile = open(sFile, 'r')
         except:
-            sys.stderr.write( 'ERROR: Missing/unreadable file; %s\n' % __sFile )
+            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
-        __sDevice = None
-        __sType = None
-        for __sLine in __oFile:
-            __lWords = self.__reMultiSpaces.sub( ' ', __sLine.lower().strip() ).split()
-            if len( __lWords ) < 2:
+        sDevice = None
+        sType = None
+        for sLine in oFile:
+            lWords = self.__reMultiSpaces.sub(' ', sLine.lower().strip()).split()
+            if len(lWords) < 2:
                 continue
-            __lWords[0] = __lWords[0].strip( ':' )
-            if __lWords[0] == 'device':
-                if len( __lWords ) < 8:
-                    sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file [nfs:events]; %s\n' % __sFile )
+            lWords[0] = lWords[0].strip(':')
+            if lWords[0] == 'device':
+                if len(lWords) < 8:
+                    sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:events]; %s\n' % sFile)
                     break
                 if _sDevice is None \
-                    or ( _bDevicePrefix and __lWords[4].startswith( _sDevice ) ) \
-                    or __lWords[4] == _sDevice:
-                    __sDevice = __lWords[4]
-                    __sType = __lWords[7]
+                    or (_bDevicePrefix and lWords[4].startswith(_sDevice)) \
+                    or lWords[4] == _sDevice:
+                    sDevice = lWords[4]
+                    sType = lWords[7]
                 else:
-                    __sDevice = None
-                    __sType = None
+                    sDevice = None
+                    sType = None
                 continue
-            if __sDevice is None or __sType is None:
+            if sDevice is None or sType is None:
                 continue
-            if __sType == 'nfs':
-                if __lWords[0] == 'events':
-                    if len( __lWords ) < 28:
-                        sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file [nfs:events]; %s\n' % __sFile )
+            if sType == 'nfs':
+                if lWords[0] == 'events':
+                    if len(lWords) < 28:
+                        sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:events]; %s\n' % sFile)
                         break
-                    for __i in range( 1, 28 ):
-                        __dField = self.__makeField( GUSTAT_FIELDS_SYS_MNTS, 'nfs_events_field'+str(__i), __lWords[__i] )
-                        self.__storeField( GUSTAT_PREFIX_SYS_MNTS, __sDevice, __dField, _iLevel )
-                elif __lWords[0] == 'bytes':
-                    if len( __lWords ) < 9:
-                        sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file [nfs:bytes]; %s\n' % __sFile )
+                    for i in range(1, 28):
+                        dField = self.__makeField(GUSTAT_FIELDS_SYS_MNTS, 'nfs_events_field'+str(i), lWords[i])
+                        self.__storeField(GUSTAT_PREFIX_SYS_MNTS, sDevice, dField, _iLevel)
+                elif lWords[0] == 'bytes':
+                    if len(lWords) < 9:
+                        sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:bytes]; %s\n' % sFile)
                         break
-                    for __i in range( 1, 9 ):
-                        __dField = self.__makeField( GUSTAT_FIELDS_SYS_MNTS, 'nfs_bytes_field'+str(__i), __lWords[__i] )
-                        self.__storeField( GUSTAT_PREFIX_SYS_MNTS, __sDevice, __dField, _iLevel )
-                elif __lWords[0] in GUSTAT_FIELDS_SYS_MNTS_NFS_OPS:
-                    if len( __lWords ) < 9:
-                        sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file [nfs:ops]; %s\n' % __sFile )
+                    for i in range(1, 9):
+                        dField = self.__makeField(GUSTAT_FIELDS_SYS_MNTS, 'nfs_bytes_field'+str(i), lWords[i])
+                        self.__storeField(GUSTAT_PREFIX_SYS_MNTS, sDevice, dField, _iLevel)
+                elif lWords[0] in GUSTAT_FIELDS_SYS_MNTS_NFS_OPS:
+                    if len(lWords) < 9:
+                        sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:ops]; %s\n' % sFile)
                         break
-                    for __i in range( 1, 9 ):
-                        __dField = self.__makeField( GUSTAT_FIELDS_SYS_MNTS, 'nfs_ops_field'+str(__i), __lWords[__i], _sMetricPrefix=__lWords[0] )
-                        self.__storeField( GUSTAT_PREFIX_SYS_MNTS, __sDevice, __dField, _iLevel )
-        __oFile.close()
+                    for i in range(1, 9):
+                        dField = self.__makeField(GUSTAT_FIELDS_SYS_MNTS, 'nfs_ops_field'+str(i), lWords[i], _sMetricPrefix=lWords[0])
+                        self.__storeField(GUSTAT_PREFIX_SYS_MNTS, sDevice, dField, _iLevel)
+        oFile.close()
 
 
-    def parseStat_sys_net( self, _iLevel, _sDevice, _bDevicePrefix ):
+    def parseStat_sys_net(self, _iLevel, _sDevice, _bDevicePrefix):
         global GUSTAT_PREFIX_SYS_NET
         global GUSTAT_FIELDS_SYS_NET
 
-        __sFile = '/proc/net/dev'
+        sFile = '/proc/net/dev'
         try:
-            __oFile = open( __sFile, 'r' )
+            oFile = open(sFile, 'r')
         except:
-            sys.stderr.write( 'ERROR: Missing/unreadable file; %s\n' % __sFile )
+            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
-        __sDevice = None
-        __iLine = 0
-        for __sLine in __oFile:
-            __iLine += 1
-            if __iLine < 3:
+        sDevice = None
+        iLine = 0
+        for sLine in oFile:
+            iLine += 1
+            if iLine < 3:
                 continue
-            __lWords = self.__reMultiSpaces.sub( ' ', __sLine.lower().strip() ).split()
-            if len( __lWords ) < 17:
-                sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file; %s\n' % __sFile )
+            lWords = self.__reMultiSpaces.sub(' ', sLine.lower().strip()).split()
+            if len(lWords) < 17:
+                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                 break
-            __lWords[0] = __lWords[0].strip( ':' )
+            lWords[0] = lWords[0].strip(':')
             if _sDevice is None \
-                or ( _bDevicePrefix and __lWords[0].startswith( _sDevice ) ) \
-                or __lWords[0] == _sDevice:
-                __sDevice = __lWords[0]
+                or (_bDevicePrefix and lWords[0].startswith(_sDevice)) \
+                or lWords[0] == _sDevice:
+                sDevice = lWords[0]
             else:
-                __sDevice = None
-            if __sDevice is None:
+                sDevice = None
+            if sDevice is None:
                 continue
-            for __i in range( 1, 17 ):
-                __dField = self.__makeField( GUSTAT_FIELDS_SYS_NET, 'field'+str(__i), __lWords[__i] )
-                self.__storeField( GUSTAT_PREFIX_SYS_NET, __sDevice, __dField, _iLevel )
-        __oFile.close()
+            for i in range(1, 17):
+                dField = self.__makeField(GUSTAT_FIELDS_SYS_NET, 'field'+str(i), lWords[i])
+                self.__storeField(GUSTAT_PREFIX_SYS_NET, sDevice, dField, _iLevel)
+        oFile.close()
 
 
-    def parseStat_proc_status( self, _iLevel, _iPid ):
+    def parseStat_proc_status(self, _iLevel, _iPid):
         global GUSTAT_PREFIX_PROC_STATUS
         global GUSTAT_FIELDS_PROC_STATUS
 
-        __sPid = str( _iPid )
-        __sFile = '/proc/'+__sPid+'/status'
+        sPid = str(_iPid)
+        sFile = '/proc/'+sPid+'/status'
         try:
-            __oFile = open( __sFile, 'r' )
+            oFile = open(sFile, 'r')
         except:
-            sys.stderr.write( 'ERROR: Missing/unreadable %s\n' % __sFile )
+            sys.stderr.write('ERROR: Missing/unreadable %s\n' % sFile)
             return
-        for __sLine in __oFile:
-            __lWords = map( lambda _s:_s.strip(), __sLine.lower().split( ':' ) )
-            if len( __lWords ) < 2:
-                sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file; %s\n' % __sFile )
+        for sLine in oFile:
+            lWords = map(lambda _s:_s.strip(), sLine.lower().split(':'))
+            if len(lWords) < 2:
+                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                 break
-            if __lWords[1].endswith( 'gb' ):
-                __dField = self.__makeField( GUSTAT_FIELDS_PROC_STATUS, __lWords[0], __lWords[1][0:-2], _fCoefficient=1073741824.0 )
-            elif __lWords[1].endswith( ' mb' ):
-                __dField = self.__makeField( GUSTAT_FIELDS_PROC_STATUS, __lWords[0], __lWords[1][0:-2], _fCoefficient=1048576.0 )
-            elif __lWords[1].endswith( ' kb' ):
-                __dField = self.__makeField( GUSTAT_FIELDS_PROC_STATUS, __lWords[0], __lWords[1][0:-2], _fCoefficient=1024.0 )
+            if lWords[1].endswith('gb'):
+                dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1073741824.0)
+            elif lWords[1].endswith(' mb'):
+                dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1048576.0)
+            elif lWords[1].endswith(' kb'):
+                dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1024.0)
             else:
-                __dField = self.__makeField( GUSTAT_FIELDS_PROC_STATUS, __lWords[0], __lWords[1] )
-            self.__storeField( GUSTAT_PREFIX_PROC_STATUS, __sPid, __dField, _iLevel )
-        __oFile.close()
+                dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1])
+            self.__storeField(GUSTAT_PREFIX_PROC_STATUS, sPid, dField, _iLevel)
+        oFile.close()
 
 
-    def parseStat_proc_stat( self, _iLevel, _iPid ):
+    def parseStat_proc_stat(self, _iLevel, _iPid):
         global GUSTAT_PREFIX_PROC_STAT
         global GUSTAT_FIELDS_PROC_STAT
 
-        __sPid = str( _iPid )
-        __sFile = '/proc/'+__sPid+'/stat'
+        sPid = str(_iPid)
+        sFile = '/proc/'+sPid+'/stat'
         try:
-            __oFile = open( __sFile, 'r' )
+            oFile = open(sFile, 'r')
         except:
-            sys.stderr.write( 'ERROR: Missing/unreadable file; %s\n' % __sFile )
+            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
-        __lWords = __oFile.readline().split()
-        if len( __lWords ) >= 44:
-            for __i in [ 9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 42, 43 ]:
-                __dField = self.__makeField( GUSTAT_FIELDS_PROC_STAT, 'field'+str(__i), __lWords[__i] )
-                self.__storeField( GUSTAT_PREFIX_PROC_STAT, __sPid, __dField, _iLevel )
+        lWords = oFile.readline().split()
+        if len(lWords) >= 44:
+            for i in [9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 42, 43]:
+                dField = self.__makeField(GUSTAT_FIELDS_PROC_STAT, 'field'+str(i), lWords[i])
+                self.__storeField(GUSTAT_PREFIX_PROC_STAT, sPid, dField, _iLevel)
         else:
-            sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file; %s\n' % __sFile )
-        __oFile.close()
+            sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
+        oFile.close()
 
 
-    def parseStat_proc_io( self, _iLevel, _iPid ):
+    def parseStat_proc_io(self, _iLevel, _iPid):
         global GUSTAT_PREFIX_PROC_IO
         global GUSTAT_FIELDS_PROC_IO
 
-        __sPid = str( _iPid )
-        __sFile = '/proc/'+__sPid+'/io'
+        sPid = str(_iPid)
+        sFile = '/proc/'+sPid+'/io'
         try:
-            __oFile = open( __sFile, 'r' )
+            oFile = open(sFile, 'r')
         except:
-            sys.stderr.write( 'ERROR: Missing/unreadable file; %s\n' % __sFile )
+            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
-        for __sLine in __oFile:
-            __lWords = map( lambda _s:_s.strip(), __sLine.lower().split( ':' ) )
-            if len( __lWords ) < 2:
+        for sLine in oFile:
+            lWords = map(lambda _s:_s.strip(), sLine.lower().split(':'))
+            if len(lWords) < 2:
                 continue
-            __dField = self.__makeField( GUSTAT_FIELDS_PROC_IO, __lWords[0], __lWords[1] )
-            self.__storeField( GUSTAT_PREFIX_PROC_IO, __sPid, __dField, _iLevel )
-        __oFile.close()
+            dField = self.__makeField(GUSTAT_FIELDS_PROC_IO, lWords[0], lWords[1])
+            self.__storeField(GUSTAT_PREFIX_PROC_IO, sPid, dField, _iLevel)
+        oFile.close()
 
 
-    def parseStat_virt_blks( self, _iLevel, _sGuest, _sDevice, _bDevicePrefix ):
+    def parseStat_virt_blks(self, _iLevel, _sGuest, _sDevice, _bDevicePrefix):
         global GUSTAT_PREFIX_VIRT_BLKS
         global GUSTAT_FIELDS_VIRT_BLKS
 
-        __lCommandArgs = [ 'virsh', '--quiet', 'qemu-monitor-command', '--hmp', _sGuest, 'info', 'blockstats' ]
+        lCommandArgs = ['virsh', '--quiet', 'qemu-monitor-command', '--hmp', _sGuest, 'info', 'blockstats']
         try:
-            __sOutput = SP.check_output( __lCommandArgs )
+            sOutput = SP.check_output(lCommandArgs)
         except:
-            sys.stderr.write( 'ERROR: Command failed; %s\n' % ' '.join( __lCommandArgs ) )
+            sys.stderr.write('ERROR: Command failed; %s\n' % ' '.join(lCommandArgs))
             return
-        __sDevice = None
-        for __sLine in __sOutput.splitlines():
-            __lWords = __sLine.lower().split( ' ' )
-            if len( __lWords ) < 2:
+        sDevice = None
+        for sLine in sOutput.splitlines():
+            lWords = sLine.lower().split(' ')
+            if len(lWords) < 2:
                 continue
-            if len( __lWords ) < 9:
-                sys.stderr.write( 'ERROR: Badly/unexpectedly formatted file; %s\n' % __sFile )
+            if len(lWords) < 9:
+                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                 break
-            __lWords[0] = __lWords[0].strip( ':' )
+            lWords[0] = lWords[0].strip(':')
             if _sDevice is None \
-                or ( _bDevicePrefix and __lWords[0].startswith( _sDevice ) ) \
-                or __lWords[0] == _sDevice:
-                __sDevice = __lWords[0]
+                or (_bDevicePrefix and lWords[0].startswith(_sDevice)) \
+                or lWords[0] == _sDevice:
+                sDevice = lWords[0]
             else:
-                __sDevice = None
-            if __sDevice is None:
+                sDevice = None
+            if sDevice is None:
                 continue
-            for __i in range( 1, 9 ):
-                ( __sMetric, __sValue ) = __lWords[__i].split( '=', 1 )
-                __dField = self.__makeField( GUSTAT_FIELDS_VIRT_BLKS, __sMetric, __sValue )
-                self.__storeField( GUSTAT_PREFIX_VIRT_BLKS, _sGuest+':'+__sDevice, __dField, _iLevel )
+            for i in range(1, 9):
+                (sMetric, sValue) = lWords[i].split('=', 1)
+                dField = self.__makeField(GUSTAT_FIELDS_VIRT_BLKS, sMetric, sValue)
+                self.__storeField(GUSTAT_PREFIX_VIRT_BLKS, _sGuest+':'+sDevice, dField, _iLevel)
 
 
     #
     # Output
     #
 
-    def __str__( self ):
-        __str = ''
-        for __sKey in sorted( self.dStats.iterkeys() ):
-            __dField = self.dStats[__sKey]
-            __str += __sKey+'['+__dField['unit']+']='+str( __dField['value'] )+'\n'
-        return __str
+    def __str__(self):
+        sStr = ''
+        for sKey in sorted(self.dStats.iterkeys()):
+            dField = self.dStats[sKey]
+            sStr += sKey+'['+dField['unit']+']='+str(dField['value'])+'\n'
+        return sStr
 
 
-    def display( self, _sTimestamp, _sIntFormat, _sFloatFormat, _bZeroHide, _iJustify ):
-        for __sKey in sorted( self.dStats.iterkeys() ):
-            __dField = self.dStats[__sKey]
-            __mValue = __dField['value']
-            if _sIntFormat is not None and isinstance( __mValue, int ):
-                __sValue = _sIntFormat.format( __mValue )
-            elif _sFloatFormat is not None and isinstance( __mValue, float ):
-                __sValue = _sFloatFormat.format( __mValue )
+    def display(self, _sTimestamp, _sIntFormat, _sFloatFormat, _bZeroHide, _iJustify):
+        for sKey in sorted(self.dStats.iterkeys()):
+            dField = self.dStats[sKey]
+            mValue = dField['value']
+            if _sIntFormat is not None and isinstance(mValue, int):
+                sValue = _sIntFormat.format(mValue)
+            elif _sFloatFormat is not None and isinstance(mValue, float):
+                sValue = _sFloatFormat.format(mValue)
             else:
-                __sValue = str( __mValue )
+                sValue = str(mValue)
             if _bZeroHide:
-                __bNonZero = False
-                for __c in  __sValue:
-                    if __c not in '0-.,':
-                        __bNonZero = True
+                bNonZero = False
+                for c in  sValue:
+                    if c not in '0-.,':
+                        bNonZero = True
                         break
-                if not __bNonZero:
+                if not bNonZero:
                     continue
-            __sLabel = __sKey
+            sLabel = sKey
             if _iJustify > 0:
                 if _sTimestamp is not None:
-                    __sLabel = _sTimestamp+','+__sLabel+'['+__dField['unit']+']'
+                    sLabel = _sTimestamp+','+sLabel+'['+dField['unit']+']'
                 else:
-                    __sLabel += '['+__dField['unit']+']'
-                __iValuePosition = _iJustify - len( __sValue )
-                if len( __sLabel ) > __iValuePosition - 1:
-                    __sLabel = __sLabel[0:__iValuePosition-1]+'~'
+                    sLabel += '['+dField['unit']+']'
+                iValuePosition = _iJustify - len(sValue)
+                if len(sLabel) > iValuePosition - 1:
+                    sLabel = sLabel[0:iValuePosition-1]+'~'
                 else:
-                    __sLabel = ( __sLabel+':' ).ljust( __iValuePosition-1, '.' )+' '
+                    sLabel = (sLabel+':').ljust(iValuePosition-1, '.')+' '
             else:
                 if _sTimestamp is not None:
-                    __sLabel = _sTimestamp+','+__sLabel+','+__dField['unit']+','
+                    sLabel = _sTimestamp+','+sLabel+','+dField['unit']+','
                 else:
-                    __sLabel = ','+__sLabel+','+__dField['unit']+','
-            sys.stdout.write( '%s%s\n' % ( __sLabel, __sValue ) )
+                    sLabel = ','+sLabel+','+dField['unit']+','
+            sys.stdout.write('%s%s\n' % (sLabel, sValue))
 
