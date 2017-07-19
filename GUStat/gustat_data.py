@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- mode:python; tab-width:4; c-basic-offset:4; intent-tabs-mode:nil; -*-
 # ex: filetype=python tabstop=4 softtabstop=4 shiftwidth=4 expandtab autoindent smartindent
 
@@ -514,7 +513,7 @@ class GUStatData:
         iQuantity = int(0)
         sId = None
         for sLine in oFile:
-            lWords = map(lambda _s:_s.strip(), sLine.lower().split(':'))
+            lWords = [_s.strip() for _s in sLine.lower().split(':')]
             if len(lWords) < 2:
                 continue
             if lWords[0] == 'processor':
@@ -605,7 +604,7 @@ class GUStatData:
             sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
         for sLine in oFile:
-            lWords = map(lambda _s:_s.strip(), sLine.lower().split(':'))
+            lWords = [_s.strip() for _s in sLine.lower().split(':')]
             if len(lWords) < 2:
                 sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                 break
@@ -775,7 +774,7 @@ class GUStatData:
             sys.stderr.write('ERROR: Missing/unreadable %s\n' % sFile)
             return
         for sLine in oFile:
-            lWords = map(lambda _s:_s.strip(), sLine.lower().split(':'))
+            lWords = [_s.strip() for _s in sLine.lower().split(':')]
             if len(lWords) < 2:
                 sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                 break
@@ -824,7 +823,7 @@ class GUStatData:
             sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
         for sLine in oFile:
-            lWords = map(lambda _s:_s.strip(), sLine.lower().split(':'))
+            lWords = [_s.strip() for _s in sLine.lower().split(':')]
             if len(lWords) < 2:
                 continue
             dField = self.__makeField(GUSTAT_FIELDS_PROC_IO, lWords[0], lWords[1])
@@ -838,12 +837,12 @@ class GUStatData:
 
         lCommandArgs = ['virsh', '--quiet', 'qemu-monitor-command', '--hmp', _sGuest, 'info', 'blockstats']
         try:
-            sOutput = SP.check_output(lCommandArgs)
+            bOutput = SP.check_output(lCommandArgs)
         except:
             sys.stderr.write('ERROR: Command failed; %s\n' % ' '.join(lCommandArgs))
             return
         sDevice = None
-        for sLine in sOutput.splitlines():
+        for sLine in bOutput.decode(sys.getfilesystemencoding()).splitlines():
             lWords = sLine.lower().split(' ')
             if len(lWords) < 2:
                 continue
@@ -871,14 +870,14 @@ class GUStatData:
 
     def __str__(self):
         sStr = ''
-        for sKey in sorted(self.dStats.iterkeys()):
+        for sKey in sorted(self.dStats.keys()):
             dField = self.dStats[sKey]
             sStr += sKey+'['+dField['unit']+']='+str(dField['value'])+'\n'
         return sStr
 
 
     def display(self, _sTimestamp, _sIntFormat, _sFloatFormat, _bZeroHide, _iJustify):
-        for sKey in sorted(self.dStats.iterkeys()):
+        for sKey in sorted(self.dStats.keys()):
             dField = self.dStats[sKey]
             mValue = dField['value']
             if _sIntFormat is not None and isinstance(mValue, int):

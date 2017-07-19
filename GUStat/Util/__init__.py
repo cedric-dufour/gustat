@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- mode:python; tab-width:4; c-basic-offset:4; intent-tabs-mode:nil; -*-
 # ex: filetype=python tabstop=4 softtabstop=4 shiftwidth=4 expandtab autoindent smartindent
 
@@ -19,5 +18,5 @@
 #
 
 # Dependencies
-from gustat_exec import GUStatMain
+from .gustat_exec import GUStatMain
 

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- mode:python; tab-width:4; c-basic-offset:4; intent-tabs-mode:nil; -*-
 # ex: filetype=python tabstop=4 softtabstop=4 shiftwidth=4 expandtab autoindent smartindent
 
@@ -473,7 +472,7 @@ class GUStatMain:
         if self.__oArguments.process is not None:
             lPids = self.__oArguments.process.strip(',').split(',')
             try:
-                map(int, lPids)
+                list(map(int, lPids))
             except:
                 sys.stderr.write('ERROR: Invalid process PIDs; %s\n' % self.__oArguments.process)
                 return 1
@@ -587,8 +586,8 @@ class GUStatMain:
                     oGUStatData_2.parseStat_virt_blks(iLevel_virt_blks, sGuest, sDevice_virt_blks, bPrefix_virt_blks)
 
             # ... compute differences
-            for sKey in oGUStatData_1.dStats.iterkeys():
-                if sKey not in oGUStatData_2.dStats.iterkeys():
+            for sKey in oGUStatData_1.dStats.keys():
+                if sKey not in iter(oGUStatData_2.dStats.keys()):
                     continue
                 oGUStatData_D.dStats[sKey] = \
                     copy.deepcopy(oGUStatData_2.dStats[sKey])
