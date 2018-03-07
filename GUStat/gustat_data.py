@@ -32,7 +32,9 @@ import sys
 GUSTAT_PREFIX_SYS_CPU = 'sys_cpu'
 GUSTAT_FIELDS_SYS_CPU = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
-    'count': [ 'cpu', 'count', 'cpus', None, 'int', False, False, 0 ],
+    'count_logical': [ 'cpu', 'logical', 'count', None, 'int', False, False, 0 ],
+    'count_cores': [ 'cpu', 'cores', 'count', None, 'int', False, False, 0 ],
+    'count_physical': [ 'cpu', 'physical', 'count', None, 'int', False, False, 0 ],
     'cpu mhz': [ 'cpu', 'clock', 'herz', 1000000.0, 'int', False, False, 1 ],
     'model name': [ 'cpu', 'clock_design', 'herz', 1.0, 'int', False, False, 2 ],
 }
@@ -513,19 +515,25 @@ class GUStatData:
         except:
             sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
-        iQuantity = int(0)
+        iQuantity_logical = int(0)
+        iQuantity_cores = int(0)
+        iQuantity_physical = int(0)
         sId = None
         for sLine in oFile:
             lWords = [_s.strip() for _s in sLine.lower().split(':')]
             if len(lWords) < 2:
                 continue
             if lWords[0] == 'processor':
-                iQuantity += 1
+                iQuantity_logical = int(lWords[1])
                 sId = 'cpu'+lWords[1]
             else:
                 if sId is None:
                     continue
-                if lWords[0] == 'model name':
+                if lWords[0] == 'core id':
+                    iQuantity_cores = int(lWords[1])
+                elif lWords[0] == 'physical id':
+                    iQuantity_physical = int(lWords[1])
+                elif lWords[0] == 'model name':
                     try:
                         lWords[1] = lWords[1].rsplit('@', 1)[1].strip().lower()
                         if lWords[1][-3:] == 'ghz':
@@ -540,9 +548,13 @@ class GUStatData:
                         continue
                 dField = self.__makeField(GUSTAT_FIELDS_SYS_CPU, lWords[0], lWords[1])
                 self.__storeField(GUSTAT_PREFIX_SYS_CPU, sId, dField, _iLevel)
-        self.__iCpuCount = iQuantity
-        dField = self.__makeField(GUSTAT_FIELDS_SYS_CPU, 'count', self.__iCpuCount)
+        dField = self.__makeField(GUSTAT_FIELDS_SYS_CPU, 'count_logical', iQuantity_logical+1)
         self.__storeField(GUSTAT_PREFIX_SYS_CPU, 'cpu', dField, _iLevel)
+        dField = self.__makeField(GUSTAT_FIELDS_SYS_CPU, 'count_cores', iQuantity_cores+1)
+        self.__storeField(GUSTAT_PREFIX_SYS_CPU, 'cpu', dField, _iLevel)
+        dField = self.__makeField(GUSTAT_FIELDS_SYS_CPU, 'count_physical', iQuantity_physical+1)
+        self.__storeField(GUSTAT_PREFIX_SYS_CPU, 'cpu', dField, _iLevel)
+        self.__iCpuCount = iQuantity_logical+1
         oFile.close()
 
 
