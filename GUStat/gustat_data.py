@@ -59,10 +59,10 @@ GUSTAT_FIELDS_SYS_STAT = {
     'cpu_field8': [ 'cpu', 'steal', 'ticks', None, 'float', True, True, 2 ],
     'cpu_field9': [ 'cpu', 'guest', 'ticks', None, 'float', True, True, 2 ],
     'cpu_field10': [ 'cpu', 'guest_nice', 'ticks', None, 'float', True, True, 2 ],
-    'ctxt': [ 'sched', 'ctxt_switches', 'switches', None, 'int', True, True, 0 ],
-    'processes': [ 'proc', 'procs_created', 'procs', None, 'int', True, True, 0 ],
-    'procs_running': [ 'proc', 'procs_running', 'procs', None, 'int', True, True, 0 ],
-    'procs_blocked': [ 'proc', 'procs_blocked', 'procs', None, 'int', True, True, 0 ],
+    'ctxt': [ 'sched', 'ctxt_switches', 'count', None, 'int', True, True, 0 ],
+    'processes': [ 'proc', 'procs_created', 'count', None, 'int', True, True, 0 ],
+    'procs_running': [ 'proc', 'procs_running', 'count', None, 'int', True, True, 0 ],
+    'procs_blocked': [ 'proc', 'procs_blocked', 'count', None, 'int', True, True, 0 ],
 }
 
 # /proc/meminfo fields
@@ -236,17 +236,17 @@ GUSTAT_FIELDS_SYS_VM = {
 GUSTAT_PREFIX_SYS_DSKS = 'sys_dsks'
 GUSTAT_FIELDS_SYS_DSKS = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
-    'field3': [ 'io', 'reads_completed', 'ops', None, 'int', True, True, 0 ],
-    'field4': [ 'io', 'reads_merged', 'ops', None, 'int', True, True, 0 ],
-    'field5': [ 'io', 'reads_sectors', 'scts', None, 'int', True, True, 0 ],
-    'field6': [ 'io', 'reads_elapsed', 's', 0.001, 'float', True, False, 0 ],
-    'field7': [ 'io', 'writes_completed', 'ops', None, 'int', True, True, 0 ],
-    'field8': [ 'io', 'writes_merged', 'ops', None, 'int', True, True, 0 ],
-    'field9': [ 'io', 'writes_sectors', 'scts', None, 'int', True, True, 0 ],
-    'field10': [ 'io', 'writes_elapsed', 's', 0.001, 'float', True, False, 0 ],
-    'field11': [ 'io', 'ops_ongoing', 'ops', None, 'int', False, False, 0 ],
-    'field12': [ 'io', 'ops_elapsed', 's', 0.001, 'float', True, False, 0 ],
-    'field13': [ 'io', 'ops_elapsed_weighted', 's', 0.001, 'float', True, False, 1 ],
+    'field3': [ 'io', 'reads_completed', 'count', None, 'int', True, True, 0 ],
+    'field4': [ 'io', 'reads_merged', 'count', None, 'int', True, True, 0 ],
+    'field5': [ 'io', 'reads_sectors', 'count', None, 'int', True, True, 0 ],
+    'field6': [ 'io', 'reads_elapsed', 'seconds', 0.001, 'float', True, False, 0 ],
+    'field7': [ 'io', 'writes_completed', 'count', None, 'int', True, True, 0 ],
+    'field8': [ 'io', 'writes_merged', 'count', None, 'int', True, True, 0 ],
+    'field9': [ 'io', 'writes_sectors', 'count', None, 'int', True, True, 0 ],
+    'field10': [ 'io', 'writes_elapsed', 'seconds', 0.001, 'float', True, False, 0 ],
+    'field11': [ 'io', 'ops_ongoing', 'count', None, 'int', False, False, 0 ],
+    'field12': [ 'io', 'ops_elapsed', 'seconds', 0.001, 'float', True, False, 0 ],
+    'field13': [ 'io', 'ops_elapsed_weighted', 'seconds', 0.001, 'float', True, False, 1 ],
 }
 
 # /proc/mountstats fields
@@ -288,14 +288,14 @@ GUSTAT_FIELDS_SYS_MNTS = {
     'nfs_bytes_field6': [ 'io(nfs_bytes)', 'writes_nfs', 'bytes', None, 'int', True, True, 0 ],
     'nfs_bytes_field7': [ 'io(nfs_bytes)', 'reads_mmap', 'pages', None, 'int', True, True, 1 ],
     'nfs_bytes_field8': [ 'io(nfs_bytes)', 'writes_mmap', 'pages', None, 'int', True, True, 1 ],
-    'nfs_ops_field1': [ 'io(nfs_ops)', 'requested', 'ops', None, 'int', True, True, 1 ],
-    'nfs_ops_field2': [ 'io(nfs_ops)', 'transmitted', 'ops', None, 'int', True, True, 1 ],
-    'nfs_ops_field3': [ 'io(nfs_ops)', 'timedout', 'ops', None, 'int', True, True, 2 ],
+    'nfs_ops_field1': [ 'io(nfs_ops)', 'requested', 'count', None, 'int', True, True, 1 ],
+    'nfs_ops_field2': [ 'io(nfs_ops)', 'transmitted', 'count', None, 'int', True, True, 1 ],
+    'nfs_ops_field3': [ 'io(nfs_ops)', 'timedout', 'count', None, 'int', True, True, 2 ],
     'nfs_ops_field4': [ 'io(nfs_ops)', 'data_sent', 'bytes', None, 'int', True, True, 1 ],
     'nfs_ops_field5': [ 'io(nfs_ops)', 'data_received', 'bytes', None, 'int', True, True, 1 ],
-    'nfs_ops_field6': [ 'io(nfs_ops)', 'elapsed_queue_wait', 's', 0.001, 'float', True, False, 2 ],
-    'nfs_ops_field7': [ 'io(nfs_ops)', 'elapsed_response_wait', 's', 0.001, 'float', True, False, 2 ],
-    'nfs_ops_field8': [ 'io(nfs_ops)', 'elapsed_total', 's', 0.001, 'float', True, False, 1 ],
+    'nfs_ops_field6': [ 'io(nfs_ops)', 'elapsed_queue_wait', 'seconds', 0.001, 'float', True, False, 2 ],
+    'nfs_ops_field7': [ 'io(nfs_ops)', 'elapsed_response_wait', 'seconds', 0.001, 'float', True, False, 2 ],
+    'nfs_ops_field8': [ 'io(nfs_ops)', 'elapsed_total', 'seconds', 0.001, 'float', True, False, 1 ],
 }
 GUSTAT_FIELDS_SYS_MNTS_NFS_OPS = {
     'null',
@@ -327,21 +327,21 @@ GUSTAT_PREFIX_SYS_NET = 'sys_net'
 GUSTAT_FIELDS_SYS_NET = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'field1': [ 'net', 'rx_bytes', 'bytes', None, 'int', True, True, 0 ],
-    'field2': [ 'net', 'rx_packets', 'pkts', None, 'int', True, True, 0 ],
+    'field2': [ 'net', 'rx_packets', 'packets', None, 'int', True, True, 0 ],
     'field3': [ 'net', 'rx_errors_device', 'count', None, 'int', True, True, 2 ],
-    'field4': [ 'net', 'rx_dropped', 'pkts', None, 'int', True, True, 0 ],
+    'field4': [ 'net', 'rx_dropped', 'packets', None, 'int', True, True, 0 ],
     'field5': [ 'net', 'rx_errors_fifo', 'count', None, 'int', True, True, 2 ],
     'field6': [ 'net', 'rx_errors_framing', 'count', None, 'int', True, True, 2 ],
-    'field7': [ 'net', 'rx_compressed', 'pkts', None, 'int', True, True, 1 ],
+    'field7': [ 'net', 'rx_compressed', 'packets', None, 'int', True, True, 1 ],
     'field8': [ 'net', 'rx_multicasts', 'frames', None, 'int', True, True, 0 ],
     'field9': [ 'net', 'tx_bytes', 'bytes', None, 'int', True, True, 0 ],
-    'field10': [ 'net', 'tx_packets', 'pkts', None, 'int', True, True, 0 ],
+    'field10': [ 'net', 'tx_packets', 'packets', None, 'int', True, True, 0 ],
     'field11': [ 'net', 'tx_errors_device', 'count', None, 'int', True, True, 2 ],
-    'field12': [ 'net', 'tx_dropped', 'pkts', None, 'int', True, True, 0 ],
+    'field12': [ 'net', 'tx_dropped', 'packets', None, 'int', True, True, 0 ],
     'field13': [ 'net', 'tx_errors_fifo', 'count', None, 'int', True, True, 2 ],
     'field14': [ 'net', 'tx_errors_collisions', 'count', None, 'int', True, True, 2 ],
     'field15': [ 'net', 'tx_errors_carrier', 'count', None, 'int', True, True, 2 ],
-    'field16': [ 'net', 'tx_compressed', 'pkts', None, 'int', True, True, 1 ],
+    'field16': [ 'net', 'tx_compressed', 'packets', None, 'int', True, True, 1 ],
 }
 
 # /proc/<pid>/status fields
@@ -360,9 +360,9 @@ GUSTAT_FIELDS_PROC_STATUS = {
     'vmlib': [ 'mem', 'libraries', 'bytes', None, 'int', True, True, 1 ],
     'vmpte': [ 'mem', 'page_tables', 'bytes', None, 'int', True, True, 1 ],
     'vmswap': [ 'mem', 'swapped', 'bytes', None, 'int', True, True, 0 ],
-    'threads': [ 'proc', 'threads', 'thrds', None, 'int', True, True, 0 ],
-    'voluntary_ctxt_switches': [ 'sched', 'ctxt_vol_switches', 'switches', None, 'int', True, True, 0 ],
-    'nonvoluntary_ctxt_switches': [ 'sched', 'ctxt_nonvol_switches', 'switches', None, 'int', True, True, 0 ],
+    'threads': [ 'proc', 'threads', 'count', None, 'int', True, True, 0 ],
+    'voluntary_ctxt_switches': [ 'sched', 'ctxt_vol_switches', 'count', None, 'int', True, True, 0 ],
+    'nonvoluntary_ctxt_switches': [ 'sched', 'ctxt_nonvol_switches', 'count', None, 'int', True, True, 0 ],
 }
 
 # /proc/<pid>/stat fields
@@ -377,7 +377,7 @@ GUSTAT_FIELDS_PROC_STAT = {
     'field14': [ 'cpu', 'stime', 'ticks', None, 'int', True, True, 0 ],
     'field15': [ 'cpu', 'utime_children', 'ticks', None, 'int', True, True, 1 ],
     'field16': [ 'cpu', 'stime_children', 'ticks', None, 'int', True, True, 1 ],
-    'field19': [ 'proc', 'threads', 'thrds', None, 'int', True, True, 0 ],
+    'field19': [ 'proc', 'threads', 'count', None, 'int', True, True, 0 ],
     'field22': [ 'mem', 'vsize', 'bytes', None, 'int', True, True, 0 ],
     'field23': [ 'mem', 'rss', 'bytes', None, 'int', True, True, 0 ],
     'field42': [ 'cpu', 'gtime', 'ticks', None, 'int', True, True, 2 ],
@@ -390,8 +390,8 @@ GUSTAT_FIELDS_PROC_IO = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'rchar': [ 'io', 'reads_chars', 'chars', None, 'int', True, True, 0 ],
     'wchar': [ 'io', 'writes_chars', 'chars', None, 'int', True, True, 0 ],
-    'syscr': [ 'io', 'reads_syscalls', 'ops', None, 'int', True, True, 0 ],
-    'syscw': [ 'io', 'writes_syscalls', 'ops', None, 'int', True, True, 0 ],
+    'syscr': [ 'io', 'reads_syscalls', 'count', None, 'int', True, True, 0 ],
+    'syscw': [ 'io', 'writes_syscalls', 'count', None, 'int', True, True, 0 ],
     'read_bytes': [ 'io', 'reads_bytes', 'bytes', None, 'int', True, True, 0 ],
     'write_bytes': [ 'io', 'writes_bytes', 'bytes', None, 'int', True, True, 0 ],
     'cancelled_write_bytes': [ 'io', 'writes_bytes_cancelled', 'bytes', None, 'int', True, True, 1 ],
@@ -403,12 +403,12 @@ GUSTAT_FIELDS_VIRT_BLKS = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'rd_bytes': [ 'io', 'reads_bytes', 'bytes', None, 'int', True, True, 0 ],
     'wr_bytes': [ 'io', 'writes_bytes', 'bytes', None, 'int', True, True, 0 ],
-    'rd_operations': [ 'io', 'reads_ops', 'ops', None, 'int', True, True, 0 ],
-    'wr_operations': [ 'io', 'writes_ops', 'ops', None, 'int', True, True, 0 ],
-    'flush_operations': [ 'io', 'flushes_ops', 'ops', None, 'int', True, True, 1 ],
-    'rd_total_time_ns': [ 'io', 'reads_elapsed', 's', 0.000000001, 'float', True, False, 0 ],
-    'wr_total_time_ns': [ 'io', 'writes_elapsed', 's', 0.000000001, 'float', True, False, 0 ],
-    'flush_total_time_ns': [ 'io', 'flushes_elapsed', 's', 0.000000001, 'float', True, False, 1 ],
+    'rd_operations': [ 'io', 'reads_ops', 'count', None, 'int', True, True, 0 ],
+    'wr_operations': [ 'io', 'writes_ops', 'count', None, 'int', True, True, 0 ],
+    'flush_operations': [ 'io', 'flushes_ops', 'count', None, 'int', True, True, 1 ],
+    'rd_total_time_ns': [ 'io', 'reads_elapsed', 'seconds', 0.000000001, 'float', True, False, 0 ],
+    'wr_total_time_ns': [ 'io', 'writes_elapsed', 'seconds', 0.000000001, 'float', True, False, 0 ],
+    'flush_total_time_ns': [ 'io', 'flushes_elapsed', 'seconds', 0.000000001, 'float', True, False, 1 ],
 }
 
 
