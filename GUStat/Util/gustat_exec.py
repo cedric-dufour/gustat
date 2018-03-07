@@ -122,6 +122,11 @@ class GUStatMain:
             '-Sc', '--sys_cpu', action='store_true',
             default=False,
             help='System CPU information (/proc/cpuinfo)')
+        self.__oArgumentParser.add_argument(
+            '-Scl', '--sys_cpu_lvl', type=int,
+            metavar='<level>',
+            default=0,
+            help='System CPU information: level (0=standard, 1=advanced, 2=expert)')
 
         # ... system stats: load average
         self.__oArgumentParser.add_argument(
@@ -444,7 +449,7 @@ class GUStatMain:
         bStats_sys_all = self.__oArguments.sys_all
         iStats_sys_all_lvl = self.__oArguments.sys_all_lvl
         bStats_sys_cpu = bStats_sys_all or self.__oArguments.sys_cpu
-        iLevel_sys_cpu = iStats_sys_all_lvl
+        iLevel_sys_cpu = max(iStats_sys_all_lvl, self.__oArguments.sys_cpu_lvl)
         bStats_sys_load = bStats_sys_all or self.__oArguments.sys_load
         iLevel_sys_load = iStats_sys_all_lvl
         bStats_sys_stat = bStats_sys_all or self.__oArguments.sys_stat

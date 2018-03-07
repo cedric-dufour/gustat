@@ -32,8 +32,9 @@ import sys
 GUSTAT_PREFIX_SYS_CPU = 'sys_cpu'
 GUSTAT_FIELDS_SYS_CPU = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
-    'cpu mhz': [ 'cpu', 'clock', 'herz', 1000000.0, 'int', False, False, 0 ],
     'count': [ 'cpu', 'count', 'cpus', None, 'int', False, False, 0 ],
+    'cpu mhz': [ 'cpu', 'clock', 'herz', 1000000.0, 'int', False, False, 1 ],
+    'model name': [ 'cpu', 'clock_design', 'herz', 1.0, 'int', False, False, 2 ],
 }
 
 # /proc/loadavg fields
@@ -522,6 +523,19 @@ class GUStatData:
             else:
                 if sId is None:
                     continue
+                if lWords[0] == 'model name':
+                    try:
+                        lWords[1] = lWords[1].rsplit('@', 1)[1].strip().lower()
+                        if lWords[1][-3:] == 'ghz':
+                            lWords[1] = int(1000000000.0*float(lWords[1][:-3]))
+                        elif lWords[1][-3:] == 'mhz':
+                            lWords[1] = int(1000000.0*float(lWords[1][:-3]))
+                        elif lWords[1][-3:] == 'khz':
+                            lWords[1] = int(1000.0*float(lWords[1][:-3]))
+                        elif lWords[1][-2:] == 'hz':
+                            lWords[1] = int(lWords[1][:-2])
+                    except:
+                        continue
                 dField = self.__makeField(GUSTAT_FIELDS_SYS_CPU, lWords[0], lWords[1])
                 self.__storeField(GUSTAT_PREFIX_SYS_CPU, sId, dField, _iLevel)
         self.__iCpuCount = iQuantity
