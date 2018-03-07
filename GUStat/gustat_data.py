@@ -61,6 +61,8 @@ GUSTAT_FIELDS_SYS_STAT = {
     'cpu_field9': [ 'cpu', 'guest', 'ticks', None, 'float', True, True, 2 ],
     'cpu_field10': [ 'cpu', 'guest_nice', 'ticks', None, 'float', True, True, 2 ],
     'ctxt': [ 'sched', 'ctxt_switches', 'count', None, 'int', True, True, 0 ],
+    'intr': [ 'sched', 'irq', 'count', None, 'int', True, True, 1 ],
+    'softirq': [ 'sched', 'softirq', 'count', None, 'int', True, True, 1 ],
     'processes': [ 'proc', 'procs_created', 'count', None, 'int', True, True, 0 ],
     'procs_running': [ 'proc', 'procs_running', 'count', None, 'int', True, True, 0 ],
     'procs_blocked': [ 'proc', 'procs_blocked', 'count', None, 'int', True, True, 0 ],
