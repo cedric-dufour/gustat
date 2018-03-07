@@ -587,16 +587,15 @@ class GUStatData:
                     sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                     break
                 sCpu = lWords[0]
-                if sCpu == 'cpu':
-                    if _bCpuDetail:
-                        continue
-                else:
-                    if not _bCpuDetail:
+                if sCpu != 'cpu' and not _bCpuDetail:
                         continue
                 for i in range(1, 11):
-                    if sCpu == 'cpu' and self.__iCpuCount is not None:
-                        dField = self.__makeField(GUSTAT_FIELDS_SYS_STAT, 'cpu_field'+str(i), float(lWords[i]) / self.__iCpuCount)
-                        self.__storeField(GUSTAT_PREFIX_SYS_STAT, sCpu+'_n', dField, _iLevel)
+                    if sCpu == 'cpu':
+                        if self.__iCpuCount is not None:
+                            dField = self.__makeField(GUSTAT_FIELDS_SYS_STAT, 'cpu_field'+str(i), float(lWords[i]) / self.__iCpuCount)
+                            self.__storeField(GUSTAT_PREFIX_SYS_STAT, sCpu+'_normalized', dField, _iLevel)
+                        dField = self.__makeField(GUSTAT_FIELDS_SYS_STAT, 'cpu_field'+str(i), lWords[i])
+                        self.__storeField(GUSTAT_PREFIX_SYS_STAT, sCpu+'_total', dField, _iLevel)
                     else:
                         dField = self.__makeField(GUSTAT_FIELDS_SYS_STAT, 'cpu_field'+str(i), lWords[i])
                         self.__storeField(GUSTAT_PREFIX_SYS_STAT, sCpu, dField, _iLevel)
