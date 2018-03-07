@@ -381,6 +381,8 @@ GUSTAT_FIELDS_PROC_STATUS = {
 GUSTAT_PREFIX_PROC_STAT = 'proc_stat'
 GUSTAT_FIELDS_PROC_STAT = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
+    'field1': [ 'proc', 'command', 'name', None, 'str', False, False, 0 ],
+    'field2': [ 'proc', 'state', 'name', None, 'str', False, False, 1 ],
     'field9': [ 'mem', 'minflt', 'count', None, 'int', True, True, 0 ],
     'field10': [ 'mem', 'minflt_children', 'count', None, 'int', True, True, 1 ],
     'field11': [ 'mem', 'majflt', 'count', None, 'int', True, True, 0 ],
@@ -467,19 +469,21 @@ class GUStatData:
 
         if _sKey not in _dStatFields:
             return None
-        try:
-            mValue = float(_sValue)
-        except:
-            mValue = 0.0
-        fCoefficient = _dStatFields[_sKey][3]
-        if _fCoefficient is not None:
-            mValue *= _fCoefficient
-        elif fCoefficient is not None:
-            mValue *= fCoefficient
         sType = _dStatFields[_sKey][4]
-        if sType == 'int':
-            mValue = int(mValue)
-        #elif sType == 'float': already a float
+        if sType == 'str':
+            mValue = str(_sValue)
+        else:
+            try:
+                mValue = float(_sValue)
+            except:
+                mValue = 0.0
+            fCoefficient = _dStatFields[_sKey][3]
+            if _fCoefficient is not None:
+                mValue *= _fCoefficient
+            elif fCoefficient is not None:
+                mValue *= fCoefficient
+            if sType == 'int':
+                mValue = int(mValue)
         sMetric = _dStatFields[_sKey][1];
         if _sMetricPrefix is not None:
             sMetric = _sMetricPrefix+'_'+sMetric
@@ -845,7 +849,9 @@ class GUStatData:
             return
         lWords = oFile.readline().split()
         if len(lWords) >= 44:
-            for i in [9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 42, 43]:
+            for i in [1, 2, 9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 42, 43]:
+                if i == 1:
+                    lWords[i] = lWords[i].strip('()')
                 dField = self.__makeField(GUSTAT_FIELDS_PROC_STAT, 'field'+str(i), lWords[i])
                 self.__storeField(GUSTAT_PREFIX_PROC_STAT, sPid, dField, _iLevel)
         else:
