@@ -76,6 +76,7 @@ GUSTAT_FIELDS_SYS_MEM = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'memtotal': [ 'mem', 'total', 'bytes', None, 'int', False, False, 0 ],
     'memfree': [ 'mem', 'free', 'bytes', None, 'int', True, True, 0 ],
+    'memavailable': [ 'mem', 'available', 'bytes', None, 'int', True, True, 0 ],
     'buffers': [ 'mem(io)', 'buffers', 'bytes', None, 'int', True, True, 0 ],
     'cached': [ 'mem(io)', 'cache', 'bytes', None, 'int', True, True, 0 ],
     'swapcached': [ 'mem', 'swap_cached', 'bytes', None, 'int', True, True, 1 ],
@@ -94,7 +95,7 @@ GUSTAT_FIELDS_SYS_MEM = {
     'anonpages': [ 'mem', 'pages_anon', 'bytes', None, 'int', True, True, 1 ],
     'mapped': [ 'mem', 'mapped', 'bytes', None, 'int', True, True, 0 ],
     'shmem': [ 'mem', 'shared', 'bytes', None, 'int', True, True, 0 ],
-    'slab': [ 'mem', 'slab', 'bytes', None, 'int', True, True, 1 ],
+    'slab': [ 'mem', 'slab', 'bytes', None, 'int', True, True, 0 ],
     'sreclaimable': [ 'mem', 'slab_reclaimable', 'bytes', None, 'int', True, True, 1 ],
     'sunreclaim': [ 'mem', 'slab_unreclaim', 'bytes', None, 'int', True, True, 1 ],
     'kernelstack': [ 'mem', 'kernel_stack', 'bytes', None, 'int', True, True, 1 ],
