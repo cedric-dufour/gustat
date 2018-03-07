@@ -242,7 +242,7 @@ class GUStatMain:
             '-P', '--process', type=str,
             metavar='<pid>[,<pid> ...]',
             default=None,
-            help='Process statistics: comma-separated list of process PIDs')
+            help='Process statistics: comma-separated list of process PIDs; \'*\' for all')
 
         # ... process stats: status
         self.__oArgumentParser.add_argument(
@@ -470,7 +470,11 @@ class GUStatMain:
         # ... processes statistics
         lPids = list()
         if self.__oArguments.process is not None:
-            lPids = self.__oArguments.process.strip(',').split(',')
+            if self.__oArguments.process == '*':
+                from glob import glob
+                lPids = sorted(list(map(lambda s: int(s.rsplit('/', 1)[1]), glob('/proc/[0-9]*'))))
+            else:
+                lPids = self.__oArguments.process.strip(',').split(',')
             try:
                 list(map(int, lPids))
             except:
