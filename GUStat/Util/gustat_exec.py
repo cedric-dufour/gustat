@@ -293,7 +293,7 @@ class GUStatMain:
             '-V', '--virt', type=str,
             metavar='<vm>[,<vm> ...]',
             default=None,
-            help='Libvirt statistics: comma-separated list of guests (VMs)')
+            help='Libvirt statistics: comma-separated list of guests (VMs); \'*\' for all')
 
         # ... Libvirt stats: Qemu block devices statistics
         self.__oArgumentParser.add_argument(
@@ -492,7 +492,15 @@ class GUStatMain:
         # ... libvirt statistics
         lGuests = list()
         if self.__oArguments.virt is not None:
-            lGuests = self.__oArguments.virt.strip(',').split(',')
+            if self.__oArguments.virt == '*':
+                from subprocess import check_output
+                lCommandArgs = ['virsh', '--quiet', 'list', '--name']
+                try:
+                    lGuests = sorted(check_output(lCommandArgs).decode(sys.stdout.encoding).splitlines())
+                except:
+                    sys.stderr.write('ERROR: Command failed; %s\n' % ' '.join(lCommandArgs))
+            else:
+                lGuests = self.__oArguments.virt.strip(',').split(',')
         bStats_virt_all = self.__oArguments.virt_all
         iStats_virt_all_lvl = self.__oArguments.virt_all_lvl
         bStats_virt_blks = bStats_virt_all or self.__oArguments.virt_blks
