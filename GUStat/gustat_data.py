@@ -560,9 +560,8 @@ class GUStatData:
                 if self.__iCpuCount is not None:
                     dField = self.__makeField(GUSTAT_FIELDS_SYS_LOAD, 'field'+str(i), float(lWords[i]) / self.__iCpuCount)
                     self.__storeField(GUSTAT_PREFIX_SYS_LOAD, 'normalized', dField, _iLevel)
-                else:
-                    dField = self.__makeField(GUSTAT_FIELDS_SYS_LOAD, 'field'+str(i), lWords[i])
-                    self.__storeField(GUSTAT_PREFIX_SYS_LOAD, None, dField, _iLevel)
+                dField = self.__makeField(GUSTAT_FIELDS_SYS_LOAD, 'field'+str(i), lWords[i])
+                self.__storeField(GUSTAT_PREFIX_SYS_LOAD, 'total', dField, _iLevel)
         else:
             sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
         oFile.close()
