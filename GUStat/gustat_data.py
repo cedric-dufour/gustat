@@ -842,7 +842,7 @@ class GUStatData:
             sys.stderr.write('ERROR: Command failed; %s\n' % ' '.join(lCommandArgs))
             return
         sDevice = None
-        for sLine in bOutput.decode(sys.getfilesystemencoding()).splitlines():
+        for sLine in bOutput.decode(sys.stdout.encoding).splitlines():
             lWords = sLine.lower().split(' ')
             if len(lWords) < 2:
                 continue
