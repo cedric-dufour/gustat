@@ -294,7 +294,7 @@ GUSTAT_FIELDS_SYS_MNTS = {
     'nfs_bytes_field6': [ 'io(nfs_bytes)', 'writes_nfs', 'bytes', None, 'int', True, True, 0 ],
     'nfs_bytes_field7': [ 'io(nfs_bytes)', 'reads_mmap', 'pages', None, 'int', True, True, 1 ],
     'nfs_bytes_field8': [ 'io(nfs_bytes)', 'writes_mmap', 'pages', None, 'int', True, True, 1 ],
-    'nfs_ops_field1': [ 'io(nfs_ops)', 'requested', 'count', None, 'int', True, True, 1 ],
+    'nfs_ops_field1': [ 'io(nfs_ops)', 'requested', 'count', None, 'int', True, True, 0 ],
     'nfs_ops_field2': [ 'io(nfs_ops)', 'transmitted', 'count', None, 'int', True, True, 1 ],
     'nfs_ops_field3': [ 'io(nfs_ops)', 'timedout', 'count', None, 'int', True, True, 2 ],
     'nfs_ops_field4': [ 'io(nfs_ops)', 'data_sent', 'bytes', None, 'int', True, True, 1 ],
