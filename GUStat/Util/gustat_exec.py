@@ -173,21 +173,21 @@ class GUStatMain:
 
         # ... system stats: disks statistics
         self.__oArgumentParser.add_argument(
-            '-Sd', '--sys-dsks', action='store_true',
+            '-Sd', '--sys-disk', action='store_true',
             default=False,
             help='System disks statistics (/proc/diskstats)')
         self.__oArgumentParser.add_argument(
-            '-Sdl', '--sys-dsks-level', type=int,
+            '-Sdl', '--sys-disk-level', type=int,
             metavar='<level>',
             default=0,
             help='System disks statistics: level (0=standard, 1=advanced, 2=expert)')
         self.__oArgumentParser.add_argument(
-            '-Sdd', '--sys-dsks-device', type=str,
+            '-Sdd', '--sys-disk-device', type=str,
             metavar='<level>',
             default=None,
             help='System disks statistics: device name')
         self.__oArgumentParser.add_argument(
-            '-Sdp', '--sys-dsks-prefix', action='store_true',
+            '-Sdp', '--sys-disk-prefix', action='store_true',
             default=False,
             help='System disks statistics: match device name prefix')
 
@@ -459,10 +459,10 @@ class GUStatMain:
         iLevel_sys_mem = max(iStats_sys_all_level, self.__oArguments.sys_mem_level)
         bStats_sys_vm = bStats_sys_all or self.__oArguments.sys_vm
         iLevel_sys_vm = max(iStats_sys_all_level, self.__oArguments.sys_vm_level)
-        bStats_sys_dsks = bStats_sys_all or self.__oArguments.sys_dsks
-        iLevel_sys_dsks = max(iStats_sys_all_level, self.__oArguments.sys_dsks_level)
-        sDevice_sys_dsks = self.__oArguments.sys_dsks_device
-        bPrefix_sys_dsks = self.__oArguments.sys_dsks_prefix
+        bStats_sys_disk = bStats_sys_all or self.__oArguments.sys_disk
+        iLevel_sys_disk = max(iStats_sys_all_level, self.__oArguments.sys_disk_level)
+        sDevice_sys_disk = self.__oArguments.sys_disk_device
+        bPrefix_sys_disk = self.__oArguments.sys_disk_prefix
         bStats_sys_mnts = bStats_sys_all or self.__oArguments.sys_mnts
         iLevel_sys_mnts = max(iStats_sys_all_level, self.__oArguments.sys_mnts_level)
         sDevice_sys_mnts = self.__oArguments.sys_mnts_device
@@ -536,8 +536,8 @@ class GUStatMain:
             oGUStatData_1.parseStat_sys_mem(iLevel_sys_mem)
         if bStats_sys_vm:
             oGUStatData_1.parseStat_sys_vm(iLevel_sys_vm)
-        if bStats_sys_dsks:
-            oGUStatData_1.parseStat_sys_dsks(iLevel_sys_dsks, sDevice_sys_dsks, bPrefix_sys_dsks)
+        if bStats_sys_disk:
+            oGUStatData_1.parseStat_sys_disk(iLevel_sys_disk, sDevice_sys_disk, bPrefix_sys_disk)
         if bStats_sys_mnts:
             oGUStatData_1.parseStat_sys_mnts(iLevel_sys_mnts, sDevice_sys_mnts, bPrefix_sys_mnts)
         if bStats_sys_net:
@@ -585,8 +585,8 @@ class GUStatMain:
                 oGUStatData_2.parseStat_sys_mem(iLevel_sys_mem)
             if bStats_sys_vm:
                 oGUStatData_2.parseStat_sys_vm(iLevel_sys_vm)
-            if bStats_sys_dsks:
-                oGUStatData_2.parseStat_sys_dsks(iLevel_sys_dsks, sDevice_sys_dsks, bPrefix_sys_dsks)
+            if bStats_sys_disk:
+                oGUStatData_2.parseStat_sys_disk(iLevel_sys_disk, sDevice_sys_disk, bPrefix_sys_disk)
             if bStats_sys_mnts:
                 oGUStatData_2.parseStat_sys_mnts(iLevel_sys_mnts, sDevice_sys_mnts, bPrefix_sys_mnts)
             if bStats_sys_net:

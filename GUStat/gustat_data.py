@@ -239,8 +239,8 @@ GUSTAT_FIELDS_SYS_VM = {
 }
 
 # /proc/diskstats fields
-GUSTAT_PREFIX_SYS_DSKS = 'sys_dsks'
-GUSTAT_FIELDS_SYS_DSKS = {
+GUSTAT_PREFIX_SYS_DISK = 'sys_disk'
+GUSTAT_FIELDS_SYS_DISK = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'field3': [ 'io', 'reads_completed', 'count', None, 'int', True, True, 0 ],
     'field4': [ 'io', 'reads_merged', 'count', None, 'int', True, True, 0 ],
@@ -677,9 +677,9 @@ class GUStatData:
         oFile.close()
 
 
-    def parseStat_sys_dsks(self, _iLevel, _sDevice, _bDevicePrefix):
-        global GUSTAT_PREFIX_SYS_DSKS
-        global GUSTAT_FIELDS_SYS_DSKS
+    def parseStat_sys_disk(self, _iLevel, _sDevice, _bDevicePrefix):
+        global GUSTAT_PREFIX_SYS_DISK
+        global GUSTAT_FIELDS_SYS_DISK
 
         sFile = '/proc/diskstats'
         try:
@@ -702,8 +702,8 @@ class GUStatData:
             if sDevice is None:
                 continue
             for i in range(3, 14):
-                dField = self.__makeField(GUSTAT_FIELDS_SYS_DSKS, 'field'+str(i), lWords[i])
-                self.__storeField(GUSTAT_PREFIX_SYS_DSKS, sDevice, dField, _iLevel)
+                dField = self.__makeField(GUSTAT_FIELDS_SYS_DISK, 'field'+str(i), lWords[i])
+                self.__storeField(GUSTAT_PREFIX_SYS_DISK, sDevice, dField, _iLevel)
         oFile.close()
 
 
