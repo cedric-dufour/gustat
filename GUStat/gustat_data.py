@@ -354,6 +354,12 @@ GUSTAT_FIELDS_SYS_NET = {
 GUSTAT_PREFIX_PROC_STATUS = 'proc_status'
 GUSTAT_FIELDS_PROC_STATUS = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
+    'uid_field0': [ 'user', 'uid_real', 'id', None, 'int', False, False, 0 ],
+    'uid_field1': [ 'user', 'uid_effective', 'id', None, 'int', False, False, 1 ],
+    'uid_field2': [ 'user', 'uid_saved', 'id', None, 'int', False, False, 2 ],
+    'gid_field0': [ 'user', 'gid_real', 'id', None, 'int', False, False, 0 ],
+    'gid_field1': [ 'user', 'gid_effective', 'id', None, 'int', False, False, 1 ],
+    'gid_field2': [ 'user', 'gid_saved', 'id', None, 'int', False, False, 2 ],
     'vmpeak': [ 'mem', 'vsize_peak', 'bytes', None, 'int', True, True, 0 ],
     'vmsize': [ 'mem', 'vsize', 'bytes', None, 'int', True, True, 0 ],
     'vmlck': [ 'mem', 'locked', 'bytes', None, 'int', True, True, 1 ],
@@ -805,15 +811,24 @@ class GUStatData:
             if len(lWords) < 2:
                 sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                 break
-            if lWords[1].endswith('gb'):
-                dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1073741824.0)
-            elif lWords[1].endswith(' mb'):
-                dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1048576.0)
-            elif lWords[1].endswith(' kb'):
-                dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1024.0)
+            if lWords[0] in ['uid', 'gid']:
+                lFields = self.__reMultiSpaces.sub(' ', lWords[1]).split()
+                if len(lFields) < 3:
+                    sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
+                    break
+                for i in range(0, 3):
+                    dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0]+'_field'+str(i), lFields[i])
+                    self.__storeField(GUSTAT_PREFIX_PROC_STATUS, sPid, dField, _iLevel)
             else:
-                dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1])
-            self.__storeField(GUSTAT_PREFIX_PROC_STATUS, sPid, dField, _iLevel)
+                if lWords[1].endswith('gb'):
+                    dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1073741824.0)
+                elif lWords[1].endswith(' mb'):
+                    dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1048576.0)
+                elif lWords[1].endswith(' kb'):
+                    dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1024.0)
+                else:
+                    dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1])
+                self.__storeField(GUSTAT_PREFIX_PROC_STATUS, sPid, dField, _iLevel)
         oFile.close()
 
 
