@@ -193,21 +193,21 @@ class GUStatMain:
 
         # ... system stats: mounts statistics
         self.__oArgumentParser.add_argument(
-            '-St', '--sys-mnts', action='store_true',
+            '-St', '--sys-mount', action='store_true',
             default=False,
             help='System mounts statistics (/proc/self/mountstats)')
         self.__oArgumentParser.add_argument(
-            '-Stl', '--sys-mnts-level', type=int,
+            '-Stl', '--sys-mount-level', type=int,
             metavar='<level>',
             default=0,
             help='System mounts statistics: level (0=standard, 1=advanced, 2=expert)')
         self.__oArgumentParser.add_argument(
-            '-Std', '--sys-mnts-device', type=str,
+            '-Std', '--sys-mount-device', type=str,
             metavar='<device>',
             default=None,
             help='System mounts statistics: device name')
         self.__oArgumentParser.add_argument(
-            '-Stp', '--sys-mnts-prefix', action='store_true',
+            '-Stp', '--sys-mount-prefix', action='store_true',
             default=False,
             help='System mounts statistics: match device name prefix')
 
@@ -463,10 +463,10 @@ class GUStatMain:
         iLevel_sys_disk = max(iStats_sys_all_level, self.__oArguments.sys_disk_level)
         sDevice_sys_disk = self.__oArguments.sys_disk_device
         bPrefix_sys_disk = self.__oArguments.sys_disk_prefix
-        bStats_sys_mnts = bStats_sys_all or self.__oArguments.sys_mnts
-        iLevel_sys_mnts = max(iStats_sys_all_level, self.__oArguments.sys_mnts_level)
-        sDevice_sys_mnts = self.__oArguments.sys_mnts_device
-        bPrefix_sys_mnts = self.__oArguments.sys_mnts_prefix
+        bStats_sys_mount = bStats_sys_all or self.__oArguments.sys_mount
+        iLevel_sys_mount = max(iStats_sys_all_level, self.__oArguments.sys_mount_level)
+        sDevice_sys_mount = self.__oArguments.sys_mount_device
+        bPrefix_sys_mount = self.__oArguments.sys_mount_prefix
         bStats_sys_net = bStats_sys_all or self.__oArguments.sys_net
         iLevel_sys_net = max(iStats_sys_all_level, self.__oArguments.sys_net_level)
         sDevice_sys_net = self.__oArguments.sys_net_device
@@ -538,8 +538,8 @@ class GUStatMain:
             oGUStatData_1.parseStat_sys_vm(iLevel_sys_vm)
         if bStats_sys_disk:
             oGUStatData_1.parseStat_sys_disk(iLevel_sys_disk, sDevice_sys_disk, bPrefix_sys_disk)
-        if bStats_sys_mnts:
-            oGUStatData_1.parseStat_sys_mnts(iLevel_sys_mnts, sDevice_sys_mnts, bPrefix_sys_mnts)
+        if bStats_sys_mount:
+            oGUStatData_1.parseStat_sys_mount(iLevel_sys_mount, sDevice_sys_mount, bPrefix_sys_mount)
         if bStats_sys_net:
             oGUStatData_1.parseStat_sys_net(iLevel_sys_net, sDevice_sys_net, bPrefix_sys_net)
         for iPid in lPids:
@@ -587,8 +587,8 @@ class GUStatMain:
                 oGUStatData_2.parseStat_sys_vm(iLevel_sys_vm)
             if bStats_sys_disk:
                 oGUStatData_2.parseStat_sys_disk(iLevel_sys_disk, sDevice_sys_disk, bPrefix_sys_disk)
-            if bStats_sys_mnts:
-                oGUStatData_2.parseStat_sys_mnts(iLevel_sys_mnts, sDevice_sys_mnts, bPrefix_sys_mnts)
+            if bStats_sys_mount:
+                oGUStatData_2.parseStat_sys_mount(iLevel_sys_mount, sDevice_sys_mount, bPrefix_sys_mount)
             if bStats_sys_net:
                 oGUStatData_2.parseStat_sys_net(iLevel_sys_net, sDevice_sys_net, bPrefix_sys_net)
             for iPid in lPids:

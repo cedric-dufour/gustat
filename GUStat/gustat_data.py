@@ -256,8 +256,8 @@ GUSTAT_FIELDS_SYS_DISK = {
 }
 
 # /proc/mountstats fields
-GUSTAT_PREFIX_SYS_MNTS = 'sys_mnts'
-GUSTAT_FIELDS_SYS_MNTS = {
+GUSTAT_PREFIX_SYS_MOUNT = 'sys_mount'
+GUSTAT_FIELDS_SYS_MOUNT = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'nfs_events_field1': [ 'io(nfs_events)', 'inode_revalidate', 'count', None, 'int', True, True, 2 ],
     'nfs_events_field2': [ 'io(nfs_events)', 'dnode_revalidate', 'count', None, 'int', True, True, 2 ],
@@ -303,7 +303,7 @@ GUSTAT_FIELDS_SYS_MNTS = {
     'nfs_ops_field7': [ 'io(nfs_ops)', 'elapsed_response_wait', 'seconds', 0.001, 'float', True, False, 2 ],
     'nfs_ops_field8': [ 'io(nfs_ops)', 'elapsed_total', 'seconds', 0.001, 'float', True, False, 1 ],
 }
-GUSTAT_FIELDS_SYS_MNTS_NFS_OPS = {
+GUSTAT_FIELDS_SYS_MOUNT_NFS_OPS = {
     'null',
     'getattr',
     'setattr',
@@ -707,9 +707,9 @@ class GUStatData:
         oFile.close()
 
 
-    def parseStat_sys_mnts(self, _iLevel, _sDevice, _bDevicePrefix):
-        global GUSTAT_PREFIX_SYS_MNTS
-        global GUSTAT_FIELDS_SYS_MNTS
+    def parseStat_sys_mount(self, _iLevel, _sDevice, _bDevicePrefix):
+        global GUSTAT_PREFIX_SYS_MOUNT
+        global GUSTAT_FIELDS_SYS_MOUNT
 
         sFile = '/proc/self/mountstats'
         try:
@@ -745,22 +745,22 @@ class GUStatData:
                         sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:events]; %s\n' % sFile)
                         break
                     for i in range(1, 28):
-                        dField = self.__makeField(GUSTAT_FIELDS_SYS_MNTS, 'nfs_events_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_PREFIX_SYS_MNTS, sDevice, dField, _iLevel)
+                        dField = self.__makeField(GUSTAT_FIELDS_SYS_MOUNT, 'nfs_events_field'+str(i), lWords[i])
+                        self.__storeField(GUSTAT_PREFIX_SYS_MOUNT, sDevice, dField, _iLevel)
                 elif lWords[0] == 'bytes':
                     if len(lWords) < 9:
                         sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:bytes]; %s\n' % sFile)
                         break
                     for i in range(1, 9):
-                        dField = self.__makeField(GUSTAT_FIELDS_SYS_MNTS, 'nfs_bytes_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_PREFIX_SYS_MNTS, sDevice, dField, _iLevel)
-                elif lWords[0] in GUSTAT_FIELDS_SYS_MNTS_NFS_OPS:
+                        dField = self.__makeField(GUSTAT_FIELDS_SYS_MOUNT, 'nfs_bytes_field'+str(i), lWords[i])
+                        self.__storeField(GUSTAT_PREFIX_SYS_MOUNT, sDevice, dField, _iLevel)
+                elif lWords[0] in GUSTAT_FIELDS_SYS_MOUNT_NFS_OPS:
                     if len(lWords) < 9:
                         sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:ops]; %s\n' % sFile)
                         break
                     for i in range(1, 9):
-                        dField = self.__makeField(GUSTAT_FIELDS_SYS_MNTS, 'nfs_ops_field'+str(i), lWords[i], _sMetricPrefix=lWords[0])
-                        self.__storeField(GUSTAT_PREFIX_SYS_MNTS, sDevice, dField, _iLevel)
+                        dField = self.__makeField(GUSTAT_FIELDS_SYS_MOUNT, 'nfs_ops_field'+str(i), lWords[i], _sMetricPrefix=lWords[0])
+                        self.__storeField(GUSTAT_PREFIX_SYS_MOUNT, sDevice, dField, _iLevel)
         oFile.close()
 
 
