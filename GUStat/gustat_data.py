@@ -29,7 +29,7 @@ import sys
 #------------------------------------------------------------------------------
 
 # /proc/cpuinfo fields
-GUSTAT_PREFIX_SYS_CPU = 'sys_cpu'
+GUSTAT_MEASUREMENT_SYS_CPU = 'sys_cpu'
 GUSTAT_FIELDS_SYS_CPU = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'count_logical': [ 'cpu', 'logical', 'count', None, 'int', False, False, 0 ],
@@ -40,7 +40,7 @@ GUSTAT_FIELDS_SYS_CPU = {
 }
 
 # /proc/loadavg fields
-GUSTAT_PREFIX_SYS_LOAD = 'sys_load'
+GUSTAT_MEASUREMENT_SYS_LOAD = 'sys_load'
 GUSTAT_FIELDS_SYS_LOAD = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'field0': [ 'sys', '01min', 'load', None, 'float', False, False, 0 ],
@@ -49,7 +49,7 @@ GUSTAT_FIELDS_SYS_LOAD = {
 }
 
 # /proc/stat fields
-GUSTAT_PREFIX_SYS_STAT = 'sys_stat'
+GUSTAT_MEASUREMENT_SYS_STAT = 'sys_stat'
 GUSTAT_FIELDS_SYS_STAT = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'cpu_field1': [ 'cpu', 'user', 'ticks', None, 'float', True, True, 0 ],
@@ -71,7 +71,7 @@ GUSTAT_FIELDS_SYS_STAT = {
 }
 
 # /proc/meminfo fields
-GUSTAT_PREFIX_SYS_MEM = 'sys_mem'
+GUSTAT_MEASUREMENT_SYS_MEM = 'sys_mem'
 GUSTAT_FIELDS_SYS_MEM = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'memtotal': [ 'mem', 'total', 'bytes', None, 'int', False, False, 0 ],
@@ -120,7 +120,7 @@ GUSTAT_FIELDS_SYS_MEM = {
 }
 
 # /proc/vmstat fields
-GUSTAT_PREFIX_SYS_VM = 'sys_vm'
+GUSTAT_MEASUREMENT_SYS_VM = 'sys_vm'
 GUSTAT_FIELDS_SYS_VM = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'nr_free_pages': [ 'mem', 'free', 'pages', None, 'int', True, True, 0 ],
@@ -239,7 +239,7 @@ GUSTAT_FIELDS_SYS_VM = {
 }
 
 # /proc/diskstats fields
-GUSTAT_PREFIX_SYS_DISK = 'sys_disk'
+GUSTAT_MEASUREMENT_SYS_DISK = 'sys_disk'
 GUSTAT_FIELDS_SYS_DISK = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'field3': [ 'io', 'reads_completed', 'count', None, 'int', True, True, 0 ],
@@ -256,7 +256,7 @@ GUSTAT_FIELDS_SYS_DISK = {
 }
 
 # /proc/mountstats fields
-GUSTAT_PREFIX_SYS_MOUNT = 'sys_mount'
+GUSTAT_MEASUREMENT_SYS_MOUNT = 'sys_mount'
 GUSTAT_FIELDS_SYS_MOUNT = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'nfs_events_field1': [ 'io(nfs_events)', 'inode_revalidate', 'count', None, 'int', True, True, 2 ],
@@ -329,7 +329,7 @@ GUSTAT_FIELDS_SYS_MOUNT_NFS_OPS = {
 }
 
 # /proc/netdev fields
-GUSTAT_PREFIX_SYS_NET = 'sys_net'
+GUSTAT_MEASUREMENT_SYS_NET = 'sys_net'
 GUSTAT_FIELDS_SYS_NET = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'field1': [ 'net', 'rx_bytes', 'bytes', None, 'int', True, True, 0 ],
@@ -351,7 +351,7 @@ GUSTAT_FIELDS_SYS_NET = {
 }
 
 # /proc/<pid>/status fields
-GUSTAT_PREFIX_PROC_STATUS = 'proc_status'
+GUSTAT_MEASUREMENT_PROC_STATUS = 'proc_status'
 GUSTAT_FIELDS_PROC_STATUS = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'uid_field0': [ 'user', 'uid_real', 'id', None, 'int', False, False, 0 ],
@@ -378,7 +378,7 @@ GUSTAT_FIELDS_PROC_STATUS = {
 }
 
 # /proc/<pid>/stat fields
-GUSTAT_PREFIX_PROC_STAT = 'proc_stat'
+GUSTAT_MEASUREMENT_PROC_STAT = 'proc_stat'
 GUSTAT_FIELDS_PROC_STAT = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'field1': [ 'proc', 'command', 'name', None, 'str', False, False, 0 ],
@@ -399,7 +399,7 @@ GUSTAT_FIELDS_PROC_STAT = {
 }
 
 # /proc/<pid>/io fields
-GUSTAT_PREFIX_PROC_IO = 'proc_io'
+GUSTAT_MEASUREMENT_PROC_IO = 'proc_io'
 GUSTAT_FIELDS_PROC_IO = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'rchar': [ 'io', 'reads_chars', 'chars', None, 'int', True, True, 0 ],
@@ -412,7 +412,7 @@ GUSTAT_FIELDS_PROC_IO = {
 }
 
 # Libvirt 'domstats' fields
-GUSTAT_PREFIX_VIRT_STAT = 'virt_stat'
+GUSTAT_MEASUREMENT_VIRT_STAT = 'virt_stat'
 GUSTAT_FIELDS_VIRT_STAT = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'cpu.time': [ 'cpu', 'total', 'seconds', 0.000000001, 'float', True, False, 0 ],
@@ -521,7 +521,7 @@ class GUStatData:
        }
 
 
-    def __storeField(self, _sKeyPrefix, _sKeyObject, _dField, _iLevel):
+    def __storeField(self, _sKeyMeasurement, _sKeyObject, _dField, _iLevel):
         if _dField is None:
             return
         if self.__bInterval:
@@ -533,14 +533,14 @@ class GUStatData:
             return
         if _sKeyObject is None:
             _sKeyObject = '-'
-        self.dStats[_sKeyPrefix+','+_sKeyObject+','+_dField['category']+':'+_dField['metric']] = _dField
+        self.dStats[_sKeyMeasurement+','+_dField['category']+':'+_dField['metric']+','+_sKeyObject] = _dField
 
     #
     # Parsers
     #
 
     def parseStat_sys_cpu(self, _iLevel):
-        global GUSTAT_PREFIX_SYS_CPU
+        global GUSTAT_MEASUREMENT_SYS_CPU
         global GUSTAT_FIELDS_SYS_CPU
 
         sFile = '/proc/cpuinfo'
@@ -583,19 +583,19 @@ class GUStatData:
                     except:
                         continue
                 dField = self.__makeField(GUSTAT_FIELDS_SYS_CPU, lWords[0], lWords[1])
-                self.__storeField(GUSTAT_PREFIX_SYS_CPU, sId, dField, _iLevel)
+                self.__storeField(GUSTAT_MEASUREMENT_SYS_CPU, sId, dField, _iLevel)
         dField = self.__makeField(GUSTAT_FIELDS_SYS_CPU, 'count_logical', iQuantity_logical+1)
-        self.__storeField(GUSTAT_PREFIX_SYS_CPU, 'cpu', dField, _iLevel)
+        self.__storeField(GUSTAT_MEASUREMENT_SYS_CPU, 'cpu', dField, _iLevel)
         dField = self.__makeField(GUSTAT_FIELDS_SYS_CPU, 'count_cores', iQuantity_cores+1)
-        self.__storeField(GUSTAT_PREFIX_SYS_CPU, 'cpu', dField, _iLevel)
+        self.__storeField(GUSTAT_MEASUREMENT_SYS_CPU, 'cpu', dField, _iLevel)
         dField = self.__makeField(GUSTAT_FIELDS_SYS_CPU, 'count_physical', iQuantity_physical+1)
-        self.__storeField(GUSTAT_PREFIX_SYS_CPU, 'cpu', dField, _iLevel)
+        self.__storeField(GUSTAT_MEASUREMENT_SYS_CPU, 'cpu', dField, _iLevel)
         self.__iCpuCount = iQuantity_logical+1
         oFile.close()
 
 
     def parseStat_sys_load(self, _iLevel):
-        global GUSTAT_PREFIX_SYS_LOAD
+        global GUSTAT_MEASUREMENT_SYS_LOAD
         global GUSTAT_FIELDS_SYS_LOAD
 
         sFile = '/proc/loadavg'
@@ -609,16 +609,16 @@ class GUStatData:
             for i in range(0, 3):
                 if self.__iCpuCount is not None:
                     dField = self.__makeField(GUSTAT_FIELDS_SYS_LOAD, 'field'+str(i), float(lWords[i]) / self.__iCpuCount)
-                    self.__storeField(GUSTAT_PREFIX_SYS_LOAD, 'normalized', dField, _iLevel)
+                    self.__storeField(GUSTAT_MEASUREMENT_SYS_LOAD, 'normalized', dField, _iLevel)
                 dField = self.__makeField(GUSTAT_FIELDS_SYS_LOAD, 'field'+str(i), lWords[i])
-                self.__storeField(GUSTAT_PREFIX_SYS_LOAD, 'total', dField, _iLevel)
+                self.__storeField(GUSTAT_MEASUREMENT_SYS_LOAD, 'total', dField, _iLevel)
         else:
             sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
         oFile.close()
 
 
     def parseStat_sys_stat(self, _iLevel, _bCpuDetail):
-        global GUSTAT_PREFIX_SYS_STAT
+        global GUSTAT_MEASUREMENT_SYS_STAT
         global GUSTAT_FIELDS_SYS_STAT
 
         sFile = '/proc/stat'
@@ -643,20 +643,20 @@ class GUStatData:
                     if sCpu == 'cpu':
                         if self.__iCpuCount is not None:
                             dField = self.__makeField(GUSTAT_FIELDS_SYS_STAT, 'cpu_field'+str(i), float(lWords[i]) / self.__iCpuCount)
-                            self.__storeField(GUSTAT_PREFIX_SYS_STAT, sCpu+'_normalized', dField, _iLevel)
+                            self.__storeField(GUSTAT_MEASUREMENT_SYS_STAT, 'normalized', dField, _iLevel)
                         dField = self.__makeField(GUSTAT_FIELDS_SYS_STAT, 'cpu_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_PREFIX_SYS_STAT, sCpu+'_total', dField, _iLevel)
+                        self.__storeField(GUSTAT_MEASUREMENT_SYS_STAT, 'total', dField, _iLevel)
                     else:
                         dField = self.__makeField(GUSTAT_FIELDS_SYS_STAT, 'cpu_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_PREFIX_SYS_STAT, sCpu, dField, _iLevel)
+                        self.__storeField(GUSTAT_MEASUREMENT_SYS_STAT, sCpu, dField, _iLevel)
             else:
                 dField = self.__makeField(GUSTAT_FIELDS_SYS_STAT, lWords[0], lWords[1])
-                self.__storeField(GUSTAT_PREFIX_SYS_STAT, None, dField, _iLevel)
+                self.__storeField(GUSTAT_MEASUREMENT_SYS_STAT, None, dField, _iLevel)
         oFile.close()
 
 
     def parseStat_sys_mem(self, _iLevel):
-        global GUSTAT_PREFIX_SYS_MEM
+        global GUSTAT_MEASUREMENT_SYS_MEM
         global GUSTAT_FIELDS_SYS_MEM
 
         sFile = '/proc/meminfo'
@@ -678,12 +678,12 @@ class GUStatData:
                 dField = self.__makeField(GUSTAT_FIELDS_SYS_MEM, lWords[0], lWords[1][0:-2], _fCoefficient=1024.0)
             else:
                 dField = self.__makeField(GUSTAT_FIELDS_SYS_MEM, lWords[0], lWords[1])
-            self.__storeField(GUSTAT_PREFIX_SYS_MEM, None, dField, _iLevel)
+            self.__storeField(GUSTAT_MEASUREMENT_SYS_MEM, None, dField, _iLevel)
         oFile.close()
 
 
     def parseStat_sys_vm(self, _iLevel):
-        global GUSTAT_PREFIX_SYS_VM
+        global GUSTAT_MEASUREMENT_SYS_VM
         global GUSTAT_FIELDS_SYS_VM
 
         sFile = '/proc/vmstat'
@@ -698,12 +698,12 @@ class GUStatData:
                 sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                 break
             dField = self.__makeField(GUSTAT_FIELDS_SYS_VM, lWords[0], lWords[1])
-            self.__storeField(GUSTAT_PREFIX_SYS_VM, None, dField, _iLevel)
+            self.__storeField(GUSTAT_MEASUREMENT_SYS_VM, None, dField, _iLevel)
         oFile.close()
 
 
     def parseStat_sys_disk(self, _iLevel, _sDevice = None):
-        global GUSTAT_PREFIX_SYS_DISK
+        global GUSTAT_MEASUREMENT_SYS_DISK
         global GUSTAT_FIELDS_SYS_DISK
 
         reDevice = None
@@ -733,12 +733,12 @@ class GUStatData:
                     continue
             for i in range(3, 14):
                 dField = self.__makeField(GUSTAT_FIELDS_SYS_DISK, 'field'+str(i), lWords[i])
-                self.__storeField(GUSTAT_PREFIX_SYS_DISK, lWords[2], dField, _iLevel)
+                self.__storeField(GUSTAT_MEASUREMENT_SYS_DISK, lWords[2], dField, _iLevel)
         oFile.close()
 
 
     def parseStat_sys_mount(self, _iLevel, _sDevice = None, _sMountpoint = None):
-        global GUSTAT_PREFIX_SYS_MOUNT
+        global GUSTAT_MEASUREMENT_SYS_MOUNT
         global GUSTAT_FIELDS_SYS_MOUNT
 
         reDevice = None
@@ -796,26 +796,26 @@ class GUStatData:
                         break
                     for i in range(1, 28):
                         dField = self.__makeField(GUSTAT_FIELDS_SYS_MOUNT, 'nfs_events_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_PREFIX_SYS_MOUNT, sDeviceMountpoint, dField, _iLevel)
+                        self.__storeField(GUSTAT_MEASUREMENT_SYS_MOUNT, sDeviceMountpoint, dField, _iLevel)
                 elif lWords[0] == 'bytes':
                     if len(lWords) < 9:
                         sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:bytes]; %s\n' % sFile)
                         break
                     for i in range(1, 9):
                         dField = self.__makeField(GUSTAT_FIELDS_SYS_MOUNT, 'nfs_bytes_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_PREFIX_SYS_MOUNT, sDeviceMountpoint, dField, _iLevel)
+                        self.__storeField(GUSTAT_MEASUREMENT_SYS_MOUNT, sDeviceMountpoint, dField, _iLevel)
                 elif lWords[0] in GUSTAT_FIELDS_SYS_MOUNT_NFS_OPS:
                     if len(lWords) < 9:
                         sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:ops]; %s\n' % sFile)
                         break
                     for i in range(1, 9):
                         dField = self.__makeField(GUSTAT_FIELDS_SYS_MOUNT, 'nfs_ops_field'+str(i), lWords[i], _sMetricPrefix=lWords[0])
-                        self.__storeField(GUSTAT_PREFIX_SYS_MOUNT, sDeviceMountpoint, dField, _iLevel)
+                        self.__storeField(GUSTAT_MEASUREMENT_SYS_MOUNT, sDeviceMountpoint, dField, _iLevel)
         oFile.close()
 
 
     def parseStat_sys_net(self, _iLevel, _sDevice = None):
-        global GUSTAT_PREFIX_SYS_NET
+        global GUSTAT_MEASUREMENT_SYS_NET
         global GUSTAT_FIELDS_SYS_NET
 
         reDevice = None
@@ -851,12 +851,12 @@ class GUStatData:
                     continue
             for i in range(1, 17):
                 dField = self.__makeField(GUSTAT_FIELDS_SYS_NET, 'field'+str(i), lWords[i])
-                self.__storeField(GUSTAT_PREFIX_SYS_NET, lWords[0], dField, _iLevel)
+                self.__storeField(GUSTAT_MEASUREMENT_SYS_NET, lWords[0], dField, _iLevel)
         oFile.close()
 
 
     def parseStat_proc_status(self, _iLevel, _iPid):
-        global GUSTAT_PREFIX_PROC_STATUS
+        global GUSTAT_MEASUREMENT_PROC_STATUS
         global GUSTAT_FIELDS_PROC_STATUS
 
         sPid = str(_iPid)
@@ -878,7 +878,7 @@ class GUStatData:
                     break
                 for i in range(0, 3):
                     dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0]+'_field'+str(i), lFields[i])
-                    self.__storeField(GUSTAT_PREFIX_PROC_STATUS, sPid, dField, _iLevel)
+                    self.__storeField(GUSTAT_MEASUREMENT_PROC_STATUS, sPid, dField, _iLevel)
             else:
                 if lWords[1].endswith('gb'):
                     dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1073741824.0)
@@ -888,12 +888,12 @@ class GUStatData:
                     dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1024.0)
                 else:
                     dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1])
-                self.__storeField(GUSTAT_PREFIX_PROC_STATUS, sPid, dField, _iLevel)
+                self.__storeField(GUSTAT_MEASUREMENT_PROC_STATUS, sPid, dField, _iLevel)
         oFile.close()
 
 
     def parseStat_proc_stat(self, _iLevel, _iPid):
-        global GUSTAT_PREFIX_PROC_STAT
+        global GUSTAT_MEASUREMENT_PROC_STAT
         global GUSTAT_FIELDS_PROC_STAT
 
         sPid = str(_iPid)
@@ -909,14 +909,14 @@ class GUStatData:
                 if i == 1:
                     lWords[i] = lWords[i].strip('()')
                 dField = self.__makeField(GUSTAT_FIELDS_PROC_STAT, 'field'+str(i), lWords[i])
-                self.__storeField(GUSTAT_PREFIX_PROC_STAT, sPid, dField, _iLevel)
+                self.__storeField(GUSTAT_MEASUREMENT_PROC_STAT, sPid, dField, _iLevel)
         else:
             sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
         oFile.close()
 
 
     def parseStat_proc_io(self, _iLevel, _iPid):
-        global GUSTAT_PREFIX_PROC_IO
+        global GUSTAT_MEASUREMENT_PROC_IO
         global GUSTAT_FIELDS_PROC_IO
 
         sPid = str(_iPid)
@@ -931,12 +931,12 @@ class GUStatData:
             if len(lWords) < 2:
                 continue
             dField = self.__makeField(GUSTAT_FIELDS_PROC_IO, lWords[0], lWords[1])
-            self.__storeField(GUSTAT_PREFIX_PROC_IO, sPid, dField, _iLevel)
+            self.__storeField(GUSTAT_MEASUREMENT_PROC_IO, sPid, dField, _iLevel)
         oFile.close()
 
 
     def parseStat_virt_stat(self, _iLevel, _sGuest):
-        global GUSTAT_PREFIX_VIRT_STAT
+        global GUSTAT_MEASUREMENT_VIRT_STAT
         global GUSTAT_FIELDS_VIRT_STAT
 
         lCommand = ['virsh', 'domstats', '--raw', '--cpu-total', '--balloon', '--interface', '--block', _sGuest]
@@ -973,10 +973,10 @@ class GUStatData:
                     continue
                 if sDevice_name is not None:
                     dField = self.__makeField(GUSTAT_FIELDS_VIRT_STAT, sCategory+'.'+sMetric, lWords[1])
-                    self.__storeField(GUSTAT_PREFIX_VIRT_STAT, _sGuest+':'+sDevice_name, dField, _iLevel)
+                    self.__storeField(GUSTAT_MEASUREMENT_VIRT_STAT, _sGuest+':'+sDevice_name, dField, _iLevel)
             else:
                 dField = self.__makeField(GUSTAT_FIELDS_VIRT_STAT, lWords[0], lWords[1])
-                self.__storeField(GUSTAT_PREFIX_VIRT_STAT, _sGuest, dField, _iLevel)
+                self.__storeField(GUSTAT_MEASUREMENT_VIRT_STAT, _sGuest, dField, _iLevel)
 
 
     #
