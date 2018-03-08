@@ -183,13 +183,9 @@ class GUStatMain:
             help='System disks statistics: level (0=standard, 1=advanced, 2=expert)')
         self.__oArgumentParser.add_argument(
             '-Sdd', '--sys-disk-device', type=str,
-            metavar='<level>',
+            metavar='<device>|re/<device>/',
             default=None,
-            help='System disks statistics: device name')
-        self.__oArgumentParser.add_argument(
-            '-Sdp', '--sys-disk-prefix', action='store_true',
-            default=False,
-            help='System disks statistics: match device name prefix')
+            help='System disks statistics: filter by device')
 
         # ... system stats: mounts statistics
         self.__oArgumentParser.add_argument(
@@ -203,13 +199,14 @@ class GUStatMain:
             help='System mounts statistics: level (0=standard, 1=advanced, 2=expert)')
         self.__oArgumentParser.add_argument(
             '-Std', '--sys-mount-device', type=str,
-            metavar='<device>',
+            metavar='<device>|re/<device>/',
             default=None,
-            help='System mounts statistics: device name')
+            help='System mounts statistics: filter by device')
         self.__oArgumentParser.add_argument(
-            '-Stp', '--sys-mount-prefix', action='store_true',
-            default=False,
-            help='System mounts statistics: match device name prefix')
+            '-Stt', '--sys-mount-mountpoint', type=str,
+            metavar='<mountpoint>|re/<mountpoint>/',
+            default=None,
+            help='System mounts statistics: filter by mountpoint')
 
         # ... system stats: network statistics
         self.__oArgumentParser.add_argument(
@@ -223,13 +220,9 @@ class GUStatMain:
             help='System network statistics: level (0=standard, 1=advanced, 2=expert)')
         self.__oArgumentParser.add_argument(
             '-Snd', '--sys-net-device', type=str,
-            metavar='<device>',
+            metavar='<device>|re/<device>/',
             default=None,
-            help='System network statistics: device name')
-        self.__oArgumentParser.add_argument(
-            '-Snp', '--sys-net-prefix', action='store_true',
-            default=False,
-            help='System network statistics: match device name prefix')
+            help='System network statistics: filter by device')
 
         # ... system stats: all
         self.__oArgumentParser.add_argument(
@@ -453,15 +446,13 @@ class GUStatMain:
         bStats_sys_disk = bStats_sys_all or self.__oArguments.sys_disk
         iLevel_sys_disk = max(iStats_sys_all_level, self.__oArguments.sys_disk_level)
         sDevice_sys_disk = self.__oArguments.sys_disk_device
-        bPrefix_sys_disk = self.__oArguments.sys_disk_prefix
         bStats_sys_mount = bStats_sys_all or self.__oArguments.sys_mount
         iLevel_sys_mount = max(iStats_sys_all_level, self.__oArguments.sys_mount_level)
         sDevice_sys_mount = self.__oArguments.sys_mount_device
-        bPrefix_sys_mount = self.__oArguments.sys_mount_prefix
+        sMountpoint_sys_mount = self.__oArguments.sys_mount_mountpoint
         bStats_sys_net = bStats_sys_all or self.__oArguments.sys_net
         iLevel_sys_net = max(iStats_sys_all_level, self.__oArguments.sys_net_level)
         sDevice_sys_net = self.__oArguments.sys_net_device
-        bPrefix_sys_net = self.__oArguments.sys_net_prefix
 
         # ... processes statistics
         lPids = list()
@@ -526,11 +517,11 @@ class GUStatMain:
         if bStats_sys_vm:
             oGUStatData_1.parseStat_sys_vm(iLevel_sys_vm)
         if bStats_sys_disk:
-            oGUStatData_1.parseStat_sys_disk(iLevel_sys_disk, sDevice_sys_disk, bPrefix_sys_disk)
+            oGUStatData_1.parseStat_sys_disk(iLevel_sys_disk, sDevice_sys_disk)
         if bStats_sys_mount:
-            oGUStatData_1.parseStat_sys_mount(iLevel_sys_mount, sDevice_sys_mount, bPrefix_sys_mount)
+            oGUStatData_1.parseStat_sys_mount(iLevel_sys_mount, sDevice_sys_mount, sMountpoint_sys_mount)
         if bStats_sys_net:
-            oGUStatData_1.parseStat_sys_net(iLevel_sys_net, sDevice_sys_net, bPrefix_sys_net)
+            oGUStatData_1.parseStat_sys_net(iLevel_sys_net, sDevice_sys_net)
         for iPid in lPids:
             if bStats_proc_status:
                 oGUStatData_1.parseStat_proc_status(iLevel_proc_status, iPid)
@@ -575,11 +566,11 @@ class GUStatMain:
             if bStats_sys_vm:
                 oGUStatData_2.parseStat_sys_vm(iLevel_sys_vm)
             if bStats_sys_disk:
-                oGUStatData_2.parseStat_sys_disk(iLevel_sys_disk, sDevice_sys_disk, bPrefix_sys_disk)
+                oGUStatData_2.parseStat_sys_disk(iLevel_sys_disk, sDevice_sys_disk)
             if bStats_sys_mount:
-                oGUStatData_2.parseStat_sys_mount(iLevel_sys_mount, sDevice_sys_mount, bPrefix_sys_mount)
+                oGUStatData_2.parseStat_sys_mount(iLevel_sys_mount, sDevice_sys_mount, sMountpoint_sys_mount)
             if bStats_sys_net:
-                oGUStatData_2.parseStat_sys_net(iLevel_sys_net, sDevice_sys_net, bPrefix_sys_net)
+                oGUStatData_2.parseStat_sys_net(iLevel_sys_net, sDevice_sys_net)
             for iPid in lPids:
                 if bStats_proc_status:
                     oGUStatData_2.parseStat_proc_status(iLevel_proc_status, iPid)

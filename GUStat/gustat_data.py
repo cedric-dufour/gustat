@@ -702,9 +702,17 @@ class GUStatData:
         oFile.close()
 
 
-    def parseStat_sys_disk(self, _iLevel, _sDevice, _bDevicePrefix):
+    def parseStat_sys_disk(self, _iLevel, _sDevice = None):
         global GUSTAT_PREFIX_SYS_DISK
         global GUSTAT_FIELDS_SYS_DISK
+
+        reDevice = None
+        if _sDevice is not None and _sDevice.startswith('re/') and _sDevice.endswith('/'):
+            try:
+                reDevice = re.compile(_sDevice[3:-1])
+            except:
+                sys.stderr.write('ERROR: Invalid regular expression; %s\n' % _sDevice)
+                return
 
         sFile = '/proc/diskstats'
         try:
@@ -712,29 +720,41 @@ class GUStatData:
         except:
             sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
-        sDevice = None
         for sLine in oFile:
-            lWords = self.__reMultiSpaces.sub(' ', sLine.lower().strip()).split()
+            lWords = self.__reMultiSpaces.sub(' ', sLine.strip()).split()
             if len(lWords) < 14:
                 sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                 break
-            if _sDevice is None \
-                or (_bDevicePrefix and lWords[2].startswith(_sDevice)) \
-                or lWords[2] == _sDevice:
-                sDevice = lWords[2]
-            else:
-                sDevice = None
-            if sDevice is None:
-                continue
+            if reDevice is not None:
+                if not reDevice.search(lWords[2]):
+                    continue
+            elif _sDevice is not None:
+                if _sDevice != lWords[2]:
+                    continue
             for i in range(3, 14):
                 dField = self.__makeField(GUSTAT_FIELDS_SYS_DISK, 'field'+str(i), lWords[i])
-                self.__storeField(GUSTAT_PREFIX_SYS_DISK, sDevice, dField, _iLevel)
+                self.__storeField(GUSTAT_PREFIX_SYS_DISK, lWords[2], dField, _iLevel)
         oFile.close()
 
 
-    def parseStat_sys_mount(self, _iLevel, _sDevice, _bDevicePrefix):
+    def parseStat_sys_mount(self, _iLevel, _sDevice = None, _sMountpoint = None):
         global GUSTAT_PREFIX_SYS_MOUNT
         global GUSTAT_FIELDS_SYS_MOUNT
+
+        reDevice = None
+        if _sDevice is not None and _sDevice.startswith('re/') and _sDevice.endswith('/'):
+            try:
+                reDevice = re.compile(_sDevice[3:-1])
+            except:
+                sys.stderr.write('ERROR: Invalid regular expression; %s\n' % _sDevice)
+                return
+        reMountpoint = None
+        if _sMountpoint is not None and _sMountpoint.startswith('re/') and _sMountpoint.endswith('/'):
+            try:
+                reMountpoint = re.compile(_sMountpoint[3:-1])
+            except:
+                sys.stderr.write('ERROR: Invalid regular expression; %s\n' % _sMountpoint)
+                return
 
         sFile = '/proc/self/mountstats'
         try:
@@ -742,28 +762,33 @@ class GUStatData:
         except:
             sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
             return
-        sDevice = None
+        sDeviceMountpoint = None
         sType = None
         for sLine in oFile:
-            lWords = self.__reMultiSpaces.sub(' ', sLine.lower().strip()).split()
+            lWords = self.__reMultiSpaces.sub(' ', sLine.strip()).split()
             if len(lWords) < 2:
                 continue
-            lWords[0] = lWords[0].strip(':')
+            lWords[0] = lWords[0].strip(':').lower()
             if lWords[0] == 'device':
+                sDeviceMountpoint = None
+                sType = None
                 if len(lWords) < 8:
                     sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:events]; %s\n' % sFile)
                     break
-                if _sDevice is None \
-                    or (_bDevicePrefix and lWords[4].startswith(_sDevice)) \
-                    or lWords[4] == _sDevice:
-                    sDevice = lWords[4]
-                    sType = lWords[7]
-                else:
-                    sDevice = None
-                    sType = None
-                continue
-            if sDevice is None or sType is None:
-                continue
+                if reDevice is not None:
+                    if not reDevice.search(lWords[1]):
+                        continue
+                elif _sDevice is not None:
+                    if _sDevice != lWords[1]:
+                        continue
+                if reMountpoint is not None:
+                    if not reMountpoint.search(lWords[4]):
+                        continue
+                elif _sMountpoint is not None:
+                    if _sMountpoint != lWords[4]:
+                        continue
+                sDeviceMountpoint = lWords[1]+':'+lWords[4]
+                sType = lWords[7]
             if sType == 'nfs':
                 if lWords[0] == 'events':
                     if len(lWords) < 28:
@@ -771,27 +796,35 @@ class GUStatData:
                         break
                     for i in range(1, 28):
                         dField = self.__makeField(GUSTAT_FIELDS_SYS_MOUNT, 'nfs_events_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_PREFIX_SYS_MOUNT, sDevice, dField, _iLevel)
+                        self.__storeField(GUSTAT_PREFIX_SYS_MOUNT, sDeviceMountpoint, dField, _iLevel)
                 elif lWords[0] == 'bytes':
                     if len(lWords) < 9:
                         sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:bytes]; %s\n' % sFile)
                         break
                     for i in range(1, 9):
                         dField = self.__makeField(GUSTAT_FIELDS_SYS_MOUNT, 'nfs_bytes_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_PREFIX_SYS_MOUNT, sDevice, dField, _iLevel)
+                        self.__storeField(GUSTAT_PREFIX_SYS_MOUNT, sDeviceMountpoint, dField, _iLevel)
                 elif lWords[0] in GUSTAT_FIELDS_SYS_MOUNT_NFS_OPS:
                     if len(lWords) < 9:
                         sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:ops]; %s\n' % sFile)
                         break
                     for i in range(1, 9):
                         dField = self.__makeField(GUSTAT_FIELDS_SYS_MOUNT, 'nfs_ops_field'+str(i), lWords[i], _sMetricPrefix=lWords[0])
-                        self.__storeField(GUSTAT_PREFIX_SYS_MOUNT, sDevice, dField, _iLevel)
+                        self.__storeField(GUSTAT_PREFIX_SYS_MOUNT, sDeviceMountpoint, dField, _iLevel)
         oFile.close()
 
 
-    def parseStat_sys_net(self, _iLevel, _sDevice, _bDevicePrefix):
+    def parseStat_sys_net(self, _iLevel, _sDevice = None):
         global GUSTAT_PREFIX_SYS_NET
         global GUSTAT_FIELDS_SYS_NET
+
+        reDevice = None
+        if _sDevice is not None and _sDevice.startswith('re/') and _sDevice.endswith('/'):
+            try:
+                reDevice = re.compile(_sDevice[3:-1])
+            except:
+                sys.stderr.write('ERROR: Invalid regular expression; %s\n' % _sDevice)
+                return
 
         sFile = '/proc/net/dev'
         try:
@@ -805,22 +838,20 @@ class GUStatData:
             iLine += 1
             if iLine < 3:
                 continue
-            lWords = self.__reMultiSpaces.sub(' ', sLine.lower().strip()).split()
+            lWords = self.__reMultiSpaces.sub(' ', sLine.strip()).split()
             if len(lWords) < 17:
                 sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
                 break
             lWords[0] = lWords[0].strip(':')
-            if _sDevice is None \
-                or (_bDevicePrefix and lWords[0].startswith(_sDevice)) \
-                or lWords[0] == _sDevice:
-                sDevice = lWords[0]
-            else:
-                sDevice = None
-            if sDevice is None:
-                continue
+            if reDevice is not None:
+                if not reDevice.search(lWords[0]):
+                    continue
+            elif _sDevice is not None:
+                if _sDevice != lWords[0]:
+                    continue
             for i in range(1, 17):
                 dField = self.__makeField(GUSTAT_FIELDS_SYS_NET, 'field'+str(i), lWords[i])
-                self.__storeField(GUSTAT_PREFIX_SYS_NET, sDevice, dField, _iLevel)
+                self.__storeField(GUSTAT_PREFIX_SYS_NET, lWords[0], dField, _iLevel)
         oFile.close()
 
 
