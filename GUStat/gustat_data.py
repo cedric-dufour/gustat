@@ -411,18 +411,41 @@ GUSTAT_FIELDS_PROC_IO = {
     'cancelled_write_bytes': [ 'io', 'writes_bytes_cancelled', 'bytes', None, 'int', True, True, 1 ],
 }
 
-# Qemu 'info blockstats' fields
-GUSTAT_PREFIX_VIRT_BLKS = 'virt_blks'
-GUSTAT_FIELDS_VIRT_BLKS = {
+# Libvirt 'domstats' fields
+GUSTAT_PREFIX_VIRT_STAT = 'virt_stat'
+GUSTAT_FIELDS_VIRT_STAT = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
-    'rd_bytes': [ 'io', 'reads_bytes', 'bytes', None, 'int', True, True, 0 ],
-    'wr_bytes': [ 'io', 'writes_bytes', 'bytes', None, 'int', True, True, 0 ],
-    'rd_operations': [ 'io', 'reads_ops', 'count', None, 'int', True, True, 0 ],
-    'wr_operations': [ 'io', 'writes_ops', 'count', None, 'int', True, True, 0 ],
-    'flush_operations': [ 'io', 'flushes_ops', 'count', None, 'int', True, True, 1 ],
-    'rd_total_time_ns': [ 'io', 'reads_elapsed', 'seconds', 0.000000001, 'float', True, False, 0 ],
-    'wr_total_time_ns': [ 'io', 'writes_elapsed', 'seconds', 0.000000001, 'float', True, False, 0 ],
-    'flush_total_time_ns': [ 'io', 'flushes_elapsed', 'seconds', 0.000000001, 'float', True, False, 1 ],
+    'cpu.time': [ 'cpu', 'total', 'seconds', 0.000000001, 'float', True, False, 0 ],
+    'cpu.user': [ 'cpu', 'user', 'seconds', 0.000000001, 'float', True, False, 0 ],
+    'cpu.system': [ 'cpu', 'system', 'seconds', 0.000000001, 'float', True, False, 0 ],
+    'balloon.maximum': [ 'mem', 'maximum', 'bytes', 1024, 'int', False, False, 2 ],
+    'balloon.current': [ 'mem', 'current', 'bytes', 1024, 'int', True, True, 0 ],
+    'balloon.available': [ 'mem', 'available', 'bytes', 1024, 'int', True, True, 0 ],
+    'balloon.unused': [ 'mem', 'unused', 'bytes', 1024, 'int', True, True, 0 ],
+    'balloon.usable': [ 'mem', 'usable', 'bytes', 1024, 'int', True, True, 2 ],
+    'balloon.actual': [ 'mem', 'actual', 'bytes', 1024, 'int', True, True, 2 ],
+    'balloon.rss': [ 'mem', 'rss', 'bytes', 1024, 'int', True, True, 0 ],
+    'balloon.swap_in': [ 'mem', 'swap_reads', 'bytes', 1024, 'int', True, True, 0 ],
+    'balloon.swap_out': [ 'mem', 'swap_writes', 'bytes', 1024, 'int', True, True, 0 ],
+    'balloon.minor_fault': [ 'mem', 'minflt', 'count', None, 'int', True, True, 1 ],
+    'balloon.major_fault': [ 'mem', 'majflt', 'count', None, 'int', True, True, 1 ],
+    'net.rx.bytes': [ 'net', 'rx_bytes', 'bytes', None, 'int', True, True, 0 ],
+    'net.rx.pkts': [ 'net', 'rx_packets', 'packets', None, 'int', True, True, 0 ],
+    'net.rx.drop': [ 'net', 'rx_dropped', 'packets', None, 'int', True, True, 0 ],
+    'net.rx.errs': [ 'net', 'rx_errors', 'count', None, 'int', True, True, 2 ],
+    'net.tx.bytes': [ 'net', 'tx_bytes', 'bytes', None, 'int', True, True, 0 ],
+    'net.tx.pkts': [ 'net', 'tx_packets', 'packets', None, 'int', True, True, 0 ],
+    'net.tx.drop': [ 'net', 'tx_dropped', 'packets', None, 'int', True, True, 0 ],
+    'net.tx.errs': [ 'net', 'tx_errors', 'count', None, 'int', True, True, 2 ],
+    'block.path': [ 'io', 'path', 'name', None, 'str', False, False, 0 ],
+    'block.rd.bytes': [ 'io', 'reads_bytes', 'bytes', None, 'int', True, True, 0 ],
+    'block.wr.bytes': [ 'io', 'writes_bytes', 'bytes', None, 'int', True, True, 0 ],
+    'block.rd.reqs': [ 'io', 'reads_ops', 'count', None, 'int', True, True, 0 ],
+    'block.wr.reqs': [ 'io', 'writes_ops', 'count', None, 'int', True, True, 0 ],
+    'block.fl.reqs': [ 'io', 'flushes_ops', 'count', None, 'int', True, True, 1 ],
+    'block.rd.times': [ 'io', 'reads_elapsed', 'seconds', 0.000000001, 'float', True, False, 2 ],
+    'block.wr.times': [ 'io', 'writes_elapsed', 'seconds', 0.000000001, 'float', True, False, 2 ],
+    'block.fl.times': [ 'io', 'flushes_elapsed', 'seconds', 0.000000001, 'float', True, False, 2 ],
 }
 
 
@@ -879,37 +902,48 @@ class GUStatData:
         oFile.close()
 
 
-    def parseStat_virt_blks(self, _iLevel, _sGuest, _sDevice, _bDevicePrefix):
-        global GUSTAT_PREFIX_VIRT_BLKS
-        global GUSTAT_FIELDS_VIRT_BLKS
+    def parseStat_virt_stat(self, _iLevel, _sGuest):
+        global GUSTAT_PREFIX_VIRT_STAT
+        global GUSTAT_FIELDS_VIRT_STAT
 
-        lCommandArgs = ['virsh', '--quiet', 'qemu-monitor-command', '--hmp', _sGuest, 'info', 'blockstats']
+        lCommand = ['virsh', 'domstats', '--raw', '--cpu-total', '--balloon', '--interface', '--block', _sGuest]
         try:
-            bOutput = SP.check_output(lCommandArgs)
+            bOutput = SP.check_output(lCommand)
         except:
-            sys.stderr.write('ERROR: Command failed; %s\n' % ' '.join(lCommandArgs))
+            sys.stderr.write('ERROR: Command failed; %s\n' % ' '.join(lCommand))
             return
-        sDevice = None
+        sDevice_name = None
+        sDevice_index = None
+        iLine = 0
         for sLine in bOutput.decode(sys.stdout.encoding).splitlines():
-            lWords = sLine.lower().split(' ')
+            iLine += 1
+            if iLine < 2:
+                continue
+            sLine = sLine.strip()
+            if len(sLine) < 1:
+                continue
+            lWords = sLine.split('=')
             if len(lWords) < 2:
-                continue
-            if len(lWords) < 9:
-                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
+                sys.stderr.write('ERROR: Badly/unexpectedly formatted command output; %s\n' % ' '.join(lCommand))
                 break
-            lWords[0] = lWords[0].strip(':')
-            if _sDevice is None \
-                or (_bDevicePrefix and lWords[0].startswith(_sDevice)) \
-                or lWords[0] == _sDevice:
-                sDevice = lWords[0]
+            lWords[0] = lWords[0].lower()
+            if lWords[0].startswith('net') or lWords[0].startswith('block'):
+                try:
+                    (sCategory, sIndex, sMetric) = lWords[0].split('.', 2)
+                except:
+                    continue
+                if sIndex != sDevice_index:
+                    sDevice_name = None
+                if sMetric == 'name':
+                    sDevice_index = sIndex
+                    sDevice_name = lWords[1]
+                    continue
+                if sDevice_name is not None:
+                    dField = self.__makeField(GUSTAT_FIELDS_VIRT_STAT, sCategory+'.'+sMetric, lWords[1])
+                    self.__storeField(GUSTAT_PREFIX_VIRT_STAT, _sGuest+':'+sDevice_name, dField, _iLevel)
             else:
-                sDevice = None
-            if sDevice is None:
-                continue
-            for i in range(1, 9):
-                (sMetric, sValue) = lWords[i].split('=', 1)
-                dField = self.__makeField(GUSTAT_FIELDS_VIRT_BLKS, sMetric, sValue)
-                self.__storeField(GUSTAT_PREFIX_VIRT_BLKS, _sGuest+':'+sDevice, dField, _iLevel)
+                dField = self.__makeField(GUSTAT_FIELDS_VIRT_STAT, lWords[0], lWords[1])
+                self.__storeField(GUSTAT_PREFIX_VIRT_STAT, _sGuest, dField, _iLevel)
 
 
     #

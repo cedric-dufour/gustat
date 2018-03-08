@@ -300,25 +300,16 @@ class GUStatMain:
             default=None,
             help='Libvirt statistics: comma-separated list of guests (VMs); \'*\' for all')
 
-        # ... Libvirt stats: Qemu block devices statistics
+        # ... Libvirt stats: domain statistics
         self.__oArgumentParser.add_argument(
-            '-Vb', '--virt-blks', action='store_true',
+            '-Vs', '--virt-stat', action='store_true',
             default=False,
-            help='Libvirt/Qemu block devices statistics (info blockstats)')
+            help='Libvirt domain statistics (virsh domstats)')
         self.__oArgumentParser.add_argument(
-            '-Vbl', '--virt-blks-level', type=int,
+            '-Vsl', '--virt-stat-level', type=int,
             metavar='<level>',
             default=0,
-            help='Libvirt/Qemu block devices statistics: level (0=standard, 1=advanced, 2=expert)')
-        self.__oArgumentParser.add_argument(
-            '-Vbd', '--virt-blks-device', type=str,
-            metavar='<device>',
-            default=None,
-            help='Libvirt/Qemu block devices statistics: device name')
-        self.__oArgumentParser.add_argument(
-            '-Vbp', '--virt-blks-prefix', action='store_true',
-            default=False,
-            help='Libvirt/Qemu block devices statistics: match device name prefix')
+            help='Libvirt domain statistics: level (0=standard, 1=advanced, 2=expert)')
 
         # ... Libvirt stats: all
         self.__oArgumentParser.add_argument(
@@ -508,10 +499,8 @@ class GUStatMain:
                 lGuests = self.__oArguments.virt.strip(',').split(',')
         bStats_virt_all = self.__oArguments.virt_all
         iStats_virt_all_level = self.__oArguments.virt_all_level
-        bStats_virt_blks = bStats_virt_all or self.__oArguments.virt_blks
-        iLevel_virt_blks = max(iStats_virt_all_level, self.__oArguments.virt_blks_level)
-        sDevice_virt_blks = self.__oArguments.virt_blks_device
-        bPrefix_virt_blks = self.__oArguments.virt_blks_prefix
+        bStats_virt_stat = bStats_virt_all or self.__oArguments.virt_stat
+        iLevel_virt_stat = max(iStats_virt_all_level, self.__oArguments.virt_stat_level)
 
 
         # Signal handling
@@ -550,8 +539,8 @@ class GUStatMain:
             if bStats_proc_io:
                 oGUStatData_1.parseStat_proc_io(iLevel_proc_io, iPid)
         for sGuest in lGuests:
-            if bStats_virt_blks:
-                oGUStatData_1.parseStat_virt_blks(iLevel_virt_blks, sGuest, sDevice_virt_blks, bPrefix_virt_blks)
+            if bStats_virt_stat:
+                oGUStatData_1.parseStat_virt_stat(iLevel_virt_stat, sGuest)
 
         # ... display statistics
         if not bInterval:
@@ -599,8 +588,8 @@ class GUStatMain:
                 if bStats_proc_io:
                     oGUStatData_2.parseStat_proc_io(iLevel_proc_io, iPid)
             for sGuest in lGuests:
-                if bStats_virt_blks:
-                    oGUStatData_2.parseStat_virt_blks(iLevel_virt_blks, sGuest, sDevice_virt_blks, bPrefix_virt_blks)
+                if bStats_virt_stat:
+                    oGUStatData_2.parseStat_virt_stat(iLevel_virt_stat, sGuest)
 
             # ... compute differences
             for sKey in oGUStatData_1.dStats.keys():
