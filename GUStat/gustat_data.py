@@ -393,7 +393,7 @@ GUSTAT_FIELDS_PROC_STAT = {
     'field16': [ 'cpu', 'stime_children', 'ticks', None, 'int', True, True, 2 ],
     'field19': [ 'proc', 'threads', 'count', None, 'int', True, True, 0 ],
     'field22': [ 'mem', 'vsize', 'bytes', None, 'int', True, True, 0 ],
-    'field23': [ 'mem', 'rss', 'bytes', None, 'int', True, True, 0 ],
+    'field23': [ 'mem', 'rss', 'pages', None, 'int', True, True, 0 ],
     'field42': [ 'cpu', 'gtime', 'ticks', None, 'int', True, True, 0 ],
     'field43': [ 'cpu', 'gtime_children', 'ticks', None, 'int', True, True, 2 ],
 }
