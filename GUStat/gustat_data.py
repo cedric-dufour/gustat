@@ -569,15 +569,17 @@ class GUStatData:
                     iQuantity_physical = int(lWords[1])
                 elif lWords[0] == 'model name':
                     try:
-                        lWords[1] = lWords[1].rsplit('@', 1)[1].strip().lower()
-                        if lWords[1][-3:] == 'ghz':
+                        lWords[1] = lWords[1].rsplit('@', 1)[1].strip()
+                        if lWords[1].endswith('ghz'):
                             lWords[1] = int(1000000000.0*float(lWords[1][:-3]))
-                        elif lWords[1][-3:] == 'mhz':
+                        elif lWords[1].endswith('mhz'):
                             lWords[1] = int(1000000.0*float(lWords[1][:-3]))
-                        elif lWords[1][-3:] == 'khz':
+                        elif lWords[1].endswith('khz'):
                             lWords[1] = int(1000.0*float(lWords[1][:-3]))
-                        elif lWords[1][-2:] == 'hz':
+                        elif lWords[1].endswith('hz'):
                             lWords[1] = int(lWords[1][:-2])
+                        else:
+                            continue
                     except:
                         continue
                 dField = self.__makeField(GUSTAT_FIELDS_SYS_CPU, lWords[0], lWords[1])
