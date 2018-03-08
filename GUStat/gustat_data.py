@@ -243,16 +243,16 @@ GUSTAT_PREFIX_SYS_DISK = 'sys_disk'
 GUSTAT_FIELDS_SYS_DISK = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
     'field3': [ 'io', 'reads_completed', 'count', None, 'int', True, True, 0 ],
-    'field4': [ 'io', 'reads_merged', 'count', None, 'int', True, True, 0 ],
+    'field4': [ 'io', 'reads_merged', 'count', None, 'int', True, True, 1 ],
     'field5': [ 'io', 'reads_sectors', 'count', None, 'int', True, True, 0 ],
-    'field6': [ 'io', 'reads_elapsed', 'seconds', 0.001, 'float', True, False, 0 ],
+    'field6': [ 'io', 'reads_elapsed', 'seconds', 0.001, 'float', True, False, 2 ],
     'field7': [ 'io', 'writes_completed', 'count', None, 'int', True, True, 0 ],
-    'field8': [ 'io', 'writes_merged', 'count', None, 'int', True, True, 0 ],
+    'field8': [ 'io', 'writes_merged', 'count', None, 'int', True, True, 1 ],
     'field9': [ 'io', 'writes_sectors', 'count', None, 'int', True, True, 0 ],
-    'field10': [ 'io', 'writes_elapsed', 'seconds', 0.001, 'float', True, False, 0 ],
+    'field10': [ 'io', 'writes_elapsed', 'seconds', 0.001, 'float', True, False, 2 ],
     'field11': [ 'io', 'ops_ongoing', 'count', None, 'int', False, False, 0 ],
-    'field12': [ 'io', 'ops_elapsed', 'seconds', 0.001, 'float', True, False, 0 ],
-    'field13': [ 'io', 'ops_elapsed_weighted', 'seconds', 0.001, 'float', True, False, 1 ],
+    'field12': [ 'io', 'ops_elapsed', 'seconds', 0.001, 'float', True, False, 2 ],
+    'field13': [ 'io', 'ops_elapsed_weighted', 'seconds', 0.001, 'float', True, False, 2 ],
 }
 
 # /proc/mountstats fields
