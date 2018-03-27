@@ -290,18 +290,18 @@ GUSTAT_FIELDS_SYS_MOUNT = {
     'nfs_bytes_field2': [ 'io(nfs_bytes)', 'writes_normal', 'bytes', None, 'int', True, True, 1 ],
     'nfs_bytes_field3': [ 'io(nfs_bytes)', 'reads_direct', 'bytes', None, 'int', True, True, 1 ],
     'nfs_bytes_field4': [ 'io(nfs_bytes)', 'writes_direct', 'bytes', None, 'int', True, True, 1 ],
-    'nfs_bytes_field5': [ 'io(nfs_bytes)', 'reads_nfs', 'bytes', None, 'int', True, True, 0 ],
-    'nfs_bytes_field6': [ 'io(nfs_bytes)', 'writes_nfs', 'bytes', None, 'int', True, True, 0 ],
+    'nfs_bytes_field5': [ 'io(nfs_bytes)', 'reads_server', 'bytes', None, 'int', True, True, 0 ],
+    'nfs_bytes_field6': [ 'io(nfs_bytes)', 'writes_server', 'bytes', None, 'int', True, True, 0 ],
     'nfs_bytes_field7': [ 'io(nfs_bytes)', 'reads_mmap', 'pages', None, 'int', True, True, 1 ],
     'nfs_bytes_field8': [ 'io(nfs_bytes)', 'writes_mmap', 'pages', None, 'int', True, True, 1 ],
-    'nfs_ops_field1': [ 'io(nfs_ops)', 'requested', 'count', None, 'int', True, True, 0 ],
-    'nfs_ops_field2': [ 'io(nfs_ops)', 'transmitted', 'count', None, 'int', True, True, 1 ],
-    'nfs_ops_field3': [ 'io(nfs_ops)', 'timedout', 'count', None, 'int', True, True, 2 ],
-    'nfs_ops_field4': [ 'io(nfs_ops)', 'data_sent', 'bytes', None, 'int', True, True, 1 ],
-    'nfs_ops_field5': [ 'io(nfs_ops)', 'data_received', 'bytes', None, 'int', True, True, 1 ],
-    'nfs_ops_field6': [ 'io(nfs_ops)', 'elapsed_queue_wait', 'seconds', 0.001, 'float', True, False, 2 ],
-    'nfs_ops_field7': [ 'io(nfs_ops)', 'elapsed_response_wait', 'seconds', 0.001, 'float', True, False, 2 ],
-    'nfs_ops_field8': [ 'io(nfs_ops)', 'elapsed_total', 'seconds', 0.001, 'float', True, False, 1 ],
+    'nfs_ops_field1': [ 'io(nfs_rpc)', 'requested', 'count', None, 'int', True, True, 0 ],
+    'nfs_ops_field2': [ 'io(nfs_rpc)', 'transmitted', 'count', None, 'int', True, True, 1 ],
+    'nfs_ops_field3': [ 'io(nfs_rpc)', 'timedout', 'count', None, 'int', True, True, 2 ],
+    'nfs_ops_field4': [ 'io(nfs_rpc)', 'data_sent', 'bytes', None, 'int', True, True, 1 ],
+    'nfs_ops_field5': [ 'io(nfs_rpc)', 'data_received', 'bytes', None, 'int', True, True, 1 ],
+    'nfs_ops_field6': [ 'io(nfs_rpc)', 'elapsed_queue_wait', 'seconds', 0.001, 'float', True, False, 2 ],
+    'nfs_ops_field7': [ 'io(nfs_rpc)', 'elapsed_response_wait', 'seconds', 0.001, 'float', True, False, 2 ],
+    'nfs_ops_field8': [ 'io(nfs_rpc)', 'elapsed_total', 'seconds', 0.001, 'float', True, False, 1 ],
 }
 GUSTAT_FIELDS_SYS_MOUNT_NFS_OPS = {
     'null',
@@ -462,7 +462,7 @@ class GUStatData:
     # CONSTRUCTORS / DESTRUCTOR
     #------------------------------------------------------------------------------
 
-    def __init__(self, _bInterval, _bRate):
+    def __init__(self, _bInterval = False, _bRate = False):
         # Fields
         self.__bInterval = bool(_bInterval)
         self.__bRate = bool(_bRate)
@@ -796,21 +796,21 @@ class GUStatData:
                         break
                     for i in range(1, 28):
                         dField = self.__makeField(GUSTAT_FIELDS_SYS_MOUNT, 'nfs_events_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_MEASUREMENT_SYS_MOUNT, sDeviceMountpoint, dField, _iLevel)
+                        self.__storeField(GUSTAT_MEASUREMENT_SYS_MOUNT+'_'+sType, sDeviceMountpoint, dField, _iLevel)
                 elif lWords[0] == 'bytes':
                     if len(lWords) < 9:
                         sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:bytes]; %s\n' % sFile)
                         break
                     for i in range(1, 9):
                         dField = self.__makeField(GUSTAT_FIELDS_SYS_MOUNT, 'nfs_bytes_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_MEASUREMENT_SYS_MOUNT, sDeviceMountpoint, dField, _iLevel)
+                        self.__storeField(GUSTAT_MEASUREMENT_SYS_MOUNT+'_'+sType, sDeviceMountpoint, dField, _iLevel)
                 elif lWords[0] in GUSTAT_FIELDS_SYS_MOUNT_NFS_OPS:
                     if len(lWords) < 9:
-                        sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:ops]; %s\n' % sFile)
+                        sys.stderr.write('ERROR: Badly/unexpectedly formatted file [rpc:ops]; %s\n' % sFile)
                         break
                     for i in range(1, 9):
                         dField = self.__makeField(GUSTAT_FIELDS_SYS_MOUNT, 'nfs_ops_field'+str(i), lWords[i], _sMetricPrefix=lWords[0])
-                        self.__storeField(GUSTAT_MEASUREMENT_SYS_MOUNT, sDeviceMountpoint, dField, _iLevel)
+                        self.__storeField(GUSTAT_MEASUREMENT_SYS_MOUNT+'_'+sType, sDeviceMountpoint, dField, _iLevel)
         oFile.close()
 
 
