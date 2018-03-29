@@ -462,10 +462,11 @@ class GUStatData:
     # CONSTRUCTORS / DESTRUCTOR
     #------------------------------------------------------------------------------
 
-    def __init__(self, _bInterval = False, _bRate = False):
+    def __init__(self, _bInterval = False, _bRate = False, _bThrowErrors = False):
         # Fields
         self.__bInterval = bool(_bInterval)
         self.__bRate = bool(_bRate)
+        self.__bThrowErrors = _bThrowErrors
         self.__reMultiSpaces = re.compile('\s\s+')
         self.__iCpuCount = None
         self.dStats = dict()
@@ -474,6 +475,17 @@ class GUStatData:
     #------------------------------------------------------------------------------
     # METHODS
     #------------------------------------------------------------------------------
+
+    #
+    # Helpers
+    #
+
+    def __ERROR(self, _sMessage):
+        if self.__bThrowErrors:
+            raise RuntimeError(_sMessage)
+        else:
+            sys.stderr.write('ERROR: %s\n' % _sMessage)
+
 
     #
     # Data
@@ -535,6 +547,7 @@ class GUStatData:
             _sKeyObject = '-'
         self.dStats[_sKeyMeasurement+','+_dField['category']+':'+_dField['metric']+','+_sKeyObject] = _dField
 
+
     #
     # Parsers
     #
@@ -545,53 +558,51 @@ class GUStatData:
 
         sFile = '/proc/cpuinfo'
         try:
-            oFile = open(sFile, 'r')
-        except:
-            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
-            return
-        iQuantity_logical = int(0)
-        iQuantity_cores = int(0)
-        iQuantity_physical = int(0)
-        sId = None
-        for sLine in oFile:
-            lWords = [_s.strip() for _s in sLine.lower().split(':')]
-            if len(lWords) < 2:
-                continue
-            if lWords[0] == 'processor':
-                iQuantity_logical = int(lWords[1])
-                sId = 'cpu'+lWords[1]
-            else:
-                if sId is None:
-                    continue
-                if lWords[0] == 'core id':
-                    iQuantity_cores = int(lWords[1])
-                elif lWords[0] == 'physical id':
-                    iQuantity_physical = int(lWords[1])
-                elif lWords[0] == 'model name':
-                    try:
-                        lWords[1] = lWords[1].rsplit('@', 1)[1].strip()
-                        if lWords[1].endswith('ghz'):
-                            lWords[1] = int(1000000000.0*float(lWords[1][:-3]))
-                        elif lWords[1].endswith('mhz'):
-                            lWords[1] = int(1000000.0*float(lWords[1][:-3]))
-                        elif lWords[1].endswith('khz'):
-                            lWords[1] = int(1000.0*float(lWords[1][:-3]))
-                        elif lWords[1].endswith('hz'):
-                            lWords[1] = int(lWords[1][:-2])
-                        else:
-                            continue
-                    except:
+            with open(sFile, 'r') as oFile:
+                iQuantity_logical = int(0)
+                iQuantity_cores = int(0)
+                iQuantity_physical = int(0)
+                sId = None
+                for sLine in oFile:
+                    lWords = [_s.strip() for _s in sLine.lower().split(':')]
+                    if len(lWords) < 2:
                         continue
-                dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, lWords[0], lWords[1])
-                self.__storeField(GUSTAT_MEASUREMENT_CPU_INFO, sId, dField, _iLevel)
-        dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, 'count_logical', iQuantity_logical+1)
-        self.__storeField(GUSTAT_MEASUREMENT_CPU_INFO, 'cpu', dField, _iLevel)
-        dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, 'count_cores', iQuantity_cores+1)
-        self.__storeField(GUSTAT_MEASUREMENT_CPU_INFO, 'cpu', dField, _iLevel)
-        dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, 'count_physical', iQuantity_physical+1)
-        self.__storeField(GUSTAT_MEASUREMENT_CPU_INFO, 'cpu', dField, _iLevel)
-        self.__iCpuCount = iQuantity_logical+1
-        oFile.close()
+                    if lWords[0] == 'processor':
+                        iQuantity_logical = int(lWords[1])
+                        sId = 'cpu'+lWords[1]
+                    else:
+                        if sId is None:
+                            continue
+                        if lWords[0] == 'core id':
+                            iQuantity_cores = int(lWords[1])
+                        elif lWords[0] == 'physical id':
+                            iQuantity_physical = int(lWords[1])
+                        elif lWords[0] == 'model name':
+                            try:
+                                lWords[1] = lWords[1].rsplit('@', 1)[1].strip()
+                                if lWords[1].endswith('ghz'):
+                                    lWords[1] = int(1000000000.0*float(lWords[1][:-3]))
+                                elif lWords[1].endswith('mhz'):
+                                    lWords[1] = int(1000000.0*float(lWords[1][:-3]))
+                                elif lWords[1].endswith('khz'):
+                                    lWords[1] = int(1000.0*float(lWords[1][:-3]))
+                                elif lWords[1].endswith('hz'):
+                                    lWords[1] = int(lWords[1][:-2])
+                                else:
+                                    continue
+                            except:
+                                continue
+                        dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, lWords[0], lWords[1])
+                        self.__storeField(GUSTAT_MEASUREMENT_CPU_INFO, sId, dField, _iLevel)
+                dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, 'count_logical', iQuantity_logical+1)
+                self.__storeField(GUSTAT_MEASUREMENT_CPU_INFO, 'cpu', dField, _iLevel)
+                dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, 'count_cores', iQuantity_cores+1)
+                self.__storeField(GUSTAT_MEASUREMENT_CPU_INFO, 'cpu', dField, _iLevel)
+                dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, 'count_physical', iQuantity_physical+1)
+                self.__storeField(GUSTAT_MEASUREMENT_CPU_INFO, 'cpu', dField, _iLevel)
+                self.__iCpuCount = iQuantity_logical+1
+        except IOError:
+            self.__ERROR('Missing/unreadable file; %s' % sFile)
 
 
     def parseStat_cpu_load(self, _iLevel):
@@ -600,21 +611,19 @@ class GUStatData:
 
         sFile = '/proc/loadavg'
         try:
-            oFile = open(sFile, 'r')
-        except:
-            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
-            return
-        lWords = oFile.readline().split()
-        if len(lWords) >= 3:
-            for i in range(0, 3):
-                if self.__iCpuCount is not None:
-                    dField = self.__makeField(GUSTAT_FIELDS_CPU_LOAD, 'field'+str(i), float(lWords[i]) / self.__iCpuCount)
-                    self.__storeField(GUSTAT_MEASUREMENT_CPU_LOAD, 'normalized', dField, _iLevel)
-                dField = self.__makeField(GUSTAT_FIELDS_CPU_LOAD, 'field'+str(i), lWords[i])
-                self.__storeField(GUSTAT_MEASUREMENT_CPU_LOAD, 'total', dField, _iLevel)
-        else:
-            sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
-        oFile.close()
+            with open(sFile, 'r') as oFile:
+                lWords = oFile.readline().split()
+                if len(lWords) >= 3:
+                    for i in range(0, 3):
+                        if self.__iCpuCount is not None:
+                            dField = self.__makeField(GUSTAT_FIELDS_CPU_LOAD, 'field'+str(i), float(lWords[i]) / self.__iCpuCount)
+                            self.__storeField(GUSTAT_MEASUREMENT_CPU_LOAD, 'normalized', dField, _iLevel)
+                        dField = self.__makeField(GUSTAT_FIELDS_CPU_LOAD, 'field'+str(i), lWords[i])
+                        self.__storeField(GUSTAT_MEASUREMENT_CPU_LOAD, 'total', dField, _iLevel)
+                else:
+                    self.__ERROR('Badly/unexpectedly formatted file; %s' % sFile)
+        except IOError:
+            self.__ERROR('Missing/unreadable file; %s' % sFile)
 
 
     def parseStat_cpu_stat(self, _iLevel, _bCpuDetail):
@@ -623,36 +632,34 @@ class GUStatData:
 
         sFile = '/proc/stat'
         try:
-            oFile = open(sFile, 'r')
-        except:
-            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
-            return
-        for sLine in oFile:
-            lWords = self.__reMultiSpaces.sub(' ', sLine.lower()).split()
-            if len(lWords) < 2:
-                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
-                break
-            if lWords[0].startswith('cpu'):
-                if len(lWords) < 11:
-                    sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
-                    break
-                sCpu = lWords[0]
-                if sCpu != 'cpu' and not _bCpuDetail:
-                        continue
-                for i in range(1, 11):
-                    if sCpu == 'cpu':
-                        if self.__iCpuCount is not None:
-                            dField = self.__makeField(GUSTAT_FIELDS_CPU_STAT, 'cpu_field'+str(i), float(lWords[i]) / self.__iCpuCount)
-                            self.__storeField(GUSTAT_MEASUREMENT_CPU_STAT, 'normalized', dField, _iLevel)
-                        dField = self.__makeField(GUSTAT_FIELDS_CPU_STAT, 'cpu_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_MEASUREMENT_CPU_STAT, 'total', dField, _iLevel)
+            with open(sFile, 'r') as oFile:
+                for sLine in oFile:
+                    lWords = self.__reMultiSpaces.sub(' ', sLine.lower()).split()
+                    if len(lWords) < 2:
+                        self.__ERROR('Badly/unexpectedly formatted file; %s' % sFile)
+                        break
+                    if lWords[0].startswith('cpu'):
+                        if len(lWords) < 11:
+                            self.__ERROR('Badly/unexpectedly formatted file; %s' % sFile)
+                            break
+                        sCpu = lWords[0]
+                        if sCpu != 'cpu' and not _bCpuDetail:
+                                continue
+                        for i in range(1, 11):
+                            if sCpu == 'cpu':
+                                if self.__iCpuCount is not None:
+                                    dField = self.__makeField(GUSTAT_FIELDS_CPU_STAT, 'cpu_field'+str(i), float(lWords[i]) / self.__iCpuCount)
+                                    self.__storeField(GUSTAT_MEASUREMENT_CPU_STAT, 'normalized', dField, _iLevel)
+                                dField = self.__makeField(GUSTAT_FIELDS_CPU_STAT, 'cpu_field'+str(i), lWords[i])
+                                self.__storeField(GUSTAT_MEASUREMENT_CPU_STAT, 'total', dField, _iLevel)
+                            else:
+                                dField = self.__makeField(GUSTAT_FIELDS_CPU_STAT, 'cpu_field'+str(i), lWords[i])
+                                self.__storeField(GUSTAT_MEASUREMENT_CPU_STAT, sCpu, dField, _iLevel)
                     else:
-                        dField = self.__makeField(GUSTAT_FIELDS_CPU_STAT, 'cpu_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_MEASUREMENT_CPU_STAT, sCpu, dField, _iLevel)
-            else:
-                dField = self.__makeField(GUSTAT_FIELDS_CPU_STAT, lWords[0], lWords[1])
-                self.__storeField(GUSTAT_MEASUREMENT_CPU_STAT, None, dField, _iLevel)
-        oFile.close()
+                        dField = self.__makeField(GUSTAT_FIELDS_CPU_STAT, lWords[0], lWords[1])
+                        self.__storeField(GUSTAT_MEASUREMENT_CPU_STAT, None, dField, _iLevel)
+        except IOError:
+            self.__ERROR('Missing/unreadable file; %s' % sFile)
 
 
     def parseStat_mem_info(self, _iLevel):
@@ -661,25 +668,23 @@ class GUStatData:
 
         sFile = '/proc/meminfo'
         try:
-            oFile = open(sFile, 'r')
-        except:
-            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
-            return
-        for sLine in oFile:
-            lWords = [_s.strip() for _s in sLine.lower().split(':')]
-            if len(lWords) < 2:
-                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
-                break
-            if lWords[1].endswith('gb'):
-                dField = self.__makeField(GUSTAT_FIELDS_MEM_INFO, lWords[0], lWords[1][0:-2], _fCoefficient=1073741824.0)
-            elif lWords[1].endswith(' mb'):
-                dField = self.__makeField(GUSTAT_FIELDS_MEM_INFO, lWords[0], lWords[1][0:-2], _fCoefficient=1048576.0)
-            elif lWords[1].endswith(' kb'):
-                dField = self.__makeField(GUSTAT_FIELDS_MEM_INFO, lWords[0], lWords[1][0:-2], _fCoefficient=1024.0)
-            else:
-                dField = self.__makeField(GUSTAT_FIELDS_MEM_INFO, lWords[0], lWords[1])
-            self.__storeField(GUSTAT_MEASUREMENT_MEM_INFO, None, dField, _iLevel)
-        oFile.close()
+            with open(sFile, 'r') as oFile:
+                for sLine in oFile:
+                    lWords = [_s.strip() for _s in sLine.lower().split(':')]
+                    if len(lWords) < 2:
+                        self.__ERROR('Badly/unexpectedly formatted file; %s' % sFile)
+                        break
+                    if lWords[1].endswith('gb'):
+                        dField = self.__makeField(GUSTAT_FIELDS_MEM_INFO, lWords[0], lWords[1][0:-2], _fCoefficient=1073741824.0)
+                    elif lWords[1].endswith(' mb'):
+                        dField = self.__makeField(GUSTAT_FIELDS_MEM_INFO, lWords[0], lWords[1][0:-2], _fCoefficient=1048576.0)
+                    elif lWords[1].endswith(' kb'):
+                        dField = self.__makeField(GUSTAT_FIELDS_MEM_INFO, lWords[0], lWords[1][0:-2], _fCoefficient=1024.0)
+                    else:
+                        dField = self.__makeField(GUSTAT_FIELDS_MEM_INFO, lWords[0], lWords[1])
+                    self.__storeField(GUSTAT_MEASUREMENT_MEM_INFO, None, dField, _iLevel)
+        except IOError:
+            self.__ERROR('Missing/unreadable file; %s' % sFile)
 
 
     def parseStat_mem_vm(self, _iLevel):
@@ -688,18 +693,16 @@ class GUStatData:
 
         sFile = '/proc/vmstat'
         try:
-            oFile = open(sFile, 'r')
-        except:
-            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
-            return
-        for sLine in oFile:
-            lWords = sLine.lower().split(' ')
-            if len(lWords) < 2:
-                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
-                break
-            dField = self.__makeField(GUSTAT_FIELDS_MEM_VM, lWords[0], lWords[1])
-            self.__storeField(GUSTAT_MEASUREMENT_MEM_VM, None, dField, _iLevel)
-        oFile.close()
+            with open(sFile, 'r') as oFile:
+                for sLine in oFile:
+                    lWords = sLine.lower().split(' ')
+                    if len(lWords) < 2:
+                        self.__ERROR('Badly/unexpectedly formatted file; %s' % sFile)
+                        break
+                    dField = self.__makeField(GUSTAT_FIELDS_MEM_VM, lWords[0], lWords[1])
+                    self.__storeField(GUSTAT_MEASUREMENT_MEM_VM, None, dField, _iLevel)
+        except IOError:
+            self.__ERROR('Missing/unreadable file; %s' % sFile)
 
 
     def parseStat_io_disk(self, _iLevel, _sDevice = None):
@@ -711,30 +714,28 @@ class GUStatData:
             try:
                 reDevice = re.compile(_sDevice[3:-1])
             except:
-                sys.stderr.write('ERROR: Invalid regular expression; %s\n' % _sDevice)
+                self.__ERROR('Invalid regular expression; %s' % _sDevice)
                 return
 
         sFile = '/proc/diskstats'
         try:
-            oFile = open(sFile, 'r')
-        except:
-            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
-            return
-        for sLine in oFile:
-            lWords = self.__reMultiSpaces.sub(' ', sLine.strip()).split()
-            if len(lWords) < 14:
-                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
-                break
-            if reDevice is not None:
-                if not reDevice.search(lWords[2]):
-                    continue
-            elif _sDevice is not None:
-                if _sDevice != lWords[2]:
-                    continue
-            for i in range(3, 14):
-                dField = self.__makeField(GUSTAT_FIELDS_IO_DISK, 'field'+str(i), lWords[i])
-                self.__storeField(GUSTAT_MEASUREMENT_IO_DISK, lWords[2], dField, _iLevel)
-        oFile.close()
+            with open(sFile, 'r') as oFile:
+                for sLine in oFile:
+                    lWords = self.__reMultiSpaces.sub(' ', sLine.strip()).split()
+                    if len(lWords) < 14:
+                        self.__ERROR('Badly/unexpectedly formatted file; %s' % sFile)
+                        break
+                    if reDevice is not None:
+                        if not reDevice.search(lWords[2]):
+                            continue
+                    elif _sDevice is not None:
+                        if _sDevice != lWords[2]:
+                            continue
+                    for i in range(3, 14):
+                        dField = self.__makeField(GUSTAT_FIELDS_IO_DISK, 'field'+str(i), lWords[i])
+                        self.__storeField(GUSTAT_MEASUREMENT_IO_DISK, lWords[2], dField, _iLevel)
+        except IOError:
+            self.__ERROR('Missing/unreadable file; %s' % sFile)
 
 
     def parseStat_io_mount(self, _iLevel, _sDevice = None, _sMountpoint = None):
@@ -746,72 +747,70 @@ class GUStatData:
             try:
                 reDevice = re.compile(_sDevice[3:-1])
             except:
-                sys.stderr.write('ERROR: Invalid regular expression; %s\n' % _sDevice)
+                self.__ERROR('Invalid regular expression; %s' % _sDevice)
                 return
         reMountpoint = None
         if _sMountpoint is not None and _sMountpoint.startswith('re/') and _sMountpoint.endswith('/'):
             try:
                 reMountpoint = re.compile(_sMountpoint[3:-1])
             except:
-                sys.stderr.write('ERROR: Invalid regular expression; %s\n' % _sMountpoint)
+                self.__ERROR('Invalid regular expression; %s' % _sMountpoint)
                 return
 
         sFile = '/proc/self/mountstats'
         try:
-            oFile = open(sFile, 'r')
-        except:
-            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
-            return
-        sDeviceMountpoint = None
-        sType = None
-        for sLine in oFile:
-            lWords = self.__reMultiSpaces.sub(' ', sLine.strip()).split()
-            if len(lWords) < 2:
-                continue
-            lWords[0] = lWords[0].strip(':').lower()
-            if lWords[0] == 'device':
+            with open(sFile, 'r') as oFile:
                 sDeviceMountpoint = None
                 sType = None
-                if len(lWords) < 8:
-                    sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:events]; %s\n' % sFile)
-                    break
-                if reDevice is not None:
-                    if not reDevice.search(lWords[1]):
+                for sLine in oFile:
+                    lWords = self.__reMultiSpaces.sub(' ', sLine.strip()).split()
+                    if len(lWords) < 2:
                         continue
-                elif _sDevice is not None:
-                    if _sDevice != lWords[1]:
-                        continue
-                if reMountpoint is not None:
-                    if not reMountpoint.search(lWords[4]):
-                        continue
-                elif _sMountpoint is not None:
-                    if _sMountpoint != lWords[4]:
-                        continue
-                sDeviceMountpoint = lWords[1]+':'+lWords[4]
-                sType = lWords[7]
-            if sType == 'nfs':
-                if lWords[0] == 'events':
-                    if len(lWords) < 28:
-                        sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:events]; %s\n' % sFile)
-                        break
-                    for i in range(1, 28):
-                        dField = self.__makeField(GUSTAT_FIELDS_IO_MOUNT, 'nfs_events_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_MEASUREMENT_IO_MOUNT+'_'+sType, sDeviceMountpoint, dField, _iLevel)
-                elif lWords[0] == 'bytes':
-                    if len(lWords) < 9:
-                        sys.stderr.write('ERROR: Badly/unexpectedly formatted file [nfs:bytes]; %s\n' % sFile)
-                        break
-                    for i in range(1, 9):
-                        dField = self.__makeField(GUSTAT_FIELDS_IO_MOUNT, 'nfs_bytes_field'+str(i), lWords[i])
-                        self.__storeField(GUSTAT_MEASUREMENT_IO_MOUNT+'_'+sType, sDeviceMountpoint, dField, _iLevel)
-                elif lWords[0] in GUSTAT_FIELDS_IO_MOUNT_NFS_OPS:
-                    if len(lWords) < 9:
-                        sys.stderr.write('ERROR: Badly/unexpectedly formatted file [rpc:ops]; %s\n' % sFile)
-                        break
-                    for i in range(1, 9):
-                        dField = self.__makeField(GUSTAT_FIELDS_IO_MOUNT, 'nfs_ops_field'+str(i), lWords[i], _sMetricPrefix=lWords[0])
-                        self.__storeField(GUSTAT_MEASUREMENT_IO_MOUNT+'_'+sType, sDeviceMountpoint, dField, _iLevel)
-        oFile.close()
+                    lWords[0] = lWords[0].strip(':').lower()
+                    if lWords[0] == 'device':
+                        sDeviceMountpoint = None
+                        sType = None
+                        if len(lWords) < 8:
+                            self.__ERROR('Badly/unexpectedly formatted file [nfs:events]; %s' % sFile)
+                            break
+                        if reDevice is not None:
+                            if not reDevice.search(lWords[1]):
+                                continue
+                        elif _sDevice is not None:
+                            if _sDevice != lWords[1]:
+                                continue
+                        if reMountpoint is not None:
+                            if not reMountpoint.search(lWords[4]):
+                                continue
+                        elif _sMountpoint is not None:
+                            if _sMountpoint != lWords[4]:
+                                continue
+                        sDeviceMountpoint = lWords[1]+':'+lWords[4]
+                        sType = lWords[7]
+                    if sType == 'nfs':
+                        if lWords[0] == 'events':
+                            if len(lWords) < 28:
+                                self.__ERROR('Badly/unexpectedly formatted file [nfs:events]; %s' % sFile)
+                                break
+                            for i in range(1, 28):
+                                dField = self.__makeField(GUSTAT_FIELDS_IO_MOUNT, 'nfs_events_field'+str(i), lWords[i])
+                                self.__storeField(GUSTAT_MEASUREMENT_IO_MOUNT+'_'+sType, sDeviceMountpoint, dField, _iLevel)
+                        elif lWords[0] == 'bytes':
+                            if len(lWords) < 9:
+                                self.__ERROR('Badly/unexpectedly formatted file [nfs:bytes]; %s' % sFile)
+                                break
+                            for i in range(1, 9):
+                                dField = self.__makeField(GUSTAT_FIELDS_IO_MOUNT, 'nfs_bytes_field'+str(i), lWords[i])
+                                self.__storeField(GUSTAT_MEASUREMENT_IO_MOUNT+'_'+sType, sDeviceMountpoint, dField, _iLevel)
+                        elif lWords[0] in GUSTAT_FIELDS_IO_MOUNT_NFS_OPS:
+                            if len(lWords) < 9:
+                                self.__ERROR('Badly/unexpectedly formatted file [rpc:ops]; %s' % sFile)
+                                break
+                            for i in range(1, 9):
+                                dField = self.__makeField(GUSTAT_FIELDS_IO_MOUNT, 'nfs_ops_field'+str(i), lWords[i], _sMetricPrefix=lWords[0])
+                                self.__storeField(GUSTAT_MEASUREMENT_IO_MOUNT+'_'+sType, sDeviceMountpoint, dField, _iLevel)
+        except IOError:
+            self.__ERROR('Missing/unreadable file; %s' % sFile)
 
 
     def parseStat_net_dev(self, _iLevel, _sDevice = None):
@@ -823,36 +822,34 @@ class GUStatData:
             try:
                 reDevice = re.compile(_sDevice[3:-1])
             except:
-                sys.stderr.write('ERROR: Invalid regular expression; %s\n' % _sDevice)
+                self.__ERROR('Invalid regular expression; %s' % _sDevice)
                 return
 
         sFile = '/proc/net/dev'
         try:
-            oFile = open(sFile, 'r')
-        except:
-            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
-            return
-        sDevice = None
-        iLine = 0
-        for sLine in oFile:
-            iLine += 1
-            if iLine < 3:
-                continue
-            lWords = self.__reMultiSpaces.sub(' ', sLine.strip()).split()
-            if len(lWords) < 17:
-                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
-                break
-            lWords[0] = lWords[0].strip(':')
-            if reDevice is not None:
-                if not reDevice.search(lWords[0]):
-                    continue
-            elif _sDevice is not None:
-                if _sDevice != lWords[0]:
-                    continue
-            for i in range(1, 17):
-                dField = self.__makeField(GUSTAT_FIELDS_NET_DEV, 'field'+str(i), lWords[i])
-                self.__storeField(GUSTAT_MEASUREMENT_NET_DEV, lWords[0], dField, _iLevel)
-        oFile.close()
+            with open(sFile, 'r') as oFile:
+                sDevice = None
+                iLine = 0
+                for sLine in oFile:
+                    iLine += 1
+                    if iLine < 3:
+                        continue
+                    lWords = self.__reMultiSpaces.sub(' ', sLine.strip()).split()
+                    if len(lWords) < 17:
+                        self.__ERROR('Badly/unexpectedly formatted file; %s' % sFile)
+                        break
+                    lWords[0] = lWords[0].strip(':')
+                    if reDevice is not None:
+                        if not reDevice.search(lWords[0]):
+                            continue
+                    elif _sDevice is not None:
+                        if _sDevice != lWords[0]:
+                            continue
+                    for i in range(1, 17):
+                        dField = self.__makeField(GUSTAT_FIELDS_NET_DEV, 'field'+str(i), lWords[i])
+                        self.__storeField(GUSTAT_MEASUREMENT_NET_DEV, lWords[0], dField, _iLevel)
+        except IOError:
+            self.__ERROR('Missing/unreadable file; %s' % sFile)
 
 
     def parseStat_proc_status(self, _iLevel, _iPid):
@@ -862,34 +859,32 @@ class GUStatData:
         sPid = str(_iPid)
         sFile = '/proc/'+sPid+'/status'
         try:
-            oFile = open(sFile, 'r')
-        except:
-            sys.stderr.write('ERROR: Missing/unreadable %s\n' % sFile)
-            return
-        for sLine in oFile:
-            lWords = [_s.strip() for _s in sLine.lower().split(':')]
-            if len(lWords) < 2:
-                sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
-                break
-            if lWords[0] in ['uid', 'gid']:
-                lFields = self.__reMultiSpaces.sub(' ', lWords[1]).split()
-                if len(lFields) < 3:
-                    sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
-                    break
-                for i in range(0, 3):
-                    dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0]+'_field'+str(i), lFields[i])
-                    self.__storeField(GUSTAT_MEASUREMENT_PROC_STATUS, sPid, dField, _iLevel)
-            else:
-                if lWords[1].endswith('gb'):
-                    dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1073741824.0)
-                elif lWords[1].endswith(' mb'):
-                    dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1048576.0)
-                elif lWords[1].endswith(' kb'):
-                    dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1024.0)
-                else:
-                    dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1])
-                self.__storeField(GUSTAT_MEASUREMENT_PROC_STATUS, sPid, dField, _iLevel)
-        oFile.close()
+            with open(sFile, 'r') as oFile:
+                for sLine in oFile:
+                    lWords = [_s.strip() for _s in sLine.lower().split(':')]
+                    if len(lWords) < 2:
+                        self.__ERROR('Badly/unexpectedly formatted file; %s' % sFile)
+                        break
+                    if lWords[0] in ['uid', 'gid']:
+                        lFields = self.__reMultiSpaces.sub(' ', lWords[1]).split()
+                        if len(lFields) < 3:
+                            self.__ERROR('Badly/unexpectedly formatted file; %s' % sFile)
+                            break
+                        for i in range(0, 3):
+                            dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0]+'_field'+str(i), lFields[i])
+                            self.__storeField(GUSTAT_MEASUREMENT_PROC_STATUS, sPid, dField, _iLevel)
+                    else:
+                        if lWords[1].endswith('gb'):
+                            dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1073741824.0)
+                        elif lWords[1].endswith(' mb'):
+                            dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1048576.0)
+                        elif lWords[1].endswith(' kb'):
+                            dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1][0:-2], _fCoefficient=1024.0)
+                        else:
+                            dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0], lWords[1])
+                        self.__storeField(GUSTAT_MEASUREMENT_PROC_STATUS, sPid, dField, _iLevel)
+        except IOError:
+            self.__ERROR('Missing/unreadable %s' % sFile)
 
 
     def parseStat_proc_stat(self, _iLevel, _iPid):
@@ -899,20 +894,18 @@ class GUStatData:
         sPid = str(_iPid)
         sFile = '/proc/'+sPid+'/stat'
         try:
-            oFile = open(sFile, 'r')
-        except:
-            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
-            return
-        lWords = oFile.readline().split()
-        if len(lWords) >= 44:
-            for i in [1, 2, 9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 42, 43]:
-                if i == 1:
-                    lWords[i] = lWords[i].strip('()')
-                dField = self.__makeField(GUSTAT_FIELDS_PROC_STAT, 'field'+str(i), lWords[i])
-                self.__storeField(GUSTAT_MEASUREMENT_PROC_STAT, sPid, dField, _iLevel)
-        else:
-            sys.stderr.write('ERROR: Badly/unexpectedly formatted file; %s\n' % sFile)
-        oFile.close()
+            with open(sFile, 'r') as oFile:
+                lWords = oFile.readline().split()
+                if len(lWords) >= 44:
+                    for i in [1, 2, 9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 42, 43]:
+                        if i == 1:
+                            lWords[i] = lWords[i].strip('()')
+                        dField = self.__makeField(GUSTAT_FIELDS_PROC_STAT, 'field'+str(i), lWords[i])
+                        self.__storeField(GUSTAT_MEASUREMENT_PROC_STAT, sPid, dField, _iLevel)
+                else:
+                    self.__ERROR('Badly/unexpectedly formatted file; %s' % sFile)
+        except IOError:
+            self.__ERROR('Missing/unreadable file; %s' % sFile)
 
 
     def parseStat_proc_io(self, _iLevel, _iPid):
@@ -922,17 +915,15 @@ class GUStatData:
         sPid = str(_iPid)
         sFile = '/proc/'+sPid+'/io'
         try:
-            oFile = open(sFile, 'r')
-        except:
-            sys.stderr.write('ERROR: Missing/unreadable file; %s\n' % sFile)
-            return
-        for sLine in oFile:
-            lWords = [_s.strip() for _s in sLine.lower().split(':')]
-            if len(lWords) < 2:
-                continue
-            dField = self.__makeField(GUSTAT_FIELDS_PROC_IO, lWords[0], lWords[1])
-            self.__storeField(GUSTAT_MEASUREMENT_PROC_IO, sPid, dField, _iLevel)
-        oFile.close()
+            with open(sFile, 'r') as oFile:
+                for sLine in oFile:
+                    lWords = [_s.strip() for _s in sLine.lower().split(':')]
+                    if len(lWords) < 2:
+                        continue
+                    dField = self.__makeField(GUSTAT_FIELDS_PROC_IO, lWords[0], lWords[1])
+                    self.__storeField(GUSTAT_MEASUREMENT_PROC_IO, sPid, dField, _iLevel)
+        except IOError:
+            self.__ERROR('Missing/unreadable file; %s' % sFile)
 
 
     def parseStat_virt_stat(self, _iLevel, _sGuest):
@@ -942,41 +933,40 @@ class GUStatData:
         lCommand = ['virsh', 'domstats', '--raw', '--cpu-total', '--balloon', '--interface', '--block', _sGuest]
         try:
             bOutput = SP.check_output(lCommand)
-        except:
-            sys.stderr.write('ERROR: Command failed; %s\n' % ' '.join(lCommand))
-            return
-        sDevice_name = None
-        sDevice_index = None
-        iLine = 0
-        for sLine in bOutput.decode(sys.stdout.encoding).splitlines():
-            iLine += 1
-            if iLine < 2:
-                continue
-            sLine = sLine.strip()
-            if len(sLine) < 1:
-                continue
-            lWords = sLine.split('=')
-            if len(lWords) < 2:
-                sys.stderr.write('ERROR: Badly/unexpectedly formatted command output; %s\n' % ' '.join(lCommand))
-                break
-            lWords[0] = lWords[0].lower()
-            if lWords[0].startswith('net') or lWords[0].startswith('block'):
-                try:
-                    (sCategory, sIndex, sMetric) = lWords[0].split('.', 2)
-                except:
+            sDevice_name = None
+            sDevice_index = None
+            iLine = 0
+            for sLine in bOutput.decode(sys.stdout.encoding).splitlines():
+                iLine += 1
+                if iLine < 2:
                     continue
-                if sIndex != sDevice_index:
-                    sDevice_name = None
-                if sMetric == 'name':
-                    sDevice_index = sIndex
-                    sDevice_name = lWords[1]
+                sLine = sLine.strip()
+                if len(sLine) < 1:
                     continue
-                if sDevice_name is not None:
-                    dField = self.__makeField(GUSTAT_FIELDS_VIRT_STAT, sCategory+'.'+sMetric, lWords[1])
-                    self.__storeField(GUSTAT_MEASUREMENT_VIRT_STAT, _sGuest+':'+sDevice_name, dField, _iLevel)
-            else:
-                dField = self.__makeField(GUSTAT_FIELDS_VIRT_STAT, lWords[0], lWords[1])
-                self.__storeField(GUSTAT_MEASUREMENT_VIRT_STAT, _sGuest, dField, _iLevel)
+                lWords = sLine.split('=')
+                if len(lWords) < 2:
+                    self.__ERROR('Badly/unexpectedly formatted command output; %s' % ' '.join(lCommand))
+                    break
+                lWords[0] = lWords[0].lower()
+                if lWords[0].startswith('net') or lWords[0].startswith('block'):
+                    try:
+                        (sCategory, sIndex, sMetric) = lWords[0].split('.', 2)
+                    except:
+                        continue
+                    if sIndex != sDevice_index:
+                        sDevice_name = None
+                    if sMetric == 'name':
+                        sDevice_index = sIndex
+                        sDevice_name = lWords[1]
+                        continue
+                    if sDevice_name is not None:
+                        dField = self.__makeField(GUSTAT_FIELDS_VIRT_STAT, sCategory+'.'+sMetric, lWords[1])
+                        self.__storeField(GUSTAT_MEASUREMENT_VIRT_STAT, _sGuest+':'+sDevice_name, dField, _iLevel)
+                else:
+                    dField = self.__makeField(GUSTAT_FIELDS_VIRT_STAT, lWords[0], lWords[1])
+                    self.__storeField(GUSTAT_MEASUREMENT_VIRT_STAT, _sGuest, dField, _iLevel)
+        except OSError:
+            self.__ERROR('Command failed; %s' % ' '.join(lCommand))
 
 
     #

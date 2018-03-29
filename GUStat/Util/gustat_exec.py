@@ -97,6 +97,10 @@ class GUStatMain:
             '-o', '--top', action='store_true',
             default=False,
             help='Output: always start output at top of screen')
+        self.__oArgumentParser.add_argument(
+            '--exit-on-error', action='store_true',
+            default=False,
+            help='Output: immediately exit on error')
 
         # ... global: interval mode
         self.__oArgumentParser.add_argument(
@@ -450,6 +454,7 @@ class GUStatMain:
             sIntFormat = None
         if sFloatFormat == '{:}':
             sFloatFormat = None
+        bExitOnError = self.__oArguments.exit_on_error
 
         # ... interval mode
         bInterval = False
@@ -588,8 +593,8 @@ class GUStatMain:
 
 
         # Interval mode
-        oGUStatData_2 = GUStatData(bInterval, not bRaw)
-        oGUStatData_D = GUStatData(bInterval, not bRaw)
+        oGUStatData_2 = GUStatData(bInterval, not bRaw, _bThrowErrors=bExitOnError)
+        oGUStatData_D = GUStatData(bInterval, not bRaw, _bThrowErrors=bExitOnError)
         iIntervalCount = 0
         while True:
             time.sleep(self.__oArguments.interval)
