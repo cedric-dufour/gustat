@@ -117,132 +117,165 @@ class GUStatMain:
             default=False,
             help='Interval: display raw differences rather than rates')
 
-        # ... system stats: CPU information
+        # ... CPU statistics: general information
         self.__oArgumentParser.add_argument(
-            '-Sc', '--sys-cpu', action='store_true',
+            '-Ci', '--cpu-info', action='store_true',
             default=False,
-            help='System CPU information (/proc/cpuinfo)')
+            help='CPU information (/proc/cpuinfo)')
         self.__oArgumentParser.add_argument(
-            '-Scl', '--sys-cpu-level', type=int,
+            '-Cil', '--cpu-info-level', type=int,
             metavar='<level>',
             default=0,
-            help='System CPU information: level (0=standard, 1=advanced, 2=expert)')
+            help='CPU information: level (0=standard, 1=advanced, 2=expert)')
 
-        # ... system stats: load average
+        # ... CPU statistics: system load
         self.__oArgumentParser.add_argument(
-            '-Sl', '--sys-load', action='store_true',
+            '-Cl', '--cpu-load', action='store_true',
             default=False,
-            help='System load average (/proc/loadavg)')
+            help='System load (/proc/loadavg)')
 
-        # ... system stats: misc. kernel statistics
+        # ... CPU statistics: detailed statistics
         self.__oArgumentParser.add_argument(
-            '-Ss', '--sys-stat', action='store_true',
+            '-Cs', '--cpu-stat', action='store_true',
             default=False,
-            help='System kernel statistics (/proc/stat)')
+            help='CPU statistics (/proc/stat)')
         self.__oArgumentParser.add_argument(
-            '-Ssl', '--sys-stat-level', type=int,
+            '-Csl', '--cpu-stat-level', type=int,
             metavar='<level>',
             default=0,
-            help='System kernel statistics: level (0=standard, 1=advanced, 2=expert)')
+            help='CPU statistics: level (0=standard, 1=advanced, 2=expert)')
         self.__oArgumentParser.add_argument(
-            '-Ssd', '--sys-stat-detail', action='store_true',
+            '-Csd', '--cpu-stat-detail', action='store_true',
             default=False,
-            help='System kernel statistics: show detailed (CPU) statistics')
+            help='CPU statistics: show detailed (per-CPU) statistics')
 
-        # ... system stats: memory information
+        # ... CPU statistics: ALL
         self.__oArgumentParser.add_argument(
-            '-Sm', '--sys-mem', action='store_true',
+            '-Ca', '--cpu-all', action='store_true',
             default=False,
-            help='System memory information (/proc/meminfo)')
+            help='CPU: all statistics')
         self.__oArgumentParser.add_argument(
-            '-Sml', '--sys-mem-level', type=int,
+            '-Cal', '--cpu-all-level', type=int,
             metavar='<level>',
             default=0,
-            help='System memory information: level (0=standard, 1=advanced, 2=expert)')
+            help='CPU: global level (0=standard, 1=advanced, 2=expert)')
 
-        # ... system stats: virtual memory statistics
+        # ... memory statistics: general information
         self.__oArgumentParser.add_argument(
-            '-Sv', '--sys-vm', action='store_true',
+            '-Mi', '--mem-info', action='store_true',
             default=False,
-            help='System virtual memory statistics (/proc/vmstat)')
+            help='Memory information (/proc/meminfo)')
         self.__oArgumentParser.add_argument(
-            '-Svl', '--sys-vm-level', type=int,
+            '-Mil', '--mem-info-level', type=int,
             metavar='<level>',
             default=0,
-            help='System virtual memory statistics: level (0=standard, 1=advanced, 2=expert)')
+            help='Memory information: level (0=standard, 1=advanced, 2=expert)')
 
-        # ... system stats: disks statistics
+        # ... memory statistics: virtual memory statistics
         self.__oArgumentParser.add_argument(
-            '-Sd', '--sys-disk', action='store_true',
+            '-Mv', '--mem-vm', action='store_true',
             default=False,
-            help='System disks statistics (/proc/diskstats)')
+            help='Virtual memory statistics (/proc/vmstat)')
         self.__oArgumentParser.add_argument(
-            '-Sdl', '--sys-disk-level', type=int,
+            '-Mvl', '--mem-vm-level', type=int,
             metavar='<level>',
             default=0,
-            help='System disks statistics: level (0=standard, 1=advanced, 2=expert)')
+            help='Virtual memory statistics: level (0=standard, 1=advanced, 2=expert)')
+
+        # ... memory statistics: ALL
         self.__oArgumentParser.add_argument(
-            '-Sdd', '--sys-disk-device', type=str,
+            '-Ma', '--mem-all', action='store_true',
+            default=False,
+            help='Memory: all statistics')
+        self.__oArgumentParser.add_argument(
+            '-Mal', '--mem-all-level', type=int,
+            metavar='<level>',
+            default=0,
+            help='Memory: global level (0=standard, 1=advanced, 2=expert)')
+
+        # ... I/O statistics: disks
+        self.__oArgumentParser.add_argument(
+            '-Id', '--io-disk', action='store_true',
+            default=False,
+            help='Disks statistics (/proc/diskstats)')
+        self.__oArgumentParser.add_argument(
+            '-Idl', '--io-disk-level', type=int,
+            metavar='<level>',
+            default=0,
+            help='Disks statistics: level (0=standard, 1=advanced, 2=expert)')
+        self.__oArgumentParser.add_argument(
+            '-Idd', '--io-disk-device', type=str,
             metavar='<device>|re/<device>/',
             default=None,
-            help='System disks statistics: filter by device')
+            help='Disks statistics: filter by device')
 
-        # ... system stats: mounts statistics
+        # ... I/O statistics: mounts
         self.__oArgumentParser.add_argument(
-            '-St', '--sys-mount', action='store_true',
+            '-Im', '--io-mount', action='store_true',
             default=False,
-            help='System mounts statistics (/proc/self/mountstats)')
+            help='Mounts statistics (/proc/self/mountstats)')
         self.__oArgumentParser.add_argument(
-            '-Stl', '--sys-mount-level', type=int,
+            '-Iml', '--io-mount-level', type=int,
             metavar='<level>',
             default=0,
-            help='System mounts statistics: level (0=standard, 1=advanced, 2=expert)')
+            help='Mounts statistics: level (0=standard, 1=advanced, 2=expert)')
         self.__oArgumentParser.add_argument(
-            '-Std', '--sys-mount-device', type=str,
+            '-Imd', '--io-mount-device', type=str,
             metavar='<device>|re/<device>/',
             default=None,
-            help='System mounts statistics: filter by device')
+            help='Mounts statistics: filter by device')
         self.__oArgumentParser.add_argument(
-            '-Stt', '--sys-mount-mountpoint', type=str,
+            '-Imt', '--io-mount-mountpoint', type=str,
             metavar='<mountpoint>|re/<mountpoint>/',
             default=None,
-            help='System mounts statistics: filter by mountpoint')
+            help='Mounts statistics: filter by mountpoint')
 
-        # ... system stats: network statistics
+        # ... I/O statistics: ALL
         self.__oArgumentParser.add_argument(
-            '-Sn', '--sys-net', action='store_true',
+            '-Ia', '--io-all', action='store_true',
             default=False,
-            help='System network statistics (/proc/net/dev)')
+            help='I/O: all statistics')
         self.__oArgumentParser.add_argument(
-            '-Snl', '--sys-net-level', type=int,
+            '-Ial', '--io-all-level', type=int,
             metavar='<level>',
             default=0,
-            help='System network statistics: level (0=standard, 1=advanced, 2=expert)')
+            help='I/O: global level (0=standard, 1=advanced, 2=expert)')
+
+        # ... network statistics: device
         self.__oArgumentParser.add_argument(
-            '-Snd', '--sys-net-device', type=str,
+            '-Nd', '--net-dev', action='store_true',
+            default=False,
+            help='Network devices statistics (/proc/net/dev)')
+        self.__oArgumentParser.add_argument(
+            '-Ndl', '--net-dev-level', type=int,
+            metavar='<level>',
+            default=0,
+            help='Network devices statistics: level (0=standard, 1=advanced, 2=expert)')
+        self.__oArgumentParser.add_argument(
+            '-Ndd', '--net-dev-device', type=str,
             metavar='<device>|re/<device>/',
             default=None,
-            help='System network statistics: filter by device')
+            help='Network devices statistics: filter by device')
 
-        # ... system stats: all
+        # ... network statistics: ALL
         self.__oArgumentParser.add_argument(
-            '-Sa', '--sys-all', action='store_true',
+            '-Na', '--net-all', action='store_true',
             default=False,
-            help='System statistics: all statistics')
+            help='Network: all statistics')
         self.__oArgumentParser.add_argument(
-            '-Sal', '--sys-all-level', type=int,
+            '-Nal', '--net-all-level', type=int,
             metavar='<level>',
             default=0,
-            help='System statistics: global level (0=standard, 1=advanced, 2=expert)')
+            help='Network: global level (0=standard, 1=advanced, 2=expert)')
 
-        # ... process stats: PIDs
+        # ... processes statistics: PID(s) selection
         self.__oArgumentParser.add_argument(
             '-P', '--process', type=str,
             metavar='<pid>[,<pid> ...]',
             default=None,
             help='Process statistics: comma-separated list of process PIDs; \'*\' for all')
 
-        # ... process stats: status
+        # ... processes statistics: status
         self.__oArgumentParser.add_argument(
             '-Pu', '--proc-status', action='store_true',
             default=False,
@@ -253,7 +286,7 @@ class GUStatMain:
             default=0,
             help='Process status: level (0=standard, 1=advanced, 2=expert)')
 
-        # ... process stats: statistics
+        # ... processes statistics: statistics
         self.__oArgumentParser.add_argument(
             '-Ps', '--proc-stat', action='store_true',
             default=False,
@@ -264,7 +297,7 @@ class GUStatMain:
             default=0,
             help='Process statistics: level (0=standard, 1=advanced, 2=expert)')
 
-        # ... process stats: I/Os
+        # ... processes statistics: I/Os
         self.__oArgumentParser.add_argument(
             '-Pi', '--proc-io', action='store_true',
             default=False,
@@ -275,7 +308,7 @@ class GUStatMain:
             default=0,
             help='Process I/Os statistics: level (0=standard, 1=advanced, 2=expert)')
 
-        # ... process stats: all
+        # ... processes statistics: ALL
         self.__oArgumentParser.add_argument(
             '-Pa', '--proc-all', action='store_true',
             default=False,
@@ -286,14 +319,14 @@ class GUStatMain:
             default=0,
             help='Process statistics: global level (0=standard, 1=advanced, 2=expert)')
 
-        # ... Libvirt stats: VMs
+        # ... virtualization statistics: guest(s) selection
         self.__oArgumentParser.add_argument(
             '-V', '--virt', type=str,
-            metavar='<vm>[,<vm> ...]',
+            metavar='<guest>[,<guest> ...]',
             default=None,
-            help='Libvirt statistics: comma-separated list of guests (VMs); \'*\' for all')
+            help='Virtualization statistics: comma-separated list of guests (VMs); \'*\' for all')
 
-        # ... Libvirt stats: domain statistics
+        # ... virtualization statistics: Libvirt domain statistics
         self.__oArgumentParser.add_argument(
             '-Vs', '--virt-stat', action='store_true',
             default=False,
@@ -304,16 +337,16 @@ class GUStatMain:
             default=0,
             help='Libvirt domain statistics: level (0=standard, 1=advanced, 2=expert)')
 
-        # ... Libvirt stats: all
+        # ... virtualization statistics: ALL
         self.__oArgumentParser.add_argument(
             '-Va', '--virt-all', action='store_true',
             default=False,
-            help='Libvirt statistics: all statistics')
+            help='Virtualization statistics: all statistics')
         self.__oArgumentParser.add_argument(
             '-Val', '--virt-all-level', type=int,
             metavar='<level>',
             default=0,
-            help='Libvirt statistics: global level (0=standard, 1=advanced, 2=expert)')
+            help='Virtualization statistics: global level (0=standard, 1=advanced, 2=expert)')
 
         # ... other
         self.__oArgumentParser.add_argument(
@@ -429,30 +462,42 @@ class GUStatMain:
             bDifferential = self.__oArguments.differential
             bRaw = self.__oArguments.raw
 
-        # ... system statistics
-        bStats_sys_all = self.__oArguments.sys_all
-        iStats_sys_all_level = self.__oArguments.sys_all_level
-        bStats_sys_cpu = bStats_sys_all or self.__oArguments.sys_cpu
-        iLevel_sys_cpu = max(iStats_sys_all_level, self.__oArguments.sys_cpu_level)
-        bStats_sys_load = bStats_sys_all or self.__oArguments.sys_load
-        iLevel_sys_load = iStats_sys_all_level
-        bStats_sys_stat = bStats_sys_all or self.__oArguments.sys_stat
-        iLevel_sys_stat = max(iStats_sys_all_level, self.__oArguments.sys_stat_level)
-        bDetail_sys_stat = self.__oArguments.sys_stat_detail
-        bStats_sys_mem = bStats_sys_all or self.__oArguments.sys_mem
-        iLevel_sys_mem = max(iStats_sys_all_level, self.__oArguments.sys_mem_level)
-        bStats_sys_vm = bStats_sys_all or self.__oArguments.sys_vm
-        iLevel_sys_vm = max(iStats_sys_all_level, self.__oArguments.sys_vm_level)
-        bStats_sys_disk = bStats_sys_all or self.__oArguments.sys_disk
-        iLevel_sys_disk = max(iStats_sys_all_level, self.__oArguments.sys_disk_level)
-        sDevice_sys_disk = self.__oArguments.sys_disk_device
-        bStats_sys_mount = bStats_sys_all or self.__oArguments.sys_mount
-        iLevel_sys_mount = max(iStats_sys_all_level, self.__oArguments.sys_mount_level)
-        sDevice_sys_mount = self.__oArguments.sys_mount_device
-        sMountpoint_sys_mount = self.__oArguments.sys_mount_mountpoint
-        bStats_sys_net = bStats_sys_all or self.__oArguments.sys_net
-        iLevel_sys_net = max(iStats_sys_all_level, self.__oArguments.sys_net_level)
-        sDevice_sys_net = self.__oArguments.sys_net_device
+        # ... CPU statistics
+        bStats_cpu_all = self.__oArguments.cpu_all
+        iStats_cpu_all_level = self.__oArguments.cpu_all_level
+        bStats_cpu_info = bStats_cpu_all or self.__oArguments.cpu_info
+        iLevel_cpu_info = max(iStats_cpu_all_level, self.__oArguments.cpu_info_level)
+        bStats_cpu_load = bStats_cpu_all or self.__oArguments.cpu_load
+        iLevel_cpu_load = iStats_cpu_all_level
+        bStats_cpu_stat = bStats_cpu_all or self.__oArguments.cpu_stat
+        iLevel_cpu_stat = max(iStats_cpu_all_level, self.__oArguments.cpu_stat_level)
+        bDetail_cpu_stat = self.__oArguments.cpu_stat_detail
+
+        # ... memory statistics
+        bStats_mem_all = self.__oArguments.mem_all
+        iStats_mem_all_level = self.__oArguments.mem_all_level
+        bStats_mem_info = bStats_mem_all or self.__oArguments.mem_info
+        iLevel_mem_info = max(iStats_mem_all_level, self.__oArguments.mem_info_level)
+        bStats_mem_vm = bStats_mem_all or self.__oArguments.mem_vm
+        iLevel_mem_vm = max(iStats_mem_all_level, self.__oArguments.mem_vm_level)
+
+        # ... I/O statistics
+        bStats_io_all = self.__oArguments.io_all
+        iStats_io_all_level = self.__oArguments.io_all_level
+        bStats_io_disk = bStats_io_all or self.__oArguments.io_disk
+        iLevel_io_disk = max(iStats_io_all_level, self.__oArguments.io_disk_level)
+        sDevice_io_disk = self.__oArguments.io_disk_device
+        bStats_io_mount = bStats_io_all or self.__oArguments.io_mount
+        iLevel_io_mount = max(iStats_io_all_level, self.__oArguments.io_mount_level)
+        sDevice_io_mount = self.__oArguments.io_mount_device
+        sMountpoint_io_mount = self.__oArguments.io_mount_mountpoint
+
+        # ... network statistics
+        bStats_net_all = self.__oArguments.net_all
+        iStats_net_all_level = self.__oArguments.net_all_level
+        bStats_net_dev = bStats_net_all or self.__oArguments.net_dev
+        iLevel_net_dev = max(iStats_net_all_level, self.__oArguments.net_dev_level)
+        sDevice_net_dev = self.__oArguments.net_dev_device
 
         # ... processes statistics
         lPids = list()
@@ -476,7 +521,7 @@ class GUStatMain:
         bStats_proc_io = bStats_proc_all or self.__oArguments.proc_io
         iLevel_proc_io = max(iStats_proc_all_level, self.__oArguments.proc_io_level)
 
-        # ... libvirt statistics
+        # ... virtualization statistics
         lGuests = list()
         if self.__oArguments.virt is not None:
             if self.__oArguments.virt == '*':
@@ -505,23 +550,23 @@ class GUStatMain:
             sTimestamp = time.strftime("%Y-%m-%dT%H:%M:%S%z")
 
         # ... gather statistics
-        oGUStatData_1 = GUStatData(bInterval, not bRaw)
-        if bStats_sys_cpu:
-            oGUStatData_1.parseStat_sys_cpu(iLevel_sys_cpu)
-        if bStats_sys_load:
-            oGUStatData_1.parseStat_sys_load(iLevel_sys_load)
-        if bStats_sys_stat:
-            oGUStatData_1.parseStat_sys_stat(iLevel_sys_stat, bDetail_sys_stat)
-        if bStats_sys_mem:
-            oGUStatData_1.parseStat_sys_mem(iLevel_sys_mem)
-        if bStats_sys_vm:
-            oGUStatData_1.parseStat_sys_vm(iLevel_sys_vm)
-        if bStats_sys_disk:
-            oGUStatData_1.parseStat_sys_disk(iLevel_sys_disk, sDevice_sys_disk)
-        if bStats_sys_mount:
-            oGUStatData_1.parseStat_sys_mount(iLevel_sys_mount, sDevice_sys_mount, sMountpoint_sys_mount)
-        if bStats_sys_net:
-            oGUStatData_1.parseStat_sys_net(iLevel_sys_net, sDevice_sys_net)
+        oGUStatData_1 = GUStatData(bInterval, not bRaw, _bThrowErrors=bExitOnError)
+        if bStats_cpu_info:
+            oGUStatData_1.parseStat_cpu_info(iLevel_cpu_info)
+        if bStats_cpu_load:
+            oGUStatData_1.parseStat_cpu_load(iLevel_cpu_load)
+        if bStats_cpu_stat:
+            oGUStatData_1.parseStat_cpu_stat(iLevel_cpu_stat, bDetail_cpu_stat)
+        if bStats_mem_info:
+            oGUStatData_1.parseStat_mem_info(iLevel_mem_info)
+        if bStats_mem_vm:
+            oGUStatData_1.parseStat_mem_vm(iLevel_mem_vm)
+        if bStats_io_disk:
+            oGUStatData_1.parseStat_io_disk(iLevel_io_disk, sDevice_io_disk)
+        if bStats_io_mount:
+            oGUStatData_1.parseStat_io_mount(iLevel_io_mount, sDevice_io_mount, sMountpoint_io_mount)
+        if bStats_net_dev:
+            oGUStatData_1.parseStat_net_dev(iLevel_net_dev, sDevice_net_dev)
         for iPid in lPids:
             if bStats_proc_status:
                 oGUStatData_1.parseStat_proc_status(iLevel_proc_status, iPid)
@@ -555,22 +600,22 @@ class GUStatMain:
                 sTimestamp = time.strftime("%Y-%m-%dT%H:%M:%S%z")
 
             # ... gather statistics
-            if bStats_sys_cpu:
-                oGUStatData_2.parseStat_sys_cpu(iLevel_sys_cpu)
-            if bStats_sys_load:
-                oGUStatData_2.parseStat_sys_load(iLevel_sys_load)
-            if bStats_sys_stat:
-                oGUStatData_2.parseStat_sys_stat(iLevel_sys_stat, bDetail_sys_stat)
-            if bStats_sys_mem:
-                oGUStatData_2.parseStat_sys_mem(iLevel_sys_mem)
-            if bStats_sys_vm:
-                oGUStatData_2.parseStat_sys_vm(iLevel_sys_vm)
-            if bStats_sys_disk:
-                oGUStatData_2.parseStat_sys_disk(iLevel_sys_disk, sDevice_sys_disk)
-            if bStats_sys_mount:
-                oGUStatData_2.parseStat_sys_mount(iLevel_sys_mount, sDevice_sys_mount, sMountpoint_sys_mount)
-            if bStats_sys_net:
-                oGUStatData_2.parseStat_sys_net(iLevel_sys_net, sDevice_sys_net)
+            if bStats_cpu_info:
+                oGUStatData_2.parseStat_cpu_info(iLevel_cpu_info)
+            if bStats_cpu_load:
+                oGUStatData_2.parseStat_cpu_load(iLevel_cpu_load)
+            if bStats_cpu_stat:
+                oGUStatData_2.parseStat_cpu_stat(iLevel_cpu_stat, bDetail_cpu_stat)
+            if bStats_mem_info:
+                oGUStatData_2.parseStat_mem_info(iLevel_mem_info)
+            if bStats_mem_vm:
+                oGUStatData_2.parseStat_mem_vm(iLevel_mem_vm)
+            if bStats_io_disk:
+                oGUStatData_2.parseStat_io_disk(iLevel_io_disk, sDevice_io_disk)
+            if bStats_io_mount:
+                oGUStatData_2.parseStat_io_mount(iLevel_io_mount, sDevice_io_mount, sMountpoint_io_mount)
+            if bStats_net_dev:
+                oGUStatData_2.parseStat_net_dev(iLevel_net_dev, sDevice_net_dev)
             for iPid in lPids:
                 if bStats_proc_status:
                     oGUStatData_2.parseStat_proc_status(iLevel_proc_status, iPid)
