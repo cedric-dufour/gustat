@@ -279,6 +279,10 @@ class GUInfluxMain:
             metavar='<level>',
             default=0,
             help='Process status: level (0=standard, 1=advanced, 2=expert)')
+        self.__oArgumentParser.add_argument(
+            '-Pun', '--proc-status-name', action='store_true',
+            default=False,
+            help='Process status: show user/group name instead of UID/GID')
 
         # ... processes statistics: statistics
         self.__oArgumentParser.add_argument(
@@ -557,6 +561,7 @@ class GUInfluxMain:
         iStats_proc_all_level = self.__oArguments.proc_all_level
         bStats_proc_status = bStats_proc_all or self.__oArguments.proc_status
         iLevel_proc_status = max(iStats_proc_all_level, self.__oArguments.proc_status_level)
+        bNameId_proc_status = self.__oArguments.proc_status_name
         bStats_proc_stat = bStats_proc_all or self.__oArguments.proc_stat
         iLevel_proc_stat = max(iStats_proc_all_level, self.__oArguments.proc_stat_level)
         bStats_proc_io = bStats_proc_all or self.__oArguments.proc_io
@@ -734,7 +739,7 @@ class GUInfluxMain:
                 # ... gather
                 oGUStatData = GUStatData(_bThrowErrors=True)
                 try:
-                    oGUStatData.parseStat_proc_status(iLevel_proc_status if bStats_proc_status else 0, sPid)
+                    oGUStatData.parseStat_proc_status(iLevel_proc_status if bStats_proc_status else 0, sPid, bNameId_proc_status)
                     if bStats_proc_stat:
                         oGUStatData.parseStat_proc_stat(iLevel_proc_stat, sPid)
                     if bStats_proc_io:

@@ -19,6 +19,8 @@
 
 # Modules
 # ... deb: python-argparse
+from grp import getgrgid
+from pwd import getpwuid
 import re
 import subprocess as SP
 import sys
@@ -378,12 +380,12 @@ GUSTAT_FIELDS_NET_UDP = {
 GUSTAT_MEASUREMENT_PROC_STATUS = 'proc_status'
 GUSTAT_FIELDS_PROC_STATUS = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
-    'uid_field0': [ 'user', 'uid_real', 'id', None, 'int', False, False, 0 ],
-    'uid_field1': [ 'user', 'uid_effective', 'id', None, 'int', False, False, 1 ],
-    'uid_field2': [ 'user', 'uid_saved', 'id', None, 'int', False, False, 2 ],
-    'gid_field0': [ 'user', 'gid_real', 'id', None, 'int', False, False, 0 ],
-    'gid_field1': [ 'user', 'gid_effective', 'id', None, 'int', False, False, 1 ],
-    'gid_field2': [ 'user', 'gid_saved', 'id', None, 'int', False, False, 2 ],
+    'uid_field0': [ 'user', 'uid_real', 'id', None, 'str', False, False, 0 ],
+    'uid_field1': [ 'user', 'uid_effective', 'id', None, 'str', False, False, 1 ],
+    'uid_field2': [ 'user', 'uid_saved', 'id', None, 'str', False, False, 2 ],
+    'gid_field0': [ 'user', 'gid_real', 'id', None, 'str', False, False, 0 ],
+    'gid_field1': [ 'user', 'gid_effective', 'id', None, 'str', False, False, 1 ],
+    'gid_field2': [ 'user', 'gid_saved', 'id', None, 'str', False, False, 2 ],
     'vmpeak': [ 'mem', 'vsize_peak', 'bytes', None, 'int', True, True, 0 ],
     'vmsize': [ 'mem', 'vsize', 'bytes', None, 'int', True, True, 0 ],
     'vmlck': [ 'mem', 'locked', 'bytes', None, 'int', True, True, 1 ],
@@ -493,6 +495,8 @@ class GUStatData:
         self.__bThrowErrors = _bThrowErrors
         self.__reMultiSpaces = re.compile('\s\s+')
         self.__iCpuCount = None
+        self.__dsUids = dict()
+        self.__dsGids = dict()
         self.dStats = dict()
 
 
@@ -514,6 +518,26 @@ class GUStatData:
     #
     # Data
     #
+
+    def __getUidName(self, _iUid):
+        _iUid = int(_iUid)
+        if not _iUid in self.__dsUids.keys():
+            try:
+                self.__dsUids[_iUid] = getpwuid(_iUid).pw_name
+            except:
+                self.__dsUids[_iUid] = str(_iUid)
+        return self.__dsUids[_iUid]
+
+
+    def __getGidName(self, _iGid):
+        _iGid = int(_iGid)
+        if not _iGid in self.__dsGids.keys():
+            try:
+                self.__dsGids[_iGid] = getgrgid(_iGid).gr_name
+            except:
+                self.__dsGids[_iGid] = str(_iGid)
+        return self.__dsGids[_iGid]
+
 
     def __makeField(self, _dStatFields, _sKey, _sValue, _fCoefficient = None, _sMetricPrefix = None):
         """
@@ -936,7 +960,7 @@ class GUStatData:
                 self.__ERROR('Missing/unreadable file; %s' % sFile)
 
 
-    def parseStat_proc_status(self, _iLevel, _iPid):
+    def parseStat_proc_status(self, _iLevel, _iPid, _bNameId = False):
         global GUSTAT_MEASUREMENT_PROC_STATUS
         global GUSTAT_FIELDS_PROC_STATUS
 
@@ -955,7 +979,14 @@ class GUStatData:
                             self.__ERROR('Badly/unexpectedly formatted file; %s' % sFile)
                             break
                         for i in range(0, 3):
-                            dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0]+'_field'+str(i), lFields[i])
+                            if _bNameId:
+                                if lWords[0][0] == 'u':
+                                    dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0]+'_field'+str(i), self.__getUidName(lFields[i]))
+                                else:
+                                    dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0]+'_field'+str(i), self.__getGidName(lFields[i]))
+                                dField['unit'] = 'name'
+                            else:
+                                dField = self.__makeField(GUSTAT_FIELDS_PROC_STATUS, lWords[0]+'_field'+str(i), lFields[i])
                             self.__storeField(GUSTAT_MEASUREMENT_PROC_STATUS, sPid, dField, _iLevel)
                     else:
                         if lWords[1].endswith('gb'):

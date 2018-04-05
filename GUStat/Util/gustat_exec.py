@@ -311,6 +311,10 @@ class GUStatMain:
             metavar='<level>',
             default=0,
             help='Process status: level (0=standard, 1=advanced, 2=expert)')
+        self.__oArgumentParser.add_argument(
+            '-Pun', '--proc-status-name', action='store_true',
+            default=False,
+            help='Process status: show user/group name instead of UID/GID')
 
         # ... processes statistics: statistics
         self.__oArgumentParser.add_argument(
@@ -547,6 +551,7 @@ class GUStatMain:
         iStats_proc_all_level = self.__oArguments.proc_all_level
         bStats_proc_status = bStats_proc_all or self.__oArguments.proc_status
         iLevel_proc_status = max(iStats_proc_all_level, self.__oArguments.proc_status_level)
+        bNameId_proc_status = self.__oArguments.proc_status_name
         bStats_proc_stat = bStats_proc_all or self.__oArguments.proc_stat
         iLevel_proc_stat = max(iStats_proc_all_level, self.__oArguments.proc_stat_level)
         bStats_proc_io = bStats_proc_all or self.__oArguments.proc_io
@@ -604,7 +609,7 @@ class GUStatMain:
             oGUStatData_1.parseStat_net_udp(iLevel_net_udp)
         for iPid in lPids:
             if bStats_proc_status:
-                oGUStatData_1.parseStat_proc_status(iLevel_proc_status, iPid)
+                oGUStatData_1.parseStat_proc_status(iLevel_proc_status, iPid, bNameId_proc_status)
             if bStats_proc_stat:
                 oGUStatData_1.parseStat_proc_stat(iLevel_proc_stat, iPid)
             if bStats_proc_io:
@@ -657,7 +662,7 @@ class GUStatMain:
                 oGUStatData_2.parseStat_net_udp(iLevel_net_udp)
             for iPid in lPids:
                 if bStats_proc_status:
-                    oGUStatData_2.parseStat_proc_status(iLevel_proc_status, iPid)
+                    oGUStatData_2.parseStat_proc_status(iLevel_proc_status, iPid, bNameId_proc_status)
                 if bStats_proc_stat:
                     oGUStatData_2.parseStat_proc_stat(iLevel_proc_stat, iPid)
                 if bStats_proc_io:
