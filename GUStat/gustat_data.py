@@ -466,9 +466,9 @@ GUSTAT_FIELDS_VIRT_STAT = {
     'block.wr.bytes': [ 'io', 'writes_bytes', 'bytes', None, 'int', True, True, 0 ],
     'block.rd.reqs': [ 'io', 'reads_ops', 'count', None, 'int', True, True, 0 ],
     'block.wr.reqs': [ 'io', 'writes_ops', 'count', None, 'int', True, True, 0 ],
-    'block.fl.reqs': [ 'io', 'flushes_ops', 'count', None, 'int', True, True, 1 ],
-    'block.rd.times': [ 'io', 'reads_elapsed', 'seconds', 0.000000001, 'float', True, False, 2 ],
-    'block.wr.times': [ 'io', 'writes_elapsed', 'seconds', 0.000000001, 'float', True, False, 2 ],
+    'block.fl.reqs': [ 'io', 'flushes_ops', 'count', None, 'int', True, True, 2 ],
+    'block.rd.times': [ 'io', 'reads_elapsed', 'seconds', 0.000000001, 'float', True, False, 1 ],
+    'block.wr.times': [ 'io', 'writes_elapsed', 'seconds', 0.000000001, 'float', True, False, 1 ],
     'block.fl.times': [ 'io', 'flushes_elapsed', 'seconds', 0.000000001, 'float', True, False, 2 ],
 }
 
