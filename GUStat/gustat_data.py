@@ -328,7 +328,7 @@ GUSTAT_FIELDS_IO_MOUNT_NFS_OPS = {
     'commit',
 }
 
-# /proc/netdev fields
+# /proc/net/dev fields
 GUSTAT_MEASUREMENT_NET_DEV = 'net_dev'
 GUSTAT_FIELDS_NET_DEV = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
@@ -348,6 +348,30 @@ GUSTAT_FIELDS_NET_DEV = {
     'field14': [ 'net', 'tx_errors_collisions', 'count', None, 'int', True, True, 2 ],
     'field15': [ 'net', 'tx_errors_carrier', 'count', None, 'int', True, True, 2 ],
     'field16': [ 'net', 'tx_compressed', 'packets', None, 'int', True, True, 1 ],
+}
+
+# /proc/net/tcp fields
+GUSTAT_MEASUREMENT_NET_TCP = 'net_tcp'
+GUSTAT_FIELDS_NET_TCP = {
+    # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
+    1: [ 'net', 'established', 'count', None, 'int', True, True, 0 ],
+    2: [ 'net', 'syn_sent', 'count', None, 'int', True, True, 2 ],
+    3: [ 'net', 'syn_recv', 'count', None, 'int', True, True, 2 ],
+    4: [ 'net', 'fin_wait1', 'count', None, 'int', True, True, 2 ],
+    5: [ 'net', 'fin_wait2', 'count', None, 'int', True, True, 2 ],
+    6: [ 'net', 'time_wait', 'count', None, 'int', True, True, 1 ],
+    7: [ 'net', 'close', 'count', None, 'int', True, True, 2 ],
+    8: [ 'net', 'close_wait', 'count', None, 'int', True, True, 1 ],
+    9: [ 'net', 'last_ack', 'count', None, 'int', True, True, 2 ],
+    10: [ 'net', 'listen', 'count', None, 'int', True, True, 0 ],
+    11: [ 'net', 'closing', 'count', None, 'int', True, True, 2 ],
+}
+
+# /proc/net/udp fields
+GUSTAT_MEASUREMENT_NET_UDP = 'net_udp'
+GUSTAT_FIELDS_NET_UDP = {
+    # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
+    7: [ 'net', 'listen', 'count', None, 'int', True, True, 0 ],
 }
 
 # /proc/<pid>/status fields
@@ -850,6 +874,66 @@ class GUStatData:
                         self.__storeField(GUSTAT_MEASUREMENT_NET_DEV, lWords[0], dField, _iLevel)
         except IOError:
             self.__ERROR('Missing/unreadable file; %s' % sFile)
+
+
+    def parseStat_net_tcp(self, _iLevel):
+        global GUSTAT_MEASUREMENT_NET_TCP
+        global GUSTAT_FIELDS_NET_TCP
+
+        for tProtocol in [('tcp4', '/proc/net/tcp'), ('tcp6', '/proc/net/tcp6')]:
+            (sProtocol, sFile) = tProtocol
+            try:
+                with open(sFile, 'r') as oFile:
+                    dCounters = dict()
+                    iLine = 0
+                    for sLine in oFile:
+                        iLine += 1
+                        if iLine < 2:
+                            continue
+                        lWords = self.__reMultiSpaces.sub(' ', sLine.strip()).split()
+                        if len(lWords) < 4:
+                            self.__ERROR('Badly/unexpectedly formatted file; %s' % sFile)
+                            break
+                        iState = int(lWords[3], 16)
+                        try:
+                            dCounters[iState] += 1
+                        except KeyError:
+                            dCounters[iState] = 1
+                    for i in GUSTAT_FIELDS_NET_TCP.keys():
+                        dField = self.__makeField(GUSTAT_FIELDS_NET_TCP, i, dCounters.pop(i, 0), None, sProtocol)
+                        self.__storeField(GUSTAT_MEASUREMENT_NET_TCP, None, dField, _iLevel)
+            except IOError:
+                self.__ERROR('Missing/unreadable file; %s' % sFile)
+
+
+    def parseStat_net_udp(self, _iLevel):
+        global GUSTAT_MEASUREMENT_NET_UDP
+        global GUSTAT_FIELDS_NET_UDP
+
+        for tProtocol in [('udp4', '/proc/net/udp'), ('udp6', '/proc/net/udp6')]:
+            (sProtocol, sFile) = tProtocol
+            try:
+                with open(sFile, 'r') as oFile:
+                    dCounters = dict()
+                    iLine = 0
+                    for sLine in oFile:
+                        iLine += 1
+                        if iLine < 2:
+                            continue
+                        lWords = self.__reMultiSpaces.sub(' ', sLine.strip()).split()
+                        if len(lWords) < 4:
+                            self.__ERROR('Badly/unexpectedly formatted file; %s' % sFile)
+                            break
+                        iState = int(lWords[3], 16)
+                        try:
+                            dCounters[iState] += 1
+                        except KeyError:
+                            dCounters[iState] = 1
+                    for i in GUSTAT_FIELDS_NET_UDP.keys():
+                        dField = self.__makeField(GUSTAT_FIELDS_NET_UDP, i, dCounters.pop(i, 0), None, sProtocol)
+                        self.__storeField(GUSTAT_MEASUREMENT_NET_UDP, None, dField, _iLevel)
+            except IOError:
+                self.__ERROR('Missing/unreadable file; %s' % sFile)
 
 
     def parseStat_proc_status(self, _iLevel, _iPid):

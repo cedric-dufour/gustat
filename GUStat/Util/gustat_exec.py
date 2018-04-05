@@ -261,6 +261,28 @@ class GUStatMain:
             default=None,
             help='Network devices statistics: filter by device')
 
+        # ... network statistics: TCP
+        self.__oArgumentParser.add_argument(
+            '-Nt', '--net-tcp', action='store_true',
+            default=False,
+            help='TCP connections statistics (/proc/net/tcp)')
+        self.__oArgumentParser.add_argument(
+            '-Ntl', '--net-tcp-level', type=int,
+            metavar='<level>',
+            default=0,
+            help='TCP connections statistics: level (0=standard, 1=advanced, 2=expert)')
+
+        # ... network statistics: UDP
+        self.__oArgumentParser.add_argument(
+            '-Nu', '--net-udp', action='store_true',
+            default=False,
+            help='UDP connections statistics (/proc/net/udp)')
+        self.__oArgumentParser.add_argument(
+            '-Nul', '--net-udp-level', type=int,
+            metavar='<level>',
+            default=0,
+            help='UDP connections statistics: level (0=standard, 1=advanced, 2=expert)')
+
         # ... network statistics: ALL
         self.__oArgumentParser.add_argument(
             '-Na', '--net-all', action='store_true',
@@ -503,6 +525,10 @@ class GUStatMain:
         bStats_net_dev = bStats_net_all or self.__oArguments.net_dev
         iLevel_net_dev = max(iStats_net_all_level, self.__oArguments.net_dev_level)
         sDevice_net_dev = self.__oArguments.net_dev_device
+        bStats_net_tcp = bStats_net_all or self.__oArguments.net_tcp
+        iLevel_net_tcp = max(iStats_net_all_level, self.__oArguments.net_tcp_level)
+        bStats_net_udp = bStats_net_all or self.__oArguments.net_udp
+        iLevel_net_udp = max(iStats_net_all_level, self.__oArguments.net_udp_level)
 
         # ... processes statistics
         lPids = list()
@@ -572,6 +598,10 @@ class GUStatMain:
             oGUStatData_1.parseStat_io_mount(iLevel_io_mount, sDevice_io_mount, sMountpoint_io_mount)
         if bStats_net_dev:
             oGUStatData_1.parseStat_net_dev(iLevel_net_dev, sDevice_net_dev)
+        if bStats_net_tcp:
+            oGUStatData_1.parseStat_net_tcp(iLevel_net_tcp)
+        if bStats_net_udp:
+            oGUStatData_1.parseStat_net_udp(iLevel_net_udp)
         for iPid in lPids:
             if bStats_proc_status:
                 oGUStatData_1.parseStat_proc_status(iLevel_proc_status, iPid)
@@ -621,6 +651,10 @@ class GUStatMain:
                 oGUStatData_2.parseStat_io_mount(iLevel_io_mount, sDevice_io_mount, sMountpoint_io_mount)
             if bStats_net_dev:
                 oGUStatData_2.parseStat_net_dev(iLevel_net_dev, sDevice_net_dev)
+            if bStats_net_tcp:
+                oGUStatData_2.parseStat_net_tcp(iLevel_net_tcp)
+            if bStats_net_udp:
+                oGUStatData_2.parseStat_net_udp(iLevel_net_udp)
             for iPid in lPids:
                 if bStats_proc_status:
                     oGUStatData_2.parseStat_proc_status(iLevel_proc_status, iPid)
