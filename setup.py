@@ -51,6 +51,6 @@ setup(
     packages = ['GUStat', 'GUStat.Util'],
     package_dir = {'': '.'},
     requires = ['argparse'],
-    scripts = ['gustat'],
+    scripts = ['gustat', 'guinflux'],
     )
 

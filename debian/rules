@@ -21,6 +21,10 @@ override_dh_install:
 		--name 'Global Unified Statitics (GUStat)' \
 		--help-option --help --version-string $(VERSION) --no-discard-stderr --no-info \
 		gustat | fgrep -v 'invalid option' > debian/gustat/usr/share/man/man1/gustat.1
+	help2man \
+		--name 'Global Unified Statitics (GUStat) - InfluxDB Line Protocol' \
+		--help-option --help --version-string $(VERSION) --no-discard-stderr --no-info \
+		guinflux | fgrep -v 'invalid option' > debian/gustat/usr/share/man/man1/guinflux.1
 
 	# Install
 	dh_install
