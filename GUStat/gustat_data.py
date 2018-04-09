@@ -261,73 +261,74 @@ GUSTAT_FIELDS_IO_DISK = {
 GUSTAT_MEASUREMENT_IO_MOUNT = 'io_mount'
 GUSTAT_FIELDS_IO_MOUNT = {
     # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
-    'nfs_events_field1': [ 'io(nfs_events)', 'inode_revalidate', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field2': [ 'io(nfs_events)', 'dnode_revalidate', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field3': [ 'io(nfs_events)', 'data_invalidate', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field4': [ 'io(nfs_events)', 'attr_invalidate', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field5': [ 'io(nfs_events)', 'vfs_open', 'count', None, 'int', True, True, 1 ],
-    'nfs_events_field6': [ 'io(nfs_events)', 'vfs_lookup', 'count', None, 'int', True, True, 1 ],
-    'nfs_events_field7': [ 'io(nfs_events)', 'vfs_access', 'count', None, 'int', True, True, 1 ],
-    'nfs_events_field8': [ 'io(nfs_events)', 'vfs_update_page', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field9': [ 'io(nfs_events)', 'vfs_read_page', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field10': [ 'io(nfs_events)', 'vfs_read_pages_group', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field11': [ 'io(nfs_events)', 'vfs_write_page', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field12': [ 'io(nfs_events)', 'vfs_write_pages_group', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field13': [ 'io(nfs_events)', 'vfs_getdents', 'count', None, 'int', True, True, 1 ],
-    'nfs_events_field14': [ 'io(nfs_events)', 'vfs_setattr', 'count', None, 'int', True, True, 1 ],
-    'nfs_events_field15': [ 'io(nfs_events)', 'vfs_flush', 'count', None, 'int', True, True, 1 ],
+    'nfs_events_field1': [ 'io(nfs_events)', 'inode_revalidate', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field2': [ 'io(nfs_events)', 'dnode_revalidate', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field3': [ 'io(nfs_events)', 'data_invalidate', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field4': [ 'io(nfs_events)', 'attr_invalidate', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field5': [ 'io(nfs_events)', 'vfs_open', 'count', None, 'int', True, True, 2 ],
+    'nfs_events_field6': [ 'io(nfs_events)', 'vfs_lookup', 'count', None, 'int', True, True, 2 ],
+    'nfs_events_field7': [ 'io(nfs_events)', 'vfs_access', 'count', None, 'int', True, True, 2 ],
+    'nfs_events_field8': [ 'io(nfs_events)', 'vfs_update_page', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field9': [ 'io(nfs_events)', 'vfs_read_page', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field10': [ 'io(nfs_events)', 'vfs_read_pages_group', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field11': [ 'io(nfs_events)', 'vfs_write_page', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field12': [ 'io(nfs_events)', 'vfs_write_pages_group', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field13': [ 'io(nfs_events)', 'vfs_getdents', 'count', None, 'int', True, True, 2 ],
+    'nfs_events_field14': [ 'io(nfs_events)', 'vfs_setattr', 'count', None, 'int', True, True, 2 ],
+    'nfs_events_field15': [ 'io(nfs_events)', 'vfs_flush', 'count', None, 'int', True, True, 2 ],
     'nfs_events_field16': [ 'io(nfs_events)', 'vfs_fsync', 'count', None, 'int', True, True, 1 ],
     'nfs_events_field17': [ 'io(nfs_events)', 'vfs_lock', 'count', None, 'int', True, True, 1 ],
-    'nfs_events_field18': [ 'io(nfs_events)', 'vfs_release', 'count', None, 'int', True, True, 1 ],
-    'nfs_events_field19': [ 'io(nfs_events)', 'congestion_wait', 'count', None, 'int', True, True, 1 ],
-    'nfs_events_field20': [ 'io(nfs_events)', 'setattr_trunc', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field21': [ 'io(nfs_events)', 'write_extend', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field22': [ 'io(nfs_events)', 'silly_rename', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field23': [ 'io(nfs_events)', 'reads_short', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field24': [ 'io(nfs_events)', 'writes_short', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field25': [ 'io(nfs_events)', 'delay', 'count', None, 'int', True, True, 2 ],
-    'nfs_events_field26': [ 'io(nfs_events)', 'reads_pnfs', 'count', None, 'int', True, True, 1 ],
-    'nfs_events_field27': [ 'io(nfs_events)', 'writes_pnfs', 'count', None, 'int', True, True, 1 ],
-    'nfs_bytes_field1': [ 'io(nfs_bytes)', 'reads_normal', 'bytes', None, 'int', True, True, 1 ],
-    'nfs_bytes_field2': [ 'io(nfs_bytes)', 'writes_normal', 'bytes', None, 'int', True, True, 1 ],
-    'nfs_bytes_field3': [ 'io(nfs_bytes)', 'reads_direct', 'bytes', None, 'int', True, True, 1 ],
-    'nfs_bytes_field4': [ 'io(nfs_bytes)', 'writes_direct', 'bytes', None, 'int', True, True, 1 ],
+    'nfs_events_field18': [ 'io(nfs_events)', 'vfs_release', 'count', None, 'int', True, True, 2 ],
+    'nfs_events_field19': [ 'io(nfs_events)', 'congestion_wait', 'count', None, 'int', True, True, 2 ],
+    'nfs_events_field20': [ 'io(nfs_events)', 'setattr_trunc', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field21': [ 'io(nfs_events)', 'write_extend', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field22': [ 'io(nfs_events)', 'silly_rename', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field23': [ 'io(nfs_events)', 'reads_short', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field24': [ 'io(nfs_events)', 'writes_short', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field25': [ 'io(nfs_events)', 'delay', 'count', None, 'int', True, True, 3 ],
+    'nfs_events_field26': [ 'io(nfs_events)', 'reads_pnfs', 'count', None, 'int', True, True, 2 ],
+    'nfs_events_field27': [ 'io(nfs_events)', 'writes_pnfs', 'count', None, 'int', True, True, 2 ],
+    'nfs_bytes_field1': [ 'io(nfs_bytes)', 'reads_normal', 'bytes', None, 'int', True, True, 2 ],
+    'nfs_bytes_field2': [ 'io(nfs_bytes)', 'writes_normal', 'bytes', None, 'int', True, True, 2 ],
+    'nfs_bytes_field3': [ 'io(nfs_bytes)', 'reads_direct', 'bytes', None, 'int', True, True, 2 ],
+    'nfs_bytes_field4': [ 'io(nfs_bytes)', 'writes_direct', 'bytes', None, 'int', True, True, 2 ],
     'nfs_bytes_field5': [ 'io(nfs_bytes)', 'reads_server', 'bytes', None, 'int', True, True, 0 ],
     'nfs_bytes_field6': [ 'io(nfs_bytes)', 'writes_server', 'bytes', None, 'int', True, True, 0 ],
-    'nfs_bytes_field7': [ 'io(nfs_bytes)', 'reads_mmap', 'pages', None, 'int', True, True, 1 ],
-    'nfs_bytes_field8': [ 'io(nfs_bytes)', 'writes_mmap', 'pages', None, 'int', True, True, 1 ],
+    'nfs_bytes_field7': [ 'io(nfs_bytes)', 'reads_mmap', 'pages', None, 'int', True, True, 2 ],
+    'nfs_bytes_field8': [ 'io(nfs_bytes)', 'writes_mmap', 'pages', None, 'int', True, True, 2 ],
     'nfs_ops_field1': [ 'io(nfs_rpc)', 'requested', 'count', None, 'int', True, True, 0 ],
-    'nfs_ops_field2': [ 'io(nfs_rpc)', 'transmitted', 'count', None, 'int', True, True, 1 ],
-    'nfs_ops_field3': [ 'io(nfs_rpc)', 'timedout', 'count', None, 'int', True, True, 2 ],
-    'nfs_ops_field4': [ 'io(nfs_rpc)', 'data_sent', 'bytes', None, 'int', True, True, 1 ],
-    'nfs_ops_field5': [ 'io(nfs_rpc)', 'data_received', 'bytes', None, 'int', True, True, 1 ],
-    'nfs_ops_field6': [ 'io(nfs_rpc)', 'elapsed_queue_wait', 'seconds', 0.001, 'float', True, False, 2 ],
-    'nfs_ops_field7': [ 'io(nfs_rpc)', 'elapsed_response_wait', 'seconds', 0.001, 'float', True, False, 2 ],
+    'nfs_ops_field2': [ 'io(nfs_rpc)', 'transmitted', 'count', None, 'int', True, True, 2 ],
+    'nfs_ops_field3': [ 'io(nfs_rpc)', 'timedout', 'count', None, 'int', True, True, 3 ],
+    'nfs_ops_field4': [ 'io(nfs_rpc)', 'data_sent', 'bytes', None, 'int', True, True, 2 ],
+    'nfs_ops_field5': [ 'io(nfs_rpc)', 'data_received', 'bytes', None, 'int', True, True, 2 ],
+    'nfs_ops_field6': [ 'io(nfs_rpc)', 'elapsed_queue_wait', 'seconds', 0.001, 'float', True, False, 3 ],
+    'nfs_ops_field7': [ 'io(nfs_rpc)', 'elapsed_response_wait', 'seconds', 0.001, 'float', True, False, 3 ],
     'nfs_ops_field8': [ 'io(nfs_rpc)', 'elapsed_total', 'seconds', 0.001, 'float', True, False, 1 ],
 }
 GUSTAT_FIELDS_IO_MOUNT_NFS_OPS = {
-    'null',
-    'getattr',
-    'setattr',
-    'lookup',
-    'access',
-    'readlink',
-    'read',
-    'write',
-    'create',
-    'mkdir',
-    'symlink',
-    'mknod',
-    'remove',
-    'rmdir',
-    'rename',
-    'link',
-    'readdir',
-    'readdirplus',
-    'fsstat',
-    'fsinfo',
-    'pathconf',
-    'commit',
+    # key: level
+    'null': 9,
+    'getattr': 3,
+    'setattr': 3,
+    'lookup': 2,
+    'access': 2,
+    'readlink': 2,
+    'read': 0,
+    'write': 0,
+    'create': 1,
+    'mkdir': 1,
+    'symlink': 2,
+    'mknod': 3,
+    'remove': 1,
+    'rmdir': 1,
+    'rename': 2,
+    'link': 2,
+    'readdir': 2,
+    'readdirplus': 2,
+    'fsstat': 3,
+    'fsinfo': 3,
+    'pathconf': 3,
+    'commit': 3,
 }
 
 # /proc/net/dev fields
@@ -789,6 +790,7 @@ class GUStatData:
     def parseStat_io_mount(self, _iLevel, _sDevice = None, _sMountpoint = None):
         global GUSTAT_MEASUREMENT_IO_MOUNT
         global GUSTAT_FIELDS_IO_MOUNT
+        global GUSTAT_FIELDS_IO_MOUNT_NFS_OPS
 
         reDevice = None
         if _sDevice is not None and _sDevice.startswith('re/') and _sDevice.endswith('/'):
@@ -850,12 +852,13 @@ class GUStatData:
                             for i in range(1, 9):
                                 dField = self.__makeField(GUSTAT_FIELDS_IO_MOUNT, 'nfs_bytes_field'+str(i), lWords[i])
                                 self.__storeField(GUSTAT_MEASUREMENT_IO_MOUNT+'_'+sType, sDeviceMountpoint, dField, _iLevel)
-                        elif lWords[0] in GUSTAT_FIELDS_IO_MOUNT_NFS_OPS:
+                        elif lWords[0] in GUSTAT_FIELDS_IO_MOUNT_NFS_OPS.keys():
                             if len(lWords) < 9:
                                 self.__ERROR('Badly/unexpectedly formatted file [rpc:ops]; %s' % sFile)
                                 break
                             for i in range(1, 9):
                                 dField = self.__makeField(GUSTAT_FIELDS_IO_MOUNT, 'nfs_ops_field'+str(i), lWords[i], _sMetricPrefix=lWords[0])
+                                dField['level'] = max(dField['level'], GUSTAT_FIELDS_IO_MOUNT_NFS_OPS[lWords[0]])
                                 self.__storeField(GUSTAT_MEASUREMENT_IO_MOUNT+'_'+sType, sDeviceMountpoint, dField, _iLevel)
         except IOError:
             self.__ERROR('Missing/unreadable file; %s' % sFile)

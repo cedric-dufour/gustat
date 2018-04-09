@@ -222,7 +222,7 @@ class GUStatMain:
             '-Iml', '--io-mount-level', type=int,
             metavar='<level>',
             default=0,
-            help='Mounts statistics: level (0=standard, 1=advanced, 2=expert)')
+            help='Mounts statistics: level (0=standard, 1=advanced, 2=expert, 3=guru)')
         self.__oArgumentParser.add_argument(
             '-Imd', '--io-mount-device', type=str,
             metavar='<device>|re/<device>/',
