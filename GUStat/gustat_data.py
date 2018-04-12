@@ -445,6 +445,7 @@ GUSTAT_FIELDS_VIRT_STAT = {
     'cpu.time': [ 'cpu', 'total', 'seconds', 0.000000001, 'float', True, False, 0 ],
     'cpu.user': [ 'cpu', 'user', 'seconds', 0.000000001, 'float', True, False, 0 ],
     'cpu.system': [ 'cpu', 'system', 'seconds', 0.000000001, 'float', True, False, 0 ],
+    'vcpu.current': [ 'cpu', 'vcpu', 'count', None, 'int', False, False, 0 ],
     'balloon.maximum': [ 'mem', 'maximum', 'bytes', 1024, 'int', False, False, 2 ],
     'balloon.current': [ 'mem', 'current', 'bytes', 1024, 'int', True, True, 0 ],
     'balloon.available': [ 'mem', 'available', 'bytes', 1024, 'int', True, True, 0 ],
@@ -1048,7 +1049,7 @@ class GUStatData:
         global GUSTAT_MEASUREMENT_VIRT_STAT
         global GUSTAT_FIELDS_VIRT_STAT
 
-        lCommand = ['virsh', 'domstats', '--raw', '--cpu-total', '--balloon', '--interface', '--block', _sGuest]
+        lCommand = ['virsh', 'domstats', '--raw', '--cpu-total', '--vcpu', '--balloon', '--interface', '--block', _sGuest]
         try:
             bOutput = SP.check_output(lCommand)
             sDevice_name = None
