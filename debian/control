@@ -9,7 +9,7 @@ Standards-Version: 3.9.8
 
 Package: gustat
 Architecture: all
-Depends: python3 (>= 3.4)
+Depends: python3 (>= 3.4), ${python3:Depends}
 Description: Global Unified Statistics (GUStat)
  The Global Unified Statistics (GUStat) library/utility is an attempt to
  gather and output Linux most-commonly-used system statistics in a unified
