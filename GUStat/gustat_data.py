@@ -610,23 +610,26 @@ class GUStatData:
         try:
             with open(sFile, 'r') as oFile:
                 iQuantity_logical = int(0)
-                iQuantity_cores = int(0)
-                iQuantity_physical = int(0)
-                sId = None
+                diQuantity_cores = dict()
+                diQuantity_physical = dict()
+                sLogicalId = None
+                iPhysicalId = None
                 for sLine in oFile:
                     lWords = [_s.strip() for _s in sLine.lower().split(':')]
                     if len(lWords) < 2:
                         continue
                     if lWords[0] == 'processor':
-                        iQuantity_logical = int(lWords[1])
-                        sId = 'cpu'+lWords[1]
+                        iQuantity_logical += 1
+                        sLogicalId = 'cpu'+lWords[1]
                     else:
-                        if sId is None:
+                        if sLogicalId is None:
                             continue
-                        if lWords[0] == 'core id':
-                            iQuantity_cores = int(lWords[1])
-                        elif lWords[0] == 'physical id':
-                            iQuantity_physical = int(lWords[1])
+                        if lWords[0] == 'physical id':
+                            iPhysicalId = int(lWords[1])
+                            diQuantity_physical[iPhysicalId] = 1
+                        elif lWords[0] == 'cpu cores':
+                            if iPhysicalId is not None:
+                                diQuantity_cores[iPhysicalId] = int(lWords[1])
                         elif lWords[0] == 'model name':
                             try:
                                 lWords[1] = lWords[1].rsplit('@', 1)[1].strip()
@@ -643,14 +646,14 @@ class GUStatData:
                             except:
                                 continue
                         dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, lWords[0], lWords[1])
-                        self.__storeField(GUSTAT_MEASUREMENT_CPU_INFO, sId, dField, _iLevel)
-                dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, 'count_logical', iQuantity_logical+1)
+                        self.__storeField(GUSTAT_MEASUREMENT_CPU_INFO, sLogicalId, dField, _iLevel)
+                dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, 'count_logical', iQuantity_logical)
                 self.__storeField(GUSTAT_MEASUREMENT_CPU_INFO, 'cpu', dField, _iLevel)
-                dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, 'count_cores', iQuantity_cores+1)
+                dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, 'count_cores', sum(diQuantity_cores.values()))
                 self.__storeField(GUSTAT_MEASUREMENT_CPU_INFO, 'cpu', dField, _iLevel)
-                dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, 'count_physical', iQuantity_physical+1)
+                dField = self.__makeField(GUSTAT_FIELDS_CPU_INFO, 'count_physical', sum(diQuantity_physical.values()))
                 self.__storeField(GUSTAT_MEASUREMENT_CPU_INFO, 'cpu', dField, _iLevel)
-                self.__iCpuCount = iQuantity_logical+1
+                self.__iCpuCount = iQuantity_logical
         except IOError:
             self.__ERROR('Missing/unreadable file; %s' % sFile)
 
