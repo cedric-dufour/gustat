@@ -1,0 +1,1191 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB-GUSTAT",
+      "label": "InfluxDB-GUStat",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "5.2.1"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": "5.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "5.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": "5.0.0"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1531828278310,
+  "links": [],
+  "panels": [
+    {
+      "content": "",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 0,
+      "links": [
+        {
+          "dashUri": "db/hosts-1-heatmap",
+          "dashboard": "Hosts: 1.Heatmap",
+          "includeVars": true,
+          "keepTime": true,
+          "title": "Hosts: 1.Heatmap",
+          "type": "dashboard"
+        },
+        {
+          "dashUri": "db/hosts-2-table",
+          "dashboard": "Hosts: 2.Table",
+          "includeVars": true,
+          "keepTime": true,
+          "title": "Hosts: 2.Table",
+          "type": "dashboard"
+        },
+        {
+          "dashUri": "db/hosts-4a-history-graph",
+          "dashboard": "Hosts: 4a.History (Graph)",
+          "includeVars": true,
+          "keepTime": false,
+          "title": "Hosts: 4a.History (Graph)",
+          "type": "dashboard"
+        },
+        {
+          "dashUri": "db/procs-2-table",
+          "dashboard": "Procs: 2.Table",
+          "includeVars": true,
+          "keepTime": true,
+          "title": "Procs: 2.Table",
+          "type": "dashboard"
+        },
+        {
+          "dashUri": "db/nfs-2-table",
+          "dashboard": "NFS: 2.Table",
+          "includeVars": true,
+          "keepTime": true,
+          "title": "NFS: 2.Table",
+          "type": "dashboard"
+        }
+      ],
+      "mode": "markdown",
+      "title": "Jump To...",
+      "type": "text"
+    },
+    {
+      "aliasColors": {
+        "15min": "#890f02",
+        "1min": "#3f6833",
+        "5min": "#eab839"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "decimals": 1,
+      "description": "Normalized load, averaged over 1, 5, 15 minutes",
+      "fill": 1,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"01min_load\") AS \"1min\", ${AGGR}(\"05min_load\") AS \"5min\", ${AGGR}(\"15min_load\") AS \"15min\" FROM \"cpu_load\" WHERE \"type\" = 'normalized' AND \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Load",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "percentunit",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "CPU:cores": "rgb(0, 0, 0)",
+        "Nice": "#0a50a1",
+        "System": "#eab839",
+        "User": "#3f6833",
+        "Wait": "#890f02"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "decimals": 1,
+      "fill": 1,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "id": 2,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "CPU:cores",
+          "dashes": true,
+          "fill": 0,
+          "legend": false,
+          "linewidth": 2,
+          "stack": false
+        }
+      ],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"SUB_1\") AS \"Wait\", ${AGGR}(\"SUB_2\") AS \"System\", ${AGGR}(\"SUB_3\") AS \"User\", ${AGGR}(\"SUB_4\") AS \"Nice\", ${AGGR}(\"SUB_5\") AS \"CPU:cores\" FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"iowait_seconds\"),1s) AS \"SUB_1\", NON_NEGATIVE_DERIVATIVE(LAST(\"system_seconds\"),1s) AS \"SUB_2\", NON_NEGATIVE_DERIVATIVE(LAST(\"user_seconds\"),1s) AS \"SUB_3\", NON_NEGATIVE_DERIVATIVE(LAST(\"nice_seconds\"),1s) AS \"SUB_4\", MAX(\"cores_count\") AS \"SUB_5\" FROM \"long\".\"cpu_info\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"host\") WHERE ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "CPU",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percentunit",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "RD:latency": "#badff4",
+        "RD:throughput": "#0a50a1",
+        "WR:latency": "#dedaf7",
+        "WR:throughput": "#584477"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "decimals": 1,
+      "fill": 1,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
+      "id": 3,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/latency/",
+          "fill": 0,
+          "linewidth": 2,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"SUB_1\") AS \"WR:latency\", ${AGGR}(\"SUB_2\") AS \"RD:latency\", 512*${AGGR}(\"SUB_3\") AS \"WR:throughput\", 512*${AGGR}(\"SUB_4\") AS \"RD:throughput\" FROM (SELECT NON_NEGATIVE_DIFFERENCE(LAST(\"writes_elapsed_seconds\"))/NON_NEGATIVE_DIFFERENCE(LAST(\"writes_completed_count\")) AS \"SUB_1\", NON_NEGATIVE_DIFFERENCE(LAST(\"reads_elapsed_seconds\"))/NON_NEGATIVE_DIFFERENCE(LAST(\"reads_completed_count\")) AS \"SUB_2\", NON_NEGATIVE_DERIVATIVE(LAST(\"writes_sectors_count\"),1s) AS \"SUB_3\", NON_NEGATIVE_DERIVATIVE(LAST(\"reads_sectors_count\"),1s) AS \"SUB_4\" FROM \"long\".\"io_disk\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"device\" =~ /^${Disk}$/ GROUP BY time(${__interval}),\"host\",\"device\") WHERE ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Disk",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "Bps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "RX:packets": "#badff4",
+        "RX:throughput": "#0a50a1",
+        "TX:packets": "#dedaf7",
+        "TX:throughput": "#584477"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "decimals": 1,
+      "fill": 1,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "id": 4,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideZero": false,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/packets/",
+          "fill": 0,
+          "linewidth": 2,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"SUB_1\") AS \"TX:packets\", ${AGGR}(\"SUB_2\") AS \"RX:packets\", ${AGGR}(\"SUB_3\") AS \"TX:throughput\", ${AGGR}(\"SUB_4\") AS \"RX:throughput\" FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"tx_packets\"),1s) AS \"SUB_1\", NON_NEGATIVE_DERIVATIVE(LAST(\"rx_packets\"),1s) AS \"SUB_2\", NON_NEGATIVE_DERIVATIVE(LAST(\"tx_bytes\"),1s) AS \"SUB_3\", NON_NEGATIVE_DERIVATIVE(LAST(\"rx_bytes\"),1s) AS \"SUB_4\" FROM \"long\".\"net_dev\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"device\" =~ /^${IFace}$/ GROUP BY time(${__interval}),\"host\",\"device\") WHERE ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Network - TX/RX",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "Bps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "pps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Buffers": "#0a50a1",
+        "Cache": "#3f6833",
+        "Other": "#eab839",
+        "Slab": "#890f02",
+        "Swap": "#511749",
+        "Total": "rgb(0, 0, 0)"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "decimals": 1,
+      "fill": 1,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 0,
+        "y": 12
+      },
+      "id": 5,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "Swap",
+          "fill": 0,
+          "linewidth": 2,
+          "stack": false
+        },
+        {
+          "alias": "Total",
+          "dashes": true,
+          "fill": 0,
+          "legend": false,
+          "linewidth": 2,
+          "stack": false
+        }
+      ],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"slab_bytes\") AS \"Slab\", ${AGGR}(\"buffers_bytes\") AS \"Buffers\", ${AGGR}(\"cache_bytes\") AS \"Cache\", MAX(\"total_bytes\")-(${AGGR}(\"slab_bytes\")+${AGGR}(\"buffers_bytes\")+${AGGR}(\"cache_bytes\")+${AGGR}(\"free_bytes\")) AS \"Other\", MAX(\"swap_total_bytes\")-${AGGR}(\"swap_free_bytes\")\n AS \"Swap\", MAX(\"total_bytes\") AS \"Total\" FROM \"long\".\"mem_info\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Memory",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Ctx.Switch": "#0a50a1",
+        "Irq.Hard": "#890f02",
+        "Irq.Soft": "#eab839",
+        "Proc.Forked": "#3f6833"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "decimals": 1,
+      "fill": 1,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 6,
+        "y": 12
+      },
+      "id": 6,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"SUB_1\") AS \"Proc.Forked\", ${AGGR}(\"SUB_2\") AS \"Ctx.Switch\", ${AGGR}(\"SUB_3\") AS \"Irq.Soft\", ${AGGR}(\"SUB_4\") AS \"Irq.Hard\" FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"procs_created_count\"),1s) AS \"SUB_1\", NON_NEGATIVE_DERIVATIVE(LAST(\"ctxt_switches_count\"),1s) AS \"SUB_2\", NON_NEGATIVE_DERIVATIVE(LAST(\"softirq_count\"),1s) AS \"SUB_3\", NON_NEGATIVE_DERIVATIVE(LAST(\"irq_count\"),1s) AS \"SUB_4\" FROM \"long\".\"cpu_info\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"host\") WHERE ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Kernel",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "ops",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "RD:latency": "#badff4",
+        "RD:throughput": "#0a50a1",
+        "WR:latency": "#dedaf7",
+        "WR:throughput": "#584477"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "decimals": 1,
+      "fill": 1,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 12,
+        "y": 12
+      },
+      "id": 7,
+      "interval": "60s",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/latency/",
+          "fill": 0,
+          "linewidth": 2,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"SUB_1\") AS \"WR:latency\", ${AGGR}(\"SUB_2\") AS \"RD:latency\", ${AGGR}(\"SUB_3\") AS \"WR:throughput\", ${AGGR}(\"SUB_4\") AS \"RD:throughput\" FROM (SELECT NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_write_elapsed_total_seconds\"))/NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_write_requested_count\")) AS \"SUB_1\", NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_read_elapsed_total_seconds\"))/NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_read_requested_count\")) AS \"SUB_2\", NON_NEGATIVE_DERIVATIVE(LAST(\"io_writes_server_bytes\"),1s) AS \"SUB_3\", NON_NEGATIVE_DERIVATIVE(LAST(\"io_reads_server_bytes\"),1s) AS \"SUB_4\" FROM \"long\".\"io_mount_nfs\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval}),\"host\",\"path\") WHERE ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "NFS",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "Bps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "TCP:established": "#511749",
+        "TCP:listen": "#d683ce",
+        "TCPv4:established": "#3f6833",
+        "TCPv6:established": "#890f02",
+        "UDP:listen": "#64b0c8"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "decimals": 1,
+      "fill": 1,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 18,
+        "y": 12
+      },
+      "id": 8,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideZero": false,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/established/",
+          "fill": 0,
+          "linewidth": 2,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"udp4_listen_count\")+${AGGR}(\"udp6_listen_count\") AS \"UDP:listen\", ${AGGR}(\"tcp4_listen_count\")+${AGGR}(\"tcp6_listen_count\") AS \"TCP:listen\", ${AGGR}(\"tcp4_established_count\") AS \"TCPv4:established\", ${AGGR}(\"tcp6_established_count\") AS \"TCPv6:established\" FROM \"long\".\"net_conn\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Network - Connections",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 16,
+  "style": "dark",
+  "tags": [
+    "GUStat",
+    "Hosts",
+    "Graph"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Task",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"cpu_load\" WITH KEY = \"task\"",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Serie",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"cpu_load\" WITH KEY = \"serie\" WHERE \"task\" =~ /^${Task}$/",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Host",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"cpu_load\" WITH KEY = \"host\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "IFace",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"net_dev\" WITH KEY = \"device\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Disk",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"io_disk\" WITH KEY = \"device\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Export",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"io_mount_nfs\" WITH KEY = \"path\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "tags": [],
+          "text": "NONE",
+          "value": "NONE"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "AGGR",
+        "options": [
+          {
+            "selected": true,
+            "text": "NONE",
+            "value": "NONE"
+          },
+          {
+            "selected": false,
+            "text": "MAX",
+            "value": "MAX"
+          },
+          {
+            "selected": false,
+            "text": "MEAN",
+            "value": "MEAN"
+          },
+          {
+            "selected": false,
+            "text": "MEDIAN",
+            "value": "MEDIAN"
+          },
+          {
+            "selected": false,
+            "text": "MIN",
+            "value": "MIN"
+          },
+          {
+            "selected": false,
+            "text": "SUM",
+            "value": "SUM"
+          }
+        ],
+        "query": "NONE,MAX,MEAN,MEDIAN,MIN,SUM",
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "Hosts: 3.Graph",
+  "uid": "GUStat-Hosts-Graph",
+  "version": 9
+}

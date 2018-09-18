@@ -1,0 +1,1163 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB-GUSTAT",
+      "label": "InfluxDB-GUStat",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "5.2.1"
+    },
+    {
+      "type": "panel",
+      "id": "heatmap",
+      "name": "Heatmap",
+      "version": "5.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "5.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": "5.0.0"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1531827483540,
+  "links": [],
+  "panels": [
+    {
+      "content": "",
+      "gridPos": {
+        "h": 1,
+        "w": 2,
+        "x": 0,
+        "y": 0
+      },
+      "id": 0,
+      "links": [
+        {
+          "dashUri": "db/procs-2-table",
+          "dashboard": "Procs: 2.Table",
+          "includeVars": true,
+          "keepTime": true,
+          "title": "Procs: 2.Table",
+          "type": "dashboard"
+        },
+        {
+          "dashUri": "db/procs-3-graph",
+          "dashboard": "Procs: 3.Graph",
+          "includeVars": true,
+          "keepTime": true,
+          "title": "Procs: 3.Graph",
+          "type": "dashboard"
+        },
+        {
+          "dashUri": "db/hosts-3-graph",
+          "dashboard": "Hosts: 3.Graph",
+          "includeVars": true,
+          "keepTime": true,
+          "title": "Hosts: 3.Graph",
+          "type": "dashboard"
+        }
+      ],
+      "mode": "markdown",
+      "title": "Jump To...",
+      "type": "text"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "panels": [
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#eab839",
+            "colorScale": "sqrt",
+            "colorScheme": "interpolateOranges",
+            "exponent": 0.4,
+            "min": null,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "System CPU load ~ time spent (%) in kernel space (I/Os, device drivers, etc.)",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 1
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 2,
+          "interval": "1m",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"cpu_stime_seconds\"),1s) AS \"SUB\" FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval}),\"host\",\"pid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "CPU - System",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "percentunit",
+            "logBase": 1,
+            "max": "5",
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": null,
+          "yBucketSize": 0.25
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#3f6833",
+            "colorScale": "sqrt",
+            "colorScheme": "interpolateOranges",
+            "exponent": 0.4,
+            "min": null,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "User CPU load ~ time spent (%) in user space (actual computation)",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 1
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 3,
+          "interval": "1m",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"cpu_utime_seconds\"),1s) AS \"SUB\" FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval}),\"host\",\"pid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "CPU - User",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "percentunit",
+            "logBase": 1,
+            "max": "5",
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": null,
+          "yBucketSize": 0.25
+        }
+      ],
+      "title": "CPU",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 4,
+      "panels": [
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#eab839",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Non-voluntary context switches (per second), preempted by kernel space",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 9
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 5,
+          "interval": "1m",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"sched_ctxt_nonvol_switches_count\"),1s) AS \"SUB\" FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval}),\"host\",\"pid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Kernel - NonVolCtxSwi",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "ops",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#3f6833",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Voluntary context switches (per second), as requested by user space",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 9
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 6,
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"sched_ctxt_vol_switches_count\"),1s) AS \"SUB\" FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval}),\"host\",\"pid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Kernel - VolCtxSwi",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": "",
+          "yAxis": {
+            "decimals": null,
+            "format": "ops",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        }
+      ],
+      "title": "Kernel",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 7,
+      "panels": [
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#eab839",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Major memory faults (per second), requiring I/O (swap) activity",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 10
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 8,
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"mem_majflt_count\"),1s) AS \"SUB\" FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval}),\"host\",\"pid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Memory - MajFlt",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "ops",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#3f6833",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Minor memory faults (per second), not requiring I/O (swap) activity",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 10
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 9,
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"mem_minflt_count\"),1s) AS \"SUB\" FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval}),\"host\",\"pid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Memory - MinFlt",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": "",
+          "yAxis": {
+            "decimals": null,
+            "format": "ops",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#eab839",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Resident set size (RSS), using actual RAM",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 17
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 10,
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"mem_rss_bytes\") FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ AND ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Memory - RSS",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": "",
+          "yAxis": {
+            "decimals": null,
+            "format": "bytes",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#3f6833",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Allocated virtual size (VSZ), including swap and memory-mapped files",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 17
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 11,
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"mem_vsize_bytes\") FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ AND ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Memory - VSZ",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": "",
+          "yAxis": {
+            "decimals": null,
+            "format": "bytes",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        }
+      ],
+      "title": "Memory",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 12,
+      "panels": [
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#eab839",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Writes bytes (per second), requiring I/O (storage) activity",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 11
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 13,
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"io_writes_bytes\"),1s) AS \"SUB\" FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval}),\"host\",\"pid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "I/O - WR:throughput",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "Bps",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#3f6833",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Writes bytes (per second), including (memory) cache, TTYs, etc.",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 11
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 14,
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"io_writes_chars\"),1s) AS \"SUB\" FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval}),\"host\",\"pid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "I/O - WR:volume",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "Bps",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#511749",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Writes operations (per second), including (memory) cache, TTYs, etc.",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 8,
+            "y": 11
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 15,
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"io_writes_syscalls_count\"),1s) AS \"SUB\" FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval}),\"host\",\"pid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "I/O - WR:iops",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "iops",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#eab839",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Reads bytes (per second), requiring I/O (storage) activity",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 18
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 16,
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"io_reads_bytes\"),1s) AS \"SUB\" FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval}),\"host\",\"pid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "I/O - RD:throughput",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "Bps",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#3f6833",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Reads bytes (per second), including (memory) cache, TTYs, etc.",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 18
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 17,
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"io_reads_chars\"),1s) AS \"SUB\" FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval}),\"host\",\"pid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "I/O - RD:volume",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "Bps",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#511749",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Reads operations (per second), including (memory) cache, TTYs, etc.",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 8,
+            "y": 18
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 18,
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"io_reads_syscalls_count\"),1s) AS \"SUB\" FROM \"short\".\"proc_stat\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval}),\"host\",\"pid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"host\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "I/O - RD:iops",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "iops",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        }
+      ],
+      "title": "I/O",
+      "type": "row"
+    }
+  ],
+  "schemaVersion": 16,
+  "style": "dark",
+  "tags": [
+    "GUStat",
+    "Procs",
+    "Heatmap"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Task",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"proc_stat\" WITH KEY = \"task\"",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Serie",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"proc_stat\" WITH KEY = \"serie\" WHERE \"task\" =~ /^${Task}$/",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Host",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"proc_stat\" WITH KEY = \"host\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "User",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"proc_stat\" WITH KEY = \"user_uid_real\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "text": "MEAN",
+          "value": "MEAN"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "AGGR",
+        "options": [
+          {
+            "selected": false,
+            "text": "MAX",
+            "value": "MAX"
+          },
+          {
+            "selected": true,
+            "text": "MEAN",
+            "value": "MEAN"
+          },
+          {
+            "selected": false,
+            "text": "MEDIAN",
+            "value": "MEDIAN"
+          },
+          {
+            "selected": false,
+            "text": "MIN",
+            "value": "MIN"
+          },
+          {
+            "selected": false,
+            "text": "SUM",
+            "value": "SUM"
+          }
+        ],
+        "query": "MAX,MEAN,MEDIAN,MIN,SUM",
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "Procs: 1.Heatmap",
+  "uid": "GUStat-Procs-Heatmap",
+  "version": 31
+}

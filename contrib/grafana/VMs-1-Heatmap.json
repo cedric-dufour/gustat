@@ -1,0 +1,1238 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB-GUSTAT",
+      "label": "InfluxDB-GUStat",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "5.2.1"
+    },
+    {
+      "type": "panel",
+      "id": "heatmap",
+      "name": "Heatmap",
+      "version": "5.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "5.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": "5.0.0"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1531828102383,
+  "links": [],
+  "panels": [
+    {
+      "content": "",
+      "gridPos": {
+        "h": 1,
+        "w": 2,
+        "x": 0,
+        "y": 0
+      },
+      "id": 0,
+      "links": [
+        {
+          "dashUri": "db/vms-2-table",
+          "dashboard": "VMs: 2.Table",
+          "includeVars": true,
+          "keepTime": true,
+          "title": "VMs: 2.Table",
+          "type": "dashboard"
+        }
+      ],
+      "mode": "markdown",
+      "title": "Jump To...",
+      "type": "text"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "panels": [
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#890f02",
+            "colorScale": "sqrt",
+            "colorScheme": "interpolateOranges",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Total CPU load ~ time spent (%) scheduling the guest, normalized as per vCPU quantity",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 1
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 2,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"total_seconds\"),1s)/MAX(\"vcpu_count\") AS \"SUB\" FROM \"long\".\"virt_cpu\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~/^${Host}$/ GROUP BY time(${__interval}),\"guest\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "CPU - Total",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "percentunit",
+            "logBase": 1,
+            "max": "1",
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": null,
+          "yBucketSize": 0.05
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#eab839",
+            "colorScale": "sqrt",
+            "colorScheme": "interpolateOranges",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "System CPU load ~ time spent (%) in kernel space (I/Os, device drivers, etc.), normalized as per vCPU quantity",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 1
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 3,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"system_seconds\"),1s)/MAX(\"vcpu_count\") AS \"SUB\" FROM \"long\".\"virt_cpu\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~/^${Host}$/ GROUP BY time(${__interval}),\"guest\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "CPU - System",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "percentunit",
+            "logBase": 1,
+            "max": "1",
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": null,
+          "yBucketSize": 0.05
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#3f6833",
+            "colorScale": "sqrt",
+            "colorScheme": "interpolateOranges",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "User CPU load ~ time spent (%) in user space (actual computation), normalized as per vCPU quantity",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 8,
+            "y": 1
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 4,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"user_seconds\"),1s)/MAX(\"vcpu_count\") AS \"SUB\" FROM \"long\".\"virt_cpu\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~/^${Host}$/ GROUP BY time(${__interval}),\"guest\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "CPU - User",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": "",
+          "yAxis": {
+            "decimals": null,
+            "format": "percentunit",
+            "logBase": 1,
+            "max": "1",
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": null,
+          "yBucketSize": 0.05
+        }
+      ],
+      "title": "CPU",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 5,
+      "panels": [
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#890f02",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Major memory faults (per second), requiring I/O (swap) activity",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 9
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 6,
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"majflt_count\"),1s) AS \"SUB\" FROM \"long\".\"virt_mem\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"guest\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Memory - MajFlt",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "ops",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#eab839",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Minor memory faults (per second), not requiring I/O (swap) activity",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 9
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 7,
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"minflt_count\"),1s) AS \"SUB\" FROM \"long\".\"virt_mem\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"guest\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Memory - MinjFlt",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": "",
+          "yAxis": {
+            "decimals": null,
+            "format": "ops",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#3f6833",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Memory resident set size (RSS), respective (%) to total memory",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 8,
+            "y": 9
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 8,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"rss_bytes\")/MAX(\"current_bytes\") AS \"RSS\" FROM \"long\".\"virt_mem\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Memory - RSS",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "percentunit",
+            "logBase": 1,
+            "max": "1",
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": null,
+          "yBucketSize": 0.05
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#890f02",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Writes bytes (per second), actually written to swap memory",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 16
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 9,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"swap_writes_bytes\"),1s) AS \"SUB\" FROM \"long\".\"virt_mem\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"guest\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Swap - WR:throughput",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "Bps",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#eab839",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Reads bytes (per second), actually read from swap memory",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 16
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 10,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"swap_reads_bytes\"),1s) AS \"SUB\" FROM \"long\".\"virt_mem\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"guest\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Swap - RD:throughput",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "Bps",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        }
+      ],
+      "title": "Memory",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 11,
+      "panels": [
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#890f02",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Writes time spent waiting for virtual device to complete operations",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 10
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 13,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DIFFERENCE(LAST(\"writes_elapsed_seconds\"))/NON_NEGATIVE_DIFFERENCE(LAST(\"writes_ops_count\")) AS \"SUB\" FROM \"long\".\"virt_io\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"guest\",\"devid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Disk - WR:latency",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "s",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#eab839",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Writes bytes (per second), written to virtual device",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 10
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 12,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"writes_bytes\"),1s) AS \"SUB\" FROM \"long\".\"virt_io\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"guest\",\"devid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Disk - WR:throughput",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "Bps",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#511749",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Writes operations (per second), performed on virtual device",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 8,
+            "y": 10
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 14,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"writes_ops_count\"),1s) AS \"SUB\" FROM \"long\".\"virt_io\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"guest\",\"devid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Disk - WR:iops",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "iops",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#890f02",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Reads time spent waiting for virtual device to complete operations",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 17
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 16,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DIFFERENCE(LAST(\"reads_elapsed_seconds\"))/NON_NEGATIVE_DIFFERENCE(LAST(\"reads_ops_count\")) AS \"SUB\" FROM \"long\".\"virt_io\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"guest\",\"devid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Disk - RD:latency",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "s",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#eab839",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Reads bytes (per second), read from virtual device",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 17
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 15,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"reads_bytes\"),1s) AS \"SUB\" FROM \"long\".\"virt_io\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"guest\",\"devid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Disk - RD:throughput",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "Bps",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#511749",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Reads operations (per second), performed on virtual device",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 8,
+            "y": 17
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 17,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"reads_ops_count\"),1s) AS \"SUB\" FROM \"long\".\"virt_io\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"guest\",\"devid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Disk - RD:iops",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "iops",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        }
+      ],
+      "title": "Disk",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 18,
+      "panels": [
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#584477",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Transmitted bytes (per second)",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 11
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 19,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"tx_bytes\"),1s) AS \"SUB\" FROM \"long\".\"virt_net\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"guest\",\"devid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Network - TX:throughput",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "Bps",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        },
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#0a50a1",
+            "colorScale": "sqrt",
+            "exponent": 0.4,
+            "mode": "opacity"
+          },
+          "dataFormat": "timeseries",
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "description": "Received bytes (per second)",
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 11
+          },
+          "heatmap": {},
+          "highlightCards": true,
+          "id": 20,
+          "interval": "60s",
+          "legend": {
+            "show": false
+          },
+          "links": [],
+          "targets": [
+            {
+              "policy": "default",
+              "query": "SELECT ${AGGR}(\"SUB\") FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"rx_bytes\"),1s) AS \"SUB\" FROM \"long\".\"virt_net\" WHERE \"serie\" =~/^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval}),\"guest\",\"devid\") WHERE ${timeFilter} GROUP BY time(${__interval}),\"guest\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "title": "Network - RX:throughput",
+          "tooltip": {
+            "show": true,
+            "showHistogram": true
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "Bps",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": 20,
+          "yBucketSize": null
+        }
+      ],
+      "title": "Network",
+      "type": "row"
+    }
+  ],
+  "schemaVersion": 16,
+  "style": "dark",
+  "tags": [
+    "GUStat",
+    "VMs",
+    "Heatmap"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Serie",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"virt_cpu\" WITH KEY = \"serie\"",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Host",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"virt_cpu\" WITH KEY = \"host\" WHERE \"serie\" =~ /^${Serie}$/",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "tags": [],
+          "text": "MEAN",
+          "value": "MEAN"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "AGGR",
+        "options": [
+          {
+            "selected": false,
+            "text": "MAX",
+            "value": "MAX"
+          },
+          {
+            "selected": true,
+            "text": "MEAN",
+            "value": "MEAN"
+          },
+          {
+            "selected": false,
+            "text": "MEDIAN",
+            "value": "MEDIAN"
+          },
+          {
+            "selected": false,
+            "text": "MIN",
+            "value": "MIN"
+          },
+          {
+            "selected": false,
+            "text": "SUM",
+            "value": "SUM"
+          }
+        ],
+        "query": "MAX,MEAN,MEDIAN,MIN,SUM",
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "VMs: 1.Heatmap",
+  "uid": "GUStat-VMs-Heatmap",
+  "version": 35
+}

@@ -1,0 +1,1642 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB-GUSTAT",
+      "label": "InfluxDB-GUStat",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "5.2.1"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": "5.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "5.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": "5.0.0"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1531827588436,
+  "links": [],
+  "panels": [
+    {
+      "content": "",
+      "gridPos": {
+        "h": 1,
+        "w": 2,
+        "x": 0,
+        "y": 0
+      },
+      "id": 0,
+      "links": [
+        {
+          "dashUri": "db/procs-4b-history-table",
+          "dashboard": "Procs: 4b.History (Table)",
+          "includeVars": true,
+          "keepTime": true,
+          "title": "Procs: 4b.History (Table)",
+          "type": "dashboard"
+        }
+      ],
+      "mode": "markdown",
+      "title": "Jump To...",
+      "type": "text"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "panels": [
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "System CPU load ~ time spent (%) in kernel space (I/Os, device drivers, etc.)",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 1
+          },
+          "hideTimeOverride": false,
+          "id": 2,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_cpu_stime_load\") AS \"MAX\", MEAN(\"MEAN_cpu_stime_load\") AS \"Mean\", MEAN(\"MEDIAN_cpu_stime_load\") AS \"Median\", MIN(\"MIN_cpu_stime_load\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "CPU - System",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "percentunit",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "User CPU load ~ time spent (%) in user space (actual computation)",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 1
+          },
+          "hideTimeOverride": false,
+          "id": 3,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_cpu_utime_load\") AS \"MAX\", MEAN(\"MEAN_cpu_utime_load\") AS \"Mean\", MEAN(\"MEDIAN_cpu_utime_load\") AS \"Median\", MIN(\"MIN_cpu_utime_load\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "CPU - User",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "percentunit",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "CPU",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 4,
+      "panels": [
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Non-voluntary context switches (per second), preempted by kernel space",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 9
+          },
+          "hideTimeOverride": false,
+          "id": 5,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_sched_ctxt_nonvol_switches_per_second\") AS \"MAX\", MEAN(\"MEAN_sched_ctxt_nonvol_switches_per_second\") AS \"Mean\", MEAN(\"MEDIAN_sched_ctxt_nonvol_switches_per_second\") AS \"Median\", MIN(\"MIN_sched_ctxt_nonvol_switches_per_second\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Kernel - NonVolCtxSwi",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "ops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Voluntary context switches (per second), as requested by user space",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 9
+          },
+          "hideTimeOverride": false,
+          "id": 6,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_sched_ctxt_nonvol_switches_per_second\") AS \"MAX\", MEAN(\"MEAN_sched_ctxt_nonvol_switches_per_second\") AS \"Mean\", MEAN(\"MEDIAN_sched_ctxt_nonvol_switches_per_second\") AS \"Median\", MIN(\"MIN_sched_ctxt_nonvol_switches_per_second\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Kernel - VolCtxSwi",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "ops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Kernel",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 7,
+      "panels": [
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Major memory faults (per second), requiring I/O (swap) activity",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 10
+          },
+          "hideTimeOverride": false,
+          "id": 8,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_mem_majflt_per_second\") AS \"MAX\", MEAN(\"MEAN_mem_majflt_per_second\") AS \"Mean\", MEAN(\"MEDIAN_mem_majflt_per_second\") AS \"Median\", MIN(\"MIN_mem_majflt_per_second\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Memory - MajFlt",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "ops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Minor memory faults (per second), not requiring I/O (swap) activity",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 10
+          },
+          "hideTimeOverride": false,
+          "id": 9,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_mem_minflt_per_second\") AS \"MAX\", MEAN(\"MEAN_mem_minflt_per_second\") AS \"Mean\", MEAN(\"MEDIAN_mem_minflt_per_second\") AS \"Median\", MIN(\"MIN_mem_minflt_per_second\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Memory - MinFlt",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "ops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Resident set size (RSS), using actual RAM",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 17
+          },
+          "hideTimeOverride": false,
+          "id": 10,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_mem_rss_bytes\") AS \"MAX\", MEAN(\"MEAN_mem_rss_bytes\") AS \"Mean\", MEAN(\"MEDIAN_mem_rss_bytes\") AS \"Median\", MIN(\"MIN_mem_rss_bytes\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Memory - RSS",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "bytes",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Allocated virtual size (VSZ), including swap and memory-mapped files",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 17
+          },
+          "hideTimeOverride": false,
+          "id": 11,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_mem_vsize_bytes\") AS \"MAX\", MEAN(\"MEAN_mem_vsize_bytes\") AS \"Mean\", MEAN(\"MEDIAN_mem_vsize_bytes\") AS \"Median\", MIN(\"MIN_mem_vsize_bytes\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Memory - VSZ",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "bytes",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Memory",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 12,
+      "panels": [
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Writes bytes (per second), requiring I/O (storage) activity",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 11
+          },
+          "hideTimeOverride": false,
+          "id": 13,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_io_writes_bytes_per_second\") AS \"MAX\", MEAN(\"MEAN_io_writes_bytes_per_second\") AS \"Mean\", MEAN(\"MEDIAN_io_writes_bytes_per_second\") AS \"Median\", MIN(\"MIN_io_writes_bytes_per_second\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "I/O - WR:throughput",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "Bps",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Writes bytes (per second), including (memory) cache, TTYs, etc.",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 11
+          },
+          "hideTimeOverride": false,
+          "id": 14,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_io_writes_chars_per_second\") AS \"MAX\", MEAN(\"MEAN_io_writes_chars_per_second\") AS \"Mean\", MEAN(\"MEDIAN_io_writes_chars_per_second\") AS \"Median\", MIN(\"MIN_io_writes_chars_per_second\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "I/O - WR:volume",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "Bps",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Writes operations (per second), including (memory) cache, TTYs, etc.",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 8,
+            "y": 11
+          },
+          "hideTimeOverride": false,
+          "id": 15,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_io_writes_syscalls_per_second\") AS \"MAX\", MEAN(\"MEAN_io_writes_syscalls_per_second\") AS \"Mean\", MEAN(\"MEDIAN_io_writes_syscalls_per_second\") AS \"Median\", MIN(\"MIN_io_writes_syscalls_per_second\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "I/O - WR:iops",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "iops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Reads bytes (per second), requiring I/O (storage) activity",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 18
+          },
+          "hideTimeOverride": false,
+          "id": 16,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_io_reads_bytes_per_second\") AS \"MAX\", MEAN(\"MEAN_io_reads_bytes_per_second\") AS \"Mean\", MEAN(\"MEDIAN_io_reads_bytes_per_second\") AS \"Median\", MIN(\"MIN_io_reads_bytes_per_second\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "I/O - RD:throughput",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "Bps",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Reads bytes (per second), including (memory) cache, TTYs, etc.",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 18
+          },
+          "hideTimeOverride": false,
+          "id": 17,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_io_reads_chars_per_second\") AS \"MAX\", MEAN(\"MEAN_io_reads_chars_per_second\") AS \"Mean\", MEAN(\"MEDIAN_io_reads_chars_per_second\") AS \"Median\", MIN(\"MIN_io_reads_chars_per_second\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "I/O - RD:volume",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "Bps",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Reads operations (per second), including (memory) cache, TTYs, etc.",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 8,
+            "y": 18
+          },
+          "hideTimeOverride": false,
+          "id": 18,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_io_reads_syscalls_per_second\") AS \"MAX\", MEAN(\"MEAN_io_reads_syscalls_per_second\") AS \"Mean\", MEAN(\"MEDIAN_io_reads_syscalls_per_second\") AS \"Median\", MIN(\"MIN_io_reads_syscalls_per_second\") AS \"MIN\" FROM \"history\".\"proc_stat\" WHERE ${timeFilter} AND \"user_uid_real\" =~ /^${User}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "I/O - RD:iops",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "iops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "I/O",
+      "type": "row"
+    }
+  ],
+  "schemaVersion": 16,
+  "style": "dark",
+  "tags": [
+    "GUStat",
+    "Procs",
+    "History"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "User",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"history\".\"proc_stat\" WITH KEY = \"user_uid_real\"",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1d"
+    ],
+    "time_options": [
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "Procs: 4a.History (Graph)",
+  "uid": "GUStat-Procs-HistoryGraph",
+  "version": 9
+}

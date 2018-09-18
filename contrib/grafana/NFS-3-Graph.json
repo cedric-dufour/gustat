@@ -1,0 +1,1064 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB-GUSTAT",
+      "label": "InfluxDB-GUStat",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "5.2.1"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": "5.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "5.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": "5.0.0"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1531828459380,
+  "links": [],
+  "panels": [
+    {
+      "content": "",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 0,
+      "links": [
+        {
+          "dashUri": "db/nfs-1-heatmap",
+          "dashboard": "NFS: 1.Heatmap",
+          "includeVars": true,
+          "keepTime": true,
+          "title": "NFS: 1.Heatmap",
+          "type": "dashboard"
+        },
+        {
+          "dashUri": "db/nfs-2-table",
+          "dashboard": "NFS: 2.Table",
+          "includeVars": true,
+          "keepTime": true,
+          "title": "NFS: 2.Table",
+          "type": "dashboard"
+        },
+        {
+          "dashUri": "db/nfs-4a-history-graph",
+          "dashboard": "NFS: 4a.History (Graph)",
+          "includeVars": true,
+          "keepTime": false,
+          "title": "NFS: 4a.History (Graph)",
+          "type": "dashboard"
+        },
+        {
+          "dashUri": "db/hosts-3-graph",
+          "dashboard": "Hosts: 3.Graph",
+          "includeVars": true,
+          "keepTime": true,
+          "title": "Hosts: 3.Graph",
+          "type": "dashboard"
+        }
+      ],
+      "mode": "markdown",
+      "title": "Jump To...",
+      "type": "text"
+    },
+    {
+      "aliasColors": {
+        "RD:iops": "#badff4",
+        "RD:throughput": "#0a50a1",
+        "WR:iops": "#dedaf7",
+        "WR:throughput": "#584477"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "description": "Writes/reads bytes/operations (per second), actually sent/received to/from server",
+      "fill": 1,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "interval": "60s",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/iops/",
+          "fill": 0,
+          "linewidth": 2,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"SUB_1\") AS \"WR:iops\", ${AGGR}(\"SUB_2\") AS \"RD:iops\", ${AGGR}(\"SUB_3\") AS \"WR:throughput\", ${AGGR}(\"SUB_4\") AS \"RD:throughput\" FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"rpc_write_requested_count\"),1s) AS \"SUB_1\", NON_NEGATIVE_DERIVATIVE(LAST(\"rpc_read_requested_count\"),1s) AS \"SUB_2\", NON_NEGATIVE_DERIVATIVE(LAST(\"io_writes_server_bytes\"),1s) AS \"SUB_3\", NON_NEGATIVE_DERIVATIVE(LAST(\"io_reads_server_bytes\"),1s) AS \"SUB_4\" FROM \"long\".\"io_mount_nfs\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval}),\"host\",\"path\") WHERE ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "NFS - WR+RD:throughput+iops",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "Bps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "iops",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Write:iops": "#511749",
+        "Write:latency": "#890f02"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "description": "Write RPC time spent waiting for RPC to complete, and operations (per second)",
+      "fill": 0,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "id": 2,
+      "interval": "60s",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/iops/",
+          "fill": 1,
+          "linewidth": 1,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"SUB_1\") AS \"Write:iops\", ${AGGR}(\"SUB_2\") AS \"Write:latency\" FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"rpc_write_requested_count\"),1s) AS \"SUB_1\", NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_write_elapsed_total_seconds\"))/NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_write_requested_count\")) AS \"SUB_2\" FROM \"long\".\"io_mount_nfs\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval}),\"host\",\"path\") WHERE ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "NFS - Write:latency+iops",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "iops",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Create:iops": "#511749",
+        "Create:latency": "#890f02"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "description": "Create (file) RPC time spent waiting for RPC to complete, and operations (per second)",
+      "fill": 0,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
+      "id": 3,
+      "interval": "60s",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/iops/",
+          "fill": 1,
+          "linewidth": 1,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"SUB_1\") AS \"Create:iops\", ${AGGR}(\"SUB_2\") AS \"Create:latency\" FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"rpc_create_requested_count\"),1s) AS \"SUB_1\", NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_create_elapsed_total_seconds\"))/NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_create_requested_count\")) AS \"SUB_2\" FROM \"long\".\"io_mount_nfs\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval}),\"host\",\"path\") WHERE ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "NFS - Create:latency+iops",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "iops",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Mkdir:iops": "#511749",
+        "Mkdir:latency": "#890f02"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "description": "Create (directory) RPC time spent waiting for RPC to complete, and operations (per second)",
+      "fill": 0,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "id": 4,
+      "interval": "60s",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/iops/",
+          "fill": 1,
+          "linewidth": 1,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"SUB_1\") AS \"Mkdir:iops\", ${AGGR}(\"SUB_2\") AS \"Mkdir:latency\" FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"rpc_mkdir_requested_count\"),1s) AS \"SUB_1\", NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_mkdir_elapsed_total_seconds\"))/NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_mkdir_requested_count\")) AS \"SUB_2\" FROM \"long\".\"io_mount_nfs\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval}),\"host\",\"path\") WHERE ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "NFS - Mkdir:latency+iops",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "iops",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Readdir:iops": "#511749",
+        "Readdir:latency": "#890f02"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "description": "List directory RPC time spent waiting for RPC to complete, and operations (per second)",
+      "fill": 0,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 0,
+        "y": 12
+      },
+      "id": 5,
+      "interval": "60s",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/iops/",
+          "fill": 1,
+          "linewidth": 1,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"SUB_1\") AS \"Readdir:iops\", ${AGGR}(\"SUB_2\") AS \"Readdir:latency\" FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"rpc_readdir_requested_count\"),1s)+NON_NEGATIVE_DERIVATIVE(LAST(\"rpc_readdirplus_requested_count\"),1s) AS \"SUB_1\", (NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_readdir_elapsed_total_seconds\"))+NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_readdirplus_elapsed_total_seconds\")))/(NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_readdir_requested_count\"))+NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_readdirplus_requested_count\"))) AS \"SUB_2\" FROM \"long\".\"io_mount_nfs\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval}),\"host\",\"path\") WHERE ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "NFS - Readdir:latency+iops",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "iops",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Read:iops": "#511749",
+        "Read:latency": "#890f02"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "description": "Read RPC time spent waiting for RPC to complete, and operations (per second)",
+      "fill": 0,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 6,
+        "y": 12
+      },
+      "id": 6,
+      "interval": "60s",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/iops/",
+          "fill": 1,
+          "linewidth": 1,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"SUB_1\") AS \"Read:iops\", ${AGGR}(\"SUB_2\") AS \"Read:latency\" FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"rpc_read_requested_count\"),1s) AS \"SUB_1\", NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_read_elapsed_total_seconds\"))/NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_read_requested_count\")) AS \"SUB_2\" FROM \"long\".\"io_mount_nfs\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval}),\"host\",\"path\") WHERE ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "NFS - Read:latency+iops",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "iops",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Remove:iops": "#511749",
+        "Remove:latency": "#890f02"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "description": "Remove (file) RPC time spent waiting for RPC to complete, and operations (per second)",
+      "fill": 0,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 12,
+        "y": 12
+      },
+      "id": 7,
+      "interval": "60s",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/iops/",
+          "fill": 1,
+          "linewidth": 1,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"SUB_1\") AS \"Remove:iops\", ${AGGR}(\"SUB_2\") AS \"Remove:latency\" FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"rpc_remove_requested_count\"),1s) AS \"SUB_1\", NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_remove_elapsed_total_seconds\"))/NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_remove_requested_count\")) AS \"SUB_2\" FROM \"long\".\"io_mount_nfs\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval}),\"host\",\"path\") WHERE ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "NFS - Remove:latency+iops",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "iops",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Rmdir:iops": "#511749",
+        "Rmdir:latency": "#890f02"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB-GUSTAT}",
+      "description": "Remove (directory) RPC time spent waiting for RPC to complete, and operations (per second)",
+      "fill": 0,
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 18,
+        "y": 12
+      },
+      "id": 8,
+      "interval": "60s",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/iops/",
+          "fill": 1,
+          "linewidth": 1,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "policy": "default",
+          "query": "SELECT ${AGGR}(\"SUB_1\") AS \"Rmdir:iops\", ${AGGR}(\"SUB_2\") AS \"Rmdir:latency\" FROM (SELECT NON_NEGATIVE_DERIVATIVE(LAST(\"rpc_rmdir_requested_count\"),1s) AS \"SUB_1\", NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_rmdir_elapsed_total_seconds\"))/NON_NEGATIVE_DIFFERENCE(LAST(\"rpc_rmdir_requested_count\")) AS \"SUB_2\" FROM \"long\".\"io_mount_nfs\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval}),\"host\",\"path\") WHERE ${timeFilter} GROUP BY time(${__interval})",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "NFS - Rmdir:latency+iops",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "iops",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 16,
+  "style": "dark",
+  "tags": [
+    "GUStat",
+    "NFS",
+    "Graph"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Task",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"io_mount_nfs\" WITH KEY = \"task\"",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Serie",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"io_mount_nfs\" WITH KEY = \"serie\" WHERE \"task\" =~ /^${Task}$/",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Host",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"io_mount_nfs\" WITH KEY = \"host\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Export",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"io_mount_nfs\" WITH KEY = \"path\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "tags": [],
+          "text": "NONE",
+          "value": "NONE"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "AGGR",
+        "options": [
+          {
+            "selected": true,
+            "text": "NONE",
+            "value": "NONE"
+          },
+          {
+            "selected": false,
+            "text": "MAX",
+            "value": "MAX"
+          },
+          {
+            "selected": false,
+            "text": "MEAN",
+            "value": "MEAN"
+          },
+          {
+            "selected": false,
+            "text": "MEDIAN",
+            "value": "MEDIAN"
+          },
+          {
+            "selected": false,
+            "text": "MIN",
+            "value": "MIN"
+          },
+          {
+            "selected": false,
+            "text": "SUM",
+            "value": "SUM"
+          }
+        ],
+        "query": "NONE,MAX,MEAN,MEDIAN,MIN,SUM",
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "NFS: 3.Graph",
+  "uid": "GUStat-NFS-Graph",
+  "version": 5
+}

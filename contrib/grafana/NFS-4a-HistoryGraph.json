@@ -1,0 +1,2030 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB-GUSTAT",
+      "label": "InfluxDB-GUStat",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "5.2.1"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": "5.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "5.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": "5.0.0"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1531829734683,
+  "links": [],
+  "panels": [
+    {
+      "content": "",
+      "gridPos": {
+        "h": 1,
+        "w": 2,
+        "x": 0,
+        "y": 0
+      },
+      "id": 0,
+      "links": [
+        {
+          "dashUri": "db/nfs-4b-history-table",
+          "dashboard": "NFS: 4b.History (Table)",
+          "includeVars": true,
+          "keepTime": true,
+          "title": "NFS: 4b.History (Table)",
+          "type": "dashboard"
+        }
+      ],
+      "mode": "markdown",
+      "title": "Jump To...",
+      "type": "text"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "panels": [
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Writes bytes (per second), actually sent to server",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 2
+          },
+          "hideTimeOverride": false,
+          "id": 2,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_io_writes_server_bytes_per_second\") AS \"MAX\", MEAN(\"MEAN_io_writes_server_bytes_per_second\") AS \"Mean\", MEAN(\"MEDIAN_io_writes_server_bytes_per_second\") AS \"Median\", MIN(\"MIN_io_writes_server_bytes_per_second\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "NFS - WR:throughput",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "Bps",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Reads bytes (per second), actually received from server",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 2
+          },
+          "hideTimeOverride": false,
+          "id": 3,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_io_reads_server_bytes_per_second\") AS \"MAX\", MEAN(\"MEAN_io_reads_server_bytes_per_second\") AS \"Mean\", MEAN(\"MEDIAN_io_reads_server_bytes_per_second\") AS \"Median\", MIN(\"MIN_io_reads_server_bytes_per_second\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "NFS - RD:throughput",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "Bps",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Throughput",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 4,
+      "panels": [
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Write RPC time spent waiting for RPC to complete",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 3
+          },
+          "hideTimeOverride": false,
+          "id": 5,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_write_latency_seconds_per_op\") AS \"MAX\", MEAN(\"MEAN_rpc_write_latency_seconds_per_op\") AS \"Mean\", MEAN(\"MEDIAN_rpc_write_latency_seconds_per_op\") AS \"Median\", MIN(\"MIN_rpc_write_latency_seconds_per_op\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Write:latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "s",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Write RPC operations (per second)",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 3
+          },
+          "hideTimeOverride": false,
+          "id": 6,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_write_requested_per_second\") AS \"MAX\", MEAN(\"MEAN_rpc_write_requested_per_second\") AS \"Mean\", MEAN(\"MEDIAN_rpc_write_requested_per_second\") AS \"Median\", MIN(\"MIN_rpc_write_requested_per_second\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Write:iops",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "iops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Read RPC time spent waiting for RPC to complete",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 10
+          },
+          "hideTimeOverride": false,
+          "id": 7,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_read_latency_seconds_per_op\") AS \"MAX\", MEAN(\"MEAN_rpc_read_latency_seconds_per_op\") AS \"Mean\", MEAN(\"MEDIAN_rpc_read_latency_seconds_per_op\") AS \"Median\", MIN(\"MIN_rpc_read_latency_seconds_per_op\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Read:latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "s",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Read RPC operations (per second)",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 10
+          },
+          "hideTimeOverride": false,
+          "id": 8,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_read_requested_per_second\") AS \"MAX\", MEAN(\"MEAN_rpc_read_requested_per_second\") AS \"Mean\", MEAN(\"MEDIAN_rpc_read_requested_per_second\") AS \"Median\", MIN(\"MIN_rpc_read_requested_per_second\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Read:iops",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "iops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Create RPC time spent waiting for RPC to complete",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 17
+          },
+          "hideTimeOverride": false,
+          "id": 9,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_create_latency_seconds_per_op\") AS \"MAX\", MEAN(\"MEAN_rpc_create_latency_seconds_per_op\") AS \"Mean\", MEAN(\"MEDIAN_rpc_create_latency_seconds_per_op\") AS \"Median\", MIN(\"MIN_rpc_create_latency_seconds_per_op\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Create:latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "s",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Create RPC operations (per second)",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 17
+          },
+          "hideTimeOverride": false,
+          "id": 10,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_create_requested_per_second\") AS \"MAX\", MEAN(\"MEAN_rpc_create_requested_per_second\") AS \"Mean\", MEAN(\"MEDIAN_rpc_create_requested_per_second\") AS \"Median\", MIN(\"MIN_rpc_create_requested_per_second\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Create:iops",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "iops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Remove RPC time spent waiting for RPC to complete",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 24
+          },
+          "hideTimeOverride": false,
+          "id": 11,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_remove_latency_seconds_per_op\") AS \"MAX\", MEAN(\"MEAN_rpc_remove_latency_seconds_per_op\") AS \"Mean\", MEAN(\"MEDIAN_rpc_remove_latency_seconds_per_op\") AS \"Median\", MIN(\"MIN_rpc_remove_latency_seconds_per_op\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Remove:latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "s",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Remove RPC operations (per second)",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 24
+          },
+          "hideTimeOverride": false,
+          "id": 12,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_remove_requested_per_second\") AS \"MAX\", MEAN(\"MEAN_rpc_remove_requested_per_second\") AS \"Mean\", MEAN(\"MEDIAN_rpc_remove_requested_per_second\") AS \"Median\", MIN(\"MIN_rpc_remove_requested_per_second\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Remove:iops",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "iops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Mkdir RPC time spent waiting for RPC to complete",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 31
+          },
+          "hideTimeOverride": false,
+          "id": 13,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_mkdir_latency_seconds_per_op\") AS \"MAX\", MEAN(\"MEAN_rpc_mkdir_latency_seconds_per_op\") AS \"Mean\", MEAN(\"MEDIAN_rpc_mkdir_latency_seconds_per_op\") AS \"Median\", MIN(\"MIN_rpc_mkdir_latency_seconds_per_op\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Mkdir:latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "s",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Mkdir RPC operations (per second)",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 31
+          },
+          "hideTimeOverride": false,
+          "id": 14,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_mkdir_requested_per_second\") AS \"MAX\", MEAN(\"MEAN_rpc_mkdir_requested_per_second\") AS \"Mean\", MEAN(\"MEDIAN_rpc_mkdir_requested_per_second\") AS \"Median\", MIN(\"MIN_rpc_mkdir_requested_per_second\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Mkdir:iops",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "iops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Rmdir RPC time spent waiting for RPC to complete",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 38
+          },
+          "hideTimeOverride": false,
+          "id": 15,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_rmdir_latency_seconds_per_op\") AS \"MAX\", MEAN(\"MEAN_rpc_rmdir_latency_seconds_per_op\") AS \"Mean\", MEAN(\"MEDIAN_rpc_rmdir_latency_seconds_per_op\") AS \"Median\", MIN(\"MIN_rpc_rmdir_latency_seconds_per_op\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Rmdir:latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "s",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Rmdir RPC operations (per second)",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 38
+          },
+          "hideTimeOverride": false,
+          "id": 16,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_rmdir_requested_per_second\") AS \"MAX\", MEAN(\"MEAN_rpc_rmdir_requested_per_second\") AS \"Mean\", MEAN(\"MEDIAN_rpc_rmdir_requested_per_second\") AS \"Median\", MIN(\"MIN_rpc_rmdir_requested_per_second\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Rmdir:iops",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "iops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Readdir RPC time spent waiting for RPC to complete",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 45
+          },
+          "hideTimeOverride": false,
+          "id": 17,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_readdir_latency_seconds_per_op\") AS \"MAX\", MEAN(\"MEAN_rpc_readdir_latency_seconds_per_op\") AS \"Mean\", MEAN(\"MEDIAN_rpc_readdir_latency_seconds_per_op\") AS \"Median\", MIN(\"MIN_rpc_readdir_latency_seconds_per_op\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Readdir:latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "s",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Readdir RPC operations (per second)",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 45
+          },
+          "hideTimeOverride": false,
+          "id": 18,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_readdir_requested_per_second\") AS \"MAX\", MEAN(\"MEAN_rpc_readdir_requested_per_second\") AS \"Mean\", MEAN(\"MEDIAN_rpc_readdir_requested_per_second\") AS \"Median\", MIN(\"MIN_rpc_readdir_requested_per_second\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Readdir:iops",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "iops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Readdir+ RPC time spent waiting for RPC to complete",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 0,
+            "y": 52
+          },
+          "hideTimeOverride": false,
+          "id": 19,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_readdirplus_latency_seconds_per_op\") AS \"MAX\", MEAN(\"MEAN_rpc_readdirplus_latency_seconds_per_op\") AS \"Mean\", MEAN(\"MEDIAN_rpc_readdirplus_latency_seconds_per_op\") AS \"Median\", MIN(\"MIN_rpc_readdirplus_latency_seconds_per_op\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Readdir+:latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "s",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "decimals": null,
+          "description": "Readdir+ RPC operations (per second)",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 4,
+            "y": 52
+          },
+          "hideTimeOverride": false,
+          "id": 20,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_rpc_readdirplus_requested_per_second\") AS \"MAX\", MEAN(\"MEAN_rpc_readdirplus_requested_per_second\") AS \"Mean\", MEAN(\"MEDIAN_rpc_readdirplus_requested_per_second\") AS \"Median\", MIN(\"MIN_rpc_readdirplus_requested_per_second\") AS \"MIN\" FROM \"history\".\"io_mount_nfs\" WHERE ${timeFilter} AND \"path\" =~ /^${Export}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC - Readdir+:iops",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "iops",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "RPCs",
+      "type": "row"
+    }
+  ],
+  "schemaVersion": 16,
+  "style": "dark",
+  "tags": [
+    "GUStat",
+    "NFS",
+    "History"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "Export",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"history\".\"io_mount_nfs\" WITH KEY = \"path\"",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1d"
+    ],
+    "time_options": [
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "NFS: 4a.History (Graph)",
+  "uid": "GUStat-NFS-HistoryGraph",
+  "version": 7
+}
