@@ -457,6 +457,7 @@ GUSTAT_FIELDS_VIRT_STAT = {
     'balloon.swap_out': [ 'mem', 'swap_writes', 'bytes', 1024, 'int', True, True, 0 ],
     'balloon.minor_fault': [ 'mem', 'minflt', 'count', None, 'int', True, True, 1 ],
     'balloon.major_fault': [ 'mem', 'majflt', 'count', None, 'int', True, True, 1 ],
+    'net.name': [ 'net', 'device', 'name', None, 'str', False, False, 0 ],
     'net.rx.bytes': [ 'net', 'rx_bytes', 'bytes', None, 'int', True, True, 0 ],
     'net.rx.pkts': [ 'net', 'rx_packets', 'packets', None, 'int', True, True, 0 ],
     'net.rx.drop': [ 'net', 'rx_dropped', 'packets', None, 'int', True, True, 0 ],
@@ -465,6 +466,7 @@ GUSTAT_FIELDS_VIRT_STAT = {
     'net.tx.pkts': [ 'net', 'tx_packets', 'packets', None, 'int', True, True, 0 ],
     'net.tx.drop': [ 'net', 'tx_dropped', 'packets', None, 'int', True, True, 0 ],
     'net.tx.errs': [ 'net', 'tx_errors', 'count', None, 'int', True, True, 2 ],
+    'block.name': [ 'io', 'device', 'name', None, 'str', False, False, 0 ],
     'block.path': [ 'io', 'path', 'name', None, 'str', False, False, 0 ],
     'block.rd.bytes': [ 'io', 'reads_bytes', 'bytes', None, 'int', True, True, 0 ],
     'block.wr.bytes': [ 'io', 'writes_bytes', 'bytes', None, 'int', True, True, 0 ],
@@ -1080,10 +1082,12 @@ class GUStatData:
                     if sMetric == 'name':
                         sDevice_index = sIndex
                         sDevice_name = lWords[1]
+                        dField = self.__makeField(GUSTAT_FIELDS_VIRT_STAT, sCategory+'.'+sMetric, lWords[1])
+                        self.__storeField(GUSTAT_MEASUREMENT_VIRT_STAT, _sGuest+':'+sDevice_index, dField, _iLevel)
                         continue
                     if sDevice_name is not None:
                         dField = self.__makeField(GUSTAT_FIELDS_VIRT_STAT, sCategory+'.'+sMetric, lWords[1])
-                        self.__storeField(GUSTAT_MEASUREMENT_VIRT_STAT, _sGuest+':'+sDevice_name, dField, _iLevel)
+                        self.__storeField(GUSTAT_MEASUREMENT_VIRT_STAT, _sGuest+':'+sDevice_index, dField, _iLevel)
                 else:
                     dField = self.__makeField(GUSTAT_FIELDS_VIRT_STAT, lWords[0], lWords[1])
                     self.__storeField(GUSTAT_MEASUREMENT_VIRT_STAT, _sGuest, dField, _iLevel)

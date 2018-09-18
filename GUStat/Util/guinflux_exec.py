@@ -805,10 +805,10 @@ class GUInfluxMain:
                         sObject = 'guest=%s' % sObject
                     elif sMetric.startswith('io:'):
                         sMeasurement_out = 'virt_io'
-                        sObject = 'guest=%s,device=%s' % tuple(sObject.split(':', 1))
+                        sObject = 'guest=%s,devid=%s' % tuple(sObject.split(':', 1))
                     elif sMetric.startswith('net:'):
                         sMeasurement_out = 'virt_net'
-                        sObject = 'guest=%s,device=%s' % tuple(sObject.split(':', 1))
+                        sObject = 'guest=%s,devid=%s' % tuple(sObject.split(':', 1))
                     else:
                         continue
                     dField['category'] = '-'

@@ -1,3 +1,49 @@
+gustat (3.1.20180705a) UNRELEASED; urgency=low
+
+  * NEW RELEASE
+  ! WARNING ! Significant changes with version 3.0 ! WARNING !
+  - FIX: Use proper encoding for stdout output
+  - NEW: Allow to retrieve all processes (*) statistics
+  - NEW: Allow to retrieve all guests/VMs (*) statistics
+  - MOD: Consolidate units (full names; use 'count' when appropriate)
+  - NEW: Add design clock rate to CPU statistics (sys_cpu; level=2)
+  - MOD: Always show total system load (sys_load; level=0)
+  - MOD: Always show total CPU usage (sys_stat; level=0)
+  - NEW: Add interrupts count to CPU statistics (sys_stat; level=1)
+  - NEW: Add physical and cores count to CPU statistics (sys_cpu; level=0)
+  - NEW: Add available memory to memory statistics (sys_mem; level=0)
+  - MOD: Change slab usage reporting level (sys_mem; level=0)
+  - MOD: Change NFS requested RPCs reporting level (sys_mnts; level=0)
+  - NEW: Add UID/GID to process status data (proc_status; level=0..2)
+  - NEW: Add command and state to process statistics (proc_stat; level=0)
+  - MOD: In long options names, replace underscore by hyphens and remove abbreviations
+  - MOD: Renamed system disks statistics: sys_dsks -> sys_disk
+  - MOD: Renamed system mounts statistics: sys_mnts -> sys_mount
+  - MOD: Demote some disk statistics to higher reporting levels (sys_disk; level=*)
+  - MOD: Demote some process statistics to higher reporting levels (proc_stat; level=*)
+  - MOD: Consolidate/enrich Libvirt domain statistics (virt_blks -> virt_stat)
+  - FIX: Parse CPU design clock rate more resiliently (sys_cpu)
+  - MOD: Allow (unanchored) regular expressions for output filtering
+  - FIX: Wrong RSS unit in process statistics (proc_stat)
+  - MOD: Make statistics (dictionary) key more parse resilient (since object key may contain commas)
+  - MOD: Have the measurement name reflect the mount type (sys_mount)
+  - MOD: split CPU/memory/IO/network statistics in their own category
+  - NEW: allow errors to be thrown/catched as exceptions
+  - MOD: removed uncessary module file (__init__.py)
+  - MOD: Changed I/O elapsed times reporting level (io_disk; level=1)
+  - NEW: TCP/UDP connections statistics (net_tcp, net_udp)
+  - NEW: InfluxDB Line Protocol support (guinflux)
+  - MOD: Changed I/O elapsed times reporting level (virt_stat; level=1)
+  - NEW: Allow UID/GID name resolution (proc_status)
+  - MOD: Add 'guru' level and better split NFS statistics (io_mount; level=*)
+  - MOD: Add vCPU count to virtualization statistics (virt_stat; level=0)
+  - FIX: Debian packaging (vs Python 3)
+  - MOD: Changed NFS readdir(plus) RPC reporting level (io_mount; level=1)
+  - FIX: CPU physical/cores/logical count
+  - MOD: Add host device index to virtual disk and network metrics (virt_stat; level=0)
+
+ -- Cédric Dufour <cedric.dufour@ced-network.net>  Thu, 05 Jul 2018 10:38:34 +0200
+
 gustat (3.0.20170719a) UNRELEASED; urgency=low
 
   * NEW RELEASE (3.0.20170719a) for Python 3.x
