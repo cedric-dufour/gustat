@@ -415,11 +415,11 @@ class GUInfluxMain:
 
         # Metric
         if _dField['category'] != '-':
-            sMetric = _dField['category']+'_'+_dField['metric']
+            sMetric = '%s_%s' % (_dField['category'], _dField['metric'])
         else:
             sMetric = _dField['metric']
-        if not _dField['unit'] in ['id', 'name'] and not sMetric.endswith('_'+_dField['unit']):
-            sMetric += '_'+_dField['unit']
+        if not _dField['unit'] in ['id', 'name'] and not sMetric.endswith('_%s' % _dField['unit']):
+            sMetric += '_%s' % _dField['unit']
 
         # Value
         mValue = _dField['value']

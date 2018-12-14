@@ -461,7 +461,7 @@ class GUStatMain:
         sIntFormat = '{:}'
         sFloatFormat = '{:}'
         if self.__oArguments.precision >= 0:
-            sFloatFormat = sFloatFormat.replace(':', ':.'+str(self.__oArguments.precision)+'f')
+            sFloatFormat = sFloatFormat.replace(':', ':.%df' % self.__oArguments.precision)
         bZeroHide = self.__oArguments.zero_hide
         iJustify = self.__oArguments.justify
         bTop = self.__oArguments.top
