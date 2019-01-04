@@ -266,6 +266,15 @@ __EOF__
 
 
 
+# WARNING: history CQs MUST be split to limit heap memory usage
+:; cat << __EOF__ | tr '\n' ' ' | sed 's/; */;\n/g' | influx -database gustat
+DROP CONTINUOUS QUERY "history.gpu_gpu_load" ON "gustat"; CREATE CONTINUOUS QUERY "history.gpu_gpu_load" ON "gustat" BEGIN SELECT MIN("gpu_load") AS "MIN_gpu_load", MEAN("gpu_load") AS "MEAN_gpu_load", MEDIAN("gpu_load") AS "MEDIAN_gpu_load", MAX("gpu_load") AS "MAX_gpu_load" INTO "gustat"."history"."gpu" FROM "gustat"."long"."gpu" GROUP BY time(1d),"task","serie","host" END;
+DROP CONTINUOUS QUERY "history.gpu_mem_used_bytes" ON "gustat"; CREATE CONTINUOUS QUERY "history.gpu_mem_used_bytes" ON "gustat" BEGIN SELECT MIN("mem_used_bytes") AS "MIN_mem_used_bytes", MEAN("mem_used_bytes") AS "MEAN_mem_used_bytes", MEDIAN("mem_used_bytes") AS "MEDIAN_mem_used_bytes", MAX("mem_used_bytes") AS "MAX_mem_used_bytes" INTO "gustat"."history"."gpu" FROM "gustat"."long"."gpu" GROUP BY time(1d),"task","serie","host" END;
+DROP CONTINUOUS QUERY "history.gpu_mem_total_bytes" ON "gustat"; CREATE CONTINUOUS QUERY "history.gpu_mem_total_bytes" ON "gustat" BEGIN SELECT MIN("mem_total_bytes") AS "MIN_mem_total_bytes", MEAN("mem_total_bytes") AS "MEAN_mem_total_bytes", MEDIAN("mem_total_bytes") AS "MEDIAN_mem_total_bytes", MAX("mem_total_bytes") AS "MAX_mem_total_bytes" INTO "gustat"."history"."gpu" FROM "gustat"."long"."gpu" GROUP BY time(1d),"task","serie","host" END;
+__EOF__
+
+
+
 :; cat << __EOF__ | tr '\n' ' ' | sed 's/; */;\n/g' | influx -database gustat
 DROP CONTINUOUS QUERY "temporary.virt_cpu" ON "gustat";
 CREATE CONTINUOUS QUERY "temporary.virt_cpu" ON "gustat"

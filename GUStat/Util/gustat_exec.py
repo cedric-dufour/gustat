@@ -349,6 +349,33 @@ class GUStatMain:
             default=0,
             help='Process statistics: global level (0=standard, 1=advanced, 2=expert)')
 
+        # ... GPU statistics: nVidia statistics
+        self.__oArgumentParser.add_argument(
+            '-Gn', '--gpu-nvidia', action='store_true',
+            default=False,
+            help='nVidia GPU statistics (nvidia-smi)')
+        self.__oArgumentParser.add_argument(
+            '-Gnl', '--gpu-nvidia-level', type=int,
+            metavar='<level>',
+            default=0,
+            help='nVidia GPU statistics: level (0=standard, 1=advanced, 2=expert)')
+        self.__oArgumentParser.add_argument(
+            '-Gnd', '--gpu-nvidia-device', type=str,
+            metavar='<id>[,<id> ...]',
+            default=None,
+            help='GPU statistics: comma-separated list of device IDs')
+
+        # ... GPU statistics: ALL
+        self.__oArgumentParser.add_argument(
+            '-Ga', '--gpu-all', action='store_true',
+            default=False,
+            help='GPU statistics: all statistics')
+        self.__oArgumentParser.add_argument(
+            '-Gal', '--gpu-all-level', type=int,
+            metavar='<level>',
+            default=0,
+            help='GPU statistics: global level (0=standard, 1=advanced, 2=expert)')
+
         # ... virtualization statistics: guest(s) selection
         self.__oArgumentParser.add_argument(
             '-V', '--virt', type=str,
@@ -557,6 +584,13 @@ class GUStatMain:
         bStats_proc_io = bStats_proc_all or self.__oArguments.proc_io
         iLevel_proc_io = max(iStats_proc_all_level, self.__oArguments.proc_io_level)
 
+        # ... GPU statistics
+        bStats_gpu_all = self.__oArguments.gpu_all
+        iStats_gpu_all_level = self.__oArguments.gpu_all_level
+        bStats_gpu_nvidia = bStats_gpu_all or self.__oArguments.gpu_nvidia
+        iLevel_gpu_nvidia = max(iStats_gpu_all_level, self.__oArguments.gpu_nvidia_level)
+        sDevice_gpu_nvidia = self.__oArguments.gpu_nvidia_device
+
         # ... virtualization statistics
         lGuests = list()
         if self.__oArguments.virt is not None:
@@ -614,6 +648,8 @@ class GUStatMain:
                 oGUStatData_1.parseStat_proc_stat(iLevel_proc_stat, iPid)
             if bStats_proc_io:
                 oGUStatData_1.parseStat_proc_io(iLevel_proc_io, iPid)
+        if bStats_gpu_nvidia:
+            oGUStatData_1.parseStat_gpu_nvidia(iLevel_gpu_nvidia, sDevice_gpu_nvidia)
         for sGuest in lGuests:
             if bStats_virt_stat:
                 oGUStatData_1.parseStat_virt_stat(iLevel_virt_stat, sGuest)
@@ -667,6 +703,8 @@ class GUStatMain:
                     oGUStatData_2.parseStat_proc_stat(iLevel_proc_stat, iPid)
                 if bStats_proc_io:
                     oGUStatData_2.parseStat_proc_io(iLevel_proc_io, iPid)
+            if bStats_gpu_nvidia:
+                oGUStatData_2.parseStat_gpu_nvidia(iLevel_gpu_nvidia, sDevice_gpu_nvidia)
             for sGuest in lGuests:
                 if bStats_virt_stat:
                     oGUStatData_2.parseStat_virt_stat(iLevel_virt_stat, sGuest)

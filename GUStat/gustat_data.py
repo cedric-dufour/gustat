@@ -438,6 +438,24 @@ GUSTAT_FIELDS_PROC_IO = {
     'cancelled_write_bytes': [ 'io', 'writes_bytes_cancelled', 'bytes', None, 'int', True, True, 1 ],
 }
 
+# nVidia 'nvidia-smi' fields
+GUSTAT_MEASUREMENT_GPU_NVIDIA = 'gpu_nvidia'
+GUSTAT_FIELDS_GPU_NVIDIA = {
+    # key: [ category, metric, unit, coefficient, type, interval-able, rate-able, level ]
+    'field1': [ 'gpu', 'pci_id', 'id', None, 'str', False, False, 2 ],
+    'field2': [ 'gpu', 'name', 'name', None, 'str', False, False, 2 ],
+    'field3': [ 'gpu', 'gpu', 'load', 0.01, 'float', False, False, 0 ],
+    'field4': [ 'gpu', 'mem_used', 'bytes', 1048576, 'int', True, True, 0 ],
+    'field5': [ 'gpu', 'mem_total', 'bytes', 1048576, 'int', False, False, 0 ],
+    'field6': [ 'gpu', 'gpu_clock', 'herz', 1000000.0, 'int', False, False, 1 ],
+    'field7': [ 'gpu', 'gpu_clock_design', 'herz', 1000000.0, 'int', False, False, 2 ],
+    'field8': [ 'gpu', 'mem_clock', 'herz', 1000000.0, 'int', False, False, 1 ],
+    'field9': [ 'gpu', 'mem_clock_design', 'herz', 1000000.0, 'int', False, False, 2 ],
+    'field10': [ 'gpu', 'power', 'watts', None, 'float', False, False, 1 ],
+    'field11': [ 'gpu', 'power_design', 'watts', None, 'float', False, False, 2 ],
+    'field12': [ 'gpu', 'temperature', 'degrees', None, 'float', False, False, 1 ],
+}
+
 # Libvirt 'domstats' fields
 GUSTAT_MEASUREMENT_VIRT_STAT = 'virt_stat'
 GUSTAT_FIELDS_VIRT_STAT = {
@@ -1048,6 +1066,33 @@ class GUStatData:
                     self.__storeField(GUSTAT_MEASUREMENT_PROC_IO, sPid, dField, _iLevel)
         except IOError:
             self.__ERROR('Missing/unreadable file; %s' % sFile)
+
+
+    def parseStat_gpu_nvidia(self, _iLevel, _sDeviceId = None):
+        global GUSTAT_MEASUREMENT_GPU_NVIDIA
+        global GUSTAT_FIELDS_GPU_NVIDIA
+
+        lCommand = ['nvidia-smi', '--query-gpu=index,pci.bus_id,name,utilization.gpu,memory.used,memory.total,clocks.current.graphics,clocks.max.graphics,clocks.current.memory,clocks.max.memory,power.draw,power.limit,temperature.gpu', '--format=csv,noheader,nounits']
+        if(_sDeviceId is not None):
+            lCommand.extend(['--id=%s' % _sDeviceId])
+        try:
+            bOutput = SP.check_output(lCommand)
+            sDevice_id = None
+            for sLine in bOutput.decode(sys.stdout.encoding).splitlines():
+                sLine = sLine.strip()
+                if len(sLine) < 1:
+                    continue
+                lWords = sLine.split(',')
+                if len(lWords) < 13:
+                    self.__ERROR('Badly/unexpectedly formatted command output; %s' % ' '.join(lCommand))
+                    break
+                lWords[0] = lWords[0].strip()
+                for i in range(1, 13):
+                    lWords[i] = lWords[i].strip()
+                    dField = self.__makeField(GUSTAT_FIELDS_GPU_NVIDIA, 'field%d' % i, lWords[i])
+                    self.__storeField(GUSTAT_MEASUREMENT_GPU_NVIDIA, 'gpu%s' % lWords[0], dField, _iLevel)
+        except OSError:
+            self.__ERROR('Command failed; %s' % ' '.join(lCommand))
 
 
     def parseStat_virt_stat(self, _iLevel, _sGuest):

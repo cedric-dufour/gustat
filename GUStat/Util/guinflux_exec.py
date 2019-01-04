@@ -327,6 +327,33 @@ class GUInfluxMain:
             default=None,
             help='Process statistics: filter by GID')
 
+        # ... GPU statistics: nVidia statistics
+        self.__oArgumentParser.add_argument(
+            '-Gn', '--gpu-nvidia', action='store_true',
+            default=False,
+            help='nVidia GPU statistics (nvidia-smi)')
+        self.__oArgumentParser.add_argument(
+            '-Gnl', '--gpu-nvidia-level', type=int,
+            metavar='<level>',
+            default=0,
+            help='nVidia GPU statistics: level (0=standard, 1=advanced, 2=expert)')
+        self.__oArgumentParser.add_argument(
+            '-Gnd', '--gpu-nvidia-device', type=str,
+            metavar='<id>[,<id> ...]',
+            default=None,
+            help='GPU statistics: comma-separated list of device IDs')
+
+        # ... GPU statistics: ALL
+        self.__oArgumentParser.add_argument(
+            '-Ga', '--gpu-all', action='store_true',
+            default=False,
+            help='GPU statistics: all statistics')
+        self.__oArgumentParser.add_argument(
+            '-Gal', '--gpu-all-level', type=int,
+            metavar='<level>',
+            default=0,
+            help='GPU statistics: global level (0=standard, 1=advanced, 2=expert)')
+
         # ... virtualization statistics: guest(s) selection
         self.__oArgumentParser.add_argument(
             '-V', '--virt', type=str,
@@ -569,6 +596,13 @@ class GUInfluxMain:
         sUid_proc_all = self.__oArguments.proc_all_uid
         sGid_proc_all = self.__oArguments.proc_all_gid
 
+        # ... GPU statistics
+        bStats_gpu_all = self.__oArguments.gpu_all
+        iStats_gpu_all_level = self.__oArguments.gpu_all_level
+        bStats_gpu_nvidia = bStats_gpu_all or self.__oArguments.gpu_nvidia
+        iLevel_gpu_nvidia = max(iStats_gpu_all_level, self.__oArguments.gpu_nvidia_level)
+        sDevice_gpu_nvidia = self.__oArguments.gpu_nvidia_device
+
         # ... virtualization statistics
         lGuests = list()
         if self.__oArguments.virt is not None:
@@ -782,6 +816,22 @@ class GUInfluxMain:
                 elif sGid_proc_all is not None:
                     if sGid_proc_all != sGid:
                         self.__dropMeasurement('proc_stat', sObject_out)
+
+        # ... GPU (nVidia) statistics
+        if bStats_gpu_nvidia:
+            # ... gather
+            oGUStatData = GUStatData(_bThrowErrors=True)
+            oGUStatData.parseStat_gpu_nvidia(iLevel_gpu_nvidia, sDevice_gpu_nvidia)
+            # ... to Influx
+            self.__addMeasurements(['gpu'])
+            for sKey in sorted(oGUStatData.dStats.keys()):
+                (sMeasurement, sMetric, sObject) = sKey.split(',', 2)
+                if sMeasurement == 'gpu_nvidia':
+                    sMeasurement = 'gpu'
+                    sObject = 'device=%s' % sObject
+                    dField = oGUStatData.dStats[sKey]
+                    dField['category'] = '-'
+                    self.__storeMeasurement(sMeasurement, sObject, dField)
 
         # ... virtualization statistics
         if bStats_virt_stat:

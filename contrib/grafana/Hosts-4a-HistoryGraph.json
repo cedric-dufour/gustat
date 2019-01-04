@@ -1,40 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_INFLUXDB-GUSTAT",
-      "label": "InfluxDB-GUStat",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "influxdb",
-      "pluginName": "InfluxDB"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "5.2.1"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": "5.0.0"
-    },
-    {
-      "type": "datasource",
-      "id": "influxdb",
-      "name": "InfluxDB",
-      "version": "5.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "text",
-      "name": "Text",
-      "version": "5.0.0"
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -51,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": null,
-  "iteration": 1531829764975,
+  "id": 63,
+  "iteration": 1544800680777,
   "links": [],
   "panels": [
     {
@@ -98,7 +62,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "I/O wait CPU load ~ time spent (%) waiting for I/O operations to complete",
           "fill": 0,
@@ -152,6 +116,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "CPU - Wait",
           "tooltip": {
@@ -202,7 +167,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "System CPU load ~ time spent (%) in kernel space (I/Os, device drivers, etc.)",
           "fill": 0,
@@ -256,6 +221,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "CPU - System",
           "tooltip": {
@@ -306,7 +272,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "User CPU load ~ time spent (%) in user space (actual computation)",
           "fill": 0,
@@ -360,6 +326,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "CPU - User",
           "tooltip": {
@@ -410,7 +377,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "Nice CPU load ~ time spent (%) in (re)niced user space (actual computation)",
           "fill": 0,
@@ -464,6 +431,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "CPU - Nice",
           "tooltip": {
@@ -503,9 +471,144 @@
             "align": false,
             "alignLevel": null
           }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB-GUStat",
+          "decimals": null,
+          "description": "GPU load ~ time spent (%) in each GPU (actual computation)",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 16,
+            "y": 2
+          },
+          "hideTimeOverride": false,
+          "id": 21,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_gpu_load\") AS \"MAX\", MEAN(\"MEAN_gpu_load\") AS \"Mean\", MEAN(\"MEDIAN_gpu_load\") AS \"Median\", MIN(\"MIN_gpu_load\") AS \"MIN\" FROM \"history\".\"gpu\" WHERE ${timeFilter} AND \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "GPU",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "percentunit",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         }
       ],
-      "title": "CPU",
+      "title": "CPU / GPU",
       "type": "row"
     },
     {
@@ -528,7 +631,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "Memory used (not reclaimable)",
           "fill": 0,
@@ -536,7 +639,7 @@
             "h": 7,
             "w": 4,
             "x": 0,
-            "y": 9
+            "y": 10
           },
           "hideTimeOverride": false,
           "id": 7,
@@ -582,6 +685,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Memory - Unavailable",
           "tooltip": {
@@ -632,7 +736,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "Memory used, including (reclaimable) buffers and cache",
           "fill": 0,
@@ -640,7 +744,7 @@
             "h": 7,
             "w": 4,
             "x": 4,
-            "y": 9
+            "y": 10
           },
           "hideTimeOverride": false,
           "id": 8,
@@ -686,8 +790,144 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Memory - Used",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "bytes",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "MAX": "#890f02",
+            "MIN": "#3f6833",
+            "Mean": "#eab839",
+            "Median": "#ef843c"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB-GUStat",
+          "decimals": null,
+          "description": "GPU memory used",
+          "fill": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 4,
+            "x": 16,
+            "y": 10
+          },
+          "hideTimeOverride": false,
+          "id": 22,
+          "interval": "1d",
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "Mean",
+              "dashLength": 2,
+              "dashes": true,
+              "spaceLength": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT MAX(\"MAX_mem_used_bytes\") AS \"MAX\", MEAN(\"MEAN_mem_used_bytes\") AS \"Mean\", MEAN(\"MEDIAN_mem_used_bytes\") AS \"Median\", MIN(\"MIN_mem_used_bytes\") AS \"MIN\" FROM \"history\".\"gpu\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/ AND ${timeFilter} GROUP BY time(${__interval})",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Memory - GPU",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -750,7 +990,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "Writes time spent waiting for device to complete operations",
           "fill": 0,
@@ -854,7 +1094,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "Writes bytes, actually written to device",
           "fill": 0,
@@ -958,7 +1198,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "Writes operations, completed by kernel space",
           "fill": 0,
@@ -1062,7 +1302,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "Reads time spent waiting for device to complete operations",
           "fill": 0,
@@ -1166,7 +1406,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "Reads bytes, actually read from device",
           "fill": 0,
@@ -1270,7 +1510,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "Reads operations, completed by kernel space",
           "fill": 0,
@@ -1388,7 +1628,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "Transmitted bytes (per second)",
           "fill": 0,
@@ -1492,7 +1732,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "Received bytes (per second)",
           "fill": 0,
@@ -1596,7 +1836,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "Established TCP (IPv4) connections",
           "fill": 0,
@@ -1700,7 +1940,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUXDB-GUSTAT}",
+          "datasource": "InfluxDB-GUStat",
           "decimals": null,
           "description": "Established TCP (IPv6) connections",
           "fill": 0,
@@ -1810,8 +2050,12 @@
     "list": [
       {
         "allValue": ".*",
-        "current": {},
-        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "InfluxDB-GUStat",
+        "definition": "",
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -1821,6 +2065,7 @@
         "query": "SHOW TAG VALUES FROM \"history\".\"cpu_info\" WITH KEY = \"task\"",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
@@ -1830,8 +2075,12 @@
       },
       {
         "allValue": ".*",
-        "current": {},
-        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "InfluxDB-GUStat",
+        "definition": "",
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -1841,6 +2090,7 @@
         "query": "SHOW TAG VALUES FROM \"history\".\"cpu_info\" WITH KEY = \"serie\" WHERE \"task\" =~ /^${Task}$/",
         "refresh": 2,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
@@ -1850,8 +2100,12 @@
       },
       {
         "allValue": ".*",
-        "current": {},
-        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "InfluxDB-GUStat",
+        "definition": "",
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -1861,6 +2115,7 @@
         "query": "SHOW TAG VALUES FROM \"history\".\"cpu_info\" WITH KEY = \"host\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/",
         "refresh": 2,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
@@ -1870,8 +2125,12 @@
       },
       {
         "allValue": ".*",
-        "current": {},
-        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "InfluxDB-GUStat",
+        "definition": "",
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -1881,6 +2140,7 @@
         "query": "SHOW TAG VALUES FROM \"history\".\"io_disk\" WITH KEY = \"device\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/",
         "refresh": 2,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
@@ -1890,8 +2150,12 @@
       },
       {
         "allValue": ".*",
-        "current": {},
-        "datasource": "${DS_INFLUXDB-GUSTAT}",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "InfluxDB-GUStat",
+        "definition": "",
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -1901,6 +2165,7 @@
         "query": "SHOW TAG VALUES FROM \"history\".\"net_dev\" WITH KEY = \"device\" WHERE \"task\" =~ /^${Task}$/ AND \"serie\" =~ /^${Serie}$/ AND \"host\" =~ /^${Host}$/",
         "refresh": 2,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
@@ -1926,5 +2191,5 @@
   "timezone": "",
   "title": "Hosts: 4a.History (Graph)",
   "uid": "GUStat-Hosts-HistoryGraph",
-  "version": 6
+  "version": 13
 }
