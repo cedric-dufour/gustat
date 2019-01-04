@@ -1,3 +1,11 @@
+gustat (3.1.20181214a) UNRELEASED; urgency=low
+
+  * NEW RELEASE
+  - Devel: optimize strings concatenation
+  - NEW: Added (nVidia) GPU statistics
+
+ -- Cédric Dufour <cedric.dufour@ced-network.net>  Fri, 14 Dec 2018 14:12:20 +0100
+
 gustat (3.1.20180705a) UNRELEASED; urgency=low
 
   * NEW RELEASE
